@@ -1,0 +1,2 @@
+ - Upgrade to React 16.13.0
+ - Remove react-trello third party module
