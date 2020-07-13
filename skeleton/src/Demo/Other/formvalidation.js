@@ -205,15 +205,15 @@ class FormsValidation extends React.Component {
                                                     />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="profile">
-                                                    <DocumentoIden onSubmit={this.handleSubmitPerson}
+                                                     {/* <DocumentoIden onSubmit={this.handleSubmitPerson}
                                                         onError={this.handleErrorSubmit} 
-                                                        open={true}/>
-                                                    {/* <RegistrarIdentificacion
+                                                        open={true}/> */}
+                                                     <RegistrarIdentificacion
                                                         onChange={this.handleChange}
                                                         onSubmit={this.handleSubmitId}
                                                         onError={this.handleErrorSubmit}
                                                         errorMessage={errorMessage}
-                                                    /> */}
+                                                    /> 
 
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="contact">
