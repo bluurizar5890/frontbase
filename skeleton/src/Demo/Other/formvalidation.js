@@ -14,6 +14,7 @@ import RegistrarDireccion from '../../App/components/persona/direccion/Registrar
 
 import callApi from '../../App/service/conectorApi';
 import Notificacion from '../../App/service/alerts';
+import DocumentoIden from '../../App/components/persona/DoctomentoIdentificacion';
 
 
 // class MaskWithValidation extends BaseFormControl {
@@ -76,7 +77,7 @@ class FormsValidation extends React.Component {
                 [e.target.name]: e.target.value
             }
         });
-        console.log("e",e);
+        console.log("e", e);
     };
 
 
@@ -134,7 +135,7 @@ class FormsValidation extends React.Component {
 
     handleSubmitAddress = async (e, datosFormulario, inputs) => {
         e.preventDefault();
-        console.log("Datos direccion",inputs);
+        console.log("Datos direccion", inputs);
         datosFormulario.personaId = this.state.persona.personaId;
         let response = await callApi('/persona/direccion', {
             method: 'POST',
@@ -204,13 +205,15 @@ class FormsValidation extends React.Component {
                                                     />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="profile">
-
-                                                    <RegistrarIdentificacion
+                                                    <DocumentoIden onSubmit={this.handleSubmitPerson}
+                                                        onError={this.handleErrorSubmit} 
+                                                        open={true}/>
+                                                    {/* <RegistrarIdentificacion
                                                         onChange={this.handleChange}
                                                         onSubmit={this.handleSubmitId}
                                                         onError={this.handleErrorSubmit}
                                                         errorMessage={errorMessage}
-                                                    />
+                                                    /> */}
 
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="contact">
@@ -218,10 +221,11 @@ class FormsValidation extends React.Component {
                                                         onSubmit={this.handleSubmitAddress}
                                                         onError={this.handleErrorSubmit}
                                                         errorMessage={errorMessage}
+                                                        
                                                     />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="settings">
-                                                <TabsPills></TabsPills>
+                                                    <TabsPills></TabsPills>
                                                 </Tab.Pane>
                                             </Tab.Content>
                                         </Col>
