@@ -12,6 +12,7 @@ import Aux from "./../../../../hoc/_Aux";
 import $ from 'jquery';
 
 import DEMO from "../../../../store/constant";
+import { useState } from 'react';
 
 const errorMessage = "Este campo es requerido";
 
@@ -61,9 +62,22 @@ const NuevoDocumento = (props) => {
 }
 
 const ActualizarDocumento = (props) => {
-    console.log("props", props);
+    const [DoctoPersona,setDoctoPersona]=useState([]);
+
+    setDoctoPersona(
+        {
+            identificacion_personaId:props.Datos.identificacion_personaId,
+            tipo_documentoId:props.Datos.tipo_documentoId,
+            numero_identificacion:props.Datos.numero_identificacion,
+            estadoId:props.Datos.estadoId
+
+        }
+    );
+
+
     return (
-        <ValidationForm onSubmit={props.onSubmit} onErrorSubmit={props.onErrorSubmit}>
+        <ValidationForm onSubmit={props.onSubmitUpdate} onErrorSubmit={props.onErrorSubmit}>
+        <TextInput hidden name="identificacion_personaId" id="identificacion_personaId" value={DoctoPersona.identificacion_personaId}/>
             <Form.Row>
                 <Form.Group as={Col} md="12">
                     <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
@@ -71,7 +85,8 @@ const ActualizarDocumento = (props) => {
                         name="tipo_documentoId"
                         id="tipo_documentoId"
                         required
-                        value={props.Datos.tipo_documentoId}
+                        value={DoctoPersona.tipo_documentoId}
+                        onChange={props.onChangeUpdate}
                         errorMessage={errorMessage}>
                         <option value="">Seleccione un tipo de identificación</option>
                         {
@@ -90,7 +105,8 @@ const ActualizarDocumento = (props) => {
                         name="numero_identificacion"
                         id="numero_identificacion"
                         required
-                        value={props.Datos.numero_identificacion}
+                        value={DoctoPersona.numero_identificacion}
+                        onChange={props.onChangeUpdate}
                         errorMessage={errorMessage}
                         placeholder="Número de identificación"
                         autoComplete="off"
@@ -102,7 +118,8 @@ const ActualizarDocumento = (props) => {
                         name="estadoId"
                         id="estadoId"
                         required
-                        value={props.Datos.estadoId}
+                        value={DoctoPersona.estadoId}
+                        onChange={props.onChangeUpdate}
                         errorMessage={errorMessage}>
                         <option value="">Seleccione un estado</option>
                         {
@@ -145,6 +162,7 @@ class ListadoIdentificaciones extends React.Component {
     handleCloseModal = e => {
         this.setState({ modalIsOpen: false });
     }
+
     handleSubmit = async (e, datosFormulario, inputs) => {
         e.preventDefault();
         console.log("Datos Identificación", datosFormulario);
@@ -220,7 +238,7 @@ class ListadoIdentificaciones extends React.Component {
                         <Modal.Title as="h5">Actualizar documento</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <ActualizarDocumento onSubmit={this.handleSubmit}
+                        <ActualizarDocumento onSubmitUpdate={this.props.handleUpdate}
                             onErrorSubmit={this.handleErrorSubmit}
                             TipoDocto={this.props.TipoDocto}
                             onCloseModal={this.handleCloseModal}
@@ -228,6 +246,7 @@ class ListadoIdentificaciones extends React.Component {
                             modalIsOpen={this.state.modalIsOpen}
                             Estados={this.props.Estados}
                             Datos={this.state.Datos}
+                            onChangeUpdate={this.props.onChangeUpdate}
                         />
                     </Modal.Body>
                 </Modal>
@@ -262,6 +281,11 @@ class RegistrarIdentificacion extends React.Component {
         this.getTipoIdentificacion();
         this.getIdentificaciones();
         this.getEstados();
+    }
+
+    handleUpdate = async (e, datosFormulario, inputs) => {
+        e.preventDefault();
+        console.log({datosFormulario});
     }
 
     getTipoIdentificacion = async () => {
@@ -354,6 +378,9 @@ class RegistrarIdentificacion extends React.Component {
     handleErrorSubmit = (e, formData, errorInputs) => {
         console.log("Errores", errorInputs);
     };
+    onChangeUpdate=e=>{
+        console.log("Datos formulario",e);
+    }
     render() {
         return (
             <Aux>
@@ -370,7 +397,7 @@ class RegistrarIdentificacion extends React.Component {
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={() => this.setState({ modalIsOpen: true })}><i className="feather icon-plus" /> Agregar documento</Button>
                                     </Col>
                                 </Row>
-                                <ListadoIdentificaciones data={this.state.Identificaciones} OpenModal={this.handleOpenModalEdit} Estados={this.state.Estados} TipoDocto={this.state.TipoDocto}></ListadoIdentificaciones>
+                                <ListadoIdentificaciones onChangeUpdate={this.onChangeUpdate} handleUpdate={this.handleUpdate} data={this.state.Identificaciones} OpenModal={this.handleOpenModalEdit} Estados={this.state.Estados} TipoDocto={this.state.TipoDocto}></ListadoIdentificaciones>
                             </Card.Body>
                         </Card>
                         <Modal show={this.state.modalIsOpen} onHide={() => this.setState({ modalIsOpen: false })}>
