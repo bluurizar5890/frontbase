@@ -209,10 +209,7 @@ class FormsValidation extends React.Component {
                                                         onError={this.handleErrorSubmit} 
                                                         open={true}/> */}
                                                      <RegistrarIdentificacion
-                                                        onChange={this.handleChange}
-                                                        onSubmit={this.handleSubmitId}
-                                                        onError={this.handleErrorSubmit}
-                                                        errorMessage={errorMessage}
+                                                        personaId={this.state.persona.personaId}
                                                     /> 
 
                                                 </Tab.Pane>
