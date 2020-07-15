@@ -35,7 +35,24 @@ const error = (mensaje) => {
     });
 }
 
+const info = (mensaje) => {
+    const notice = PNotify.info({
+        title: 'Información!',
+        text: mensaje,
+        hide: true,
+        icon: true,
+        modules: {
+            Buttons: {
+                closer: true,
+                sticker: true
+            }
+        }
+    });
+    notice.on('click', function() {
+        notice.close();
+    });
+}
 
 
 
-export default{success,error}
+export default{success,error,info}

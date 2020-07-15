@@ -1,24 +1,31 @@
 //https://material-table.com/#/docs/features/editable
 // https://medium.com/better-programming/how-to-add-form-validation-to-your-react-app-e19f076e6c10
 import React from 'react';
-import DatePicker from "react-datepicker";
 import { Row, Col, Card, Form, Modal, Button, Table } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
-import validator from 'validator';
 import callApi from '../../../service/conectorApi';
 import Notificacion from '../../../service/alerts';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import Aux from "./../../../../hoc/_Aux";
-import $ from 'jquery';
-
-import DEMO from "../../../../store/constant";
 import { useState } from 'react';
 
 const errorMessage = "Este campo es requerido";
+const useDocumentoPersona=(data)=>{
+    const [values, setValues] = useState(data);
+    const onChangeHandler = (e) => {
+        setValues({
+                    ...values,
+                    [e.target.name]: e.target.value
+                });
+    }
+    return {values,onChangeHandler}
+}
 
 const NuevoDocumento = (props) => {
     return (
-        <ValidationForm onSubmit={props.onSubmit} onErrorSubmit={props.onErrorSubmit}>
+        <ValidationForm onSubmit={props.onSubmit}>
             <Form.Row>
                 <Form.Group as={Col} md="12">
                     <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
@@ -62,22 +69,41 @@ const NuevoDocumento = (props) => {
 }
 
 const ActualizarDocumento = (props) => {
-    const [DoctoPersona,setDoctoPersona]=useState([]);
-
-    setDoctoPersona(
+    const {values,onChangeHandler}=useDocumentoPersona(
         {
-            identificacion_personaId:props.Datos.identificacion_personaId,
-            tipo_documentoId:props.Datos.tipo_documentoId,
-            numero_identificacion:props.Datos.numero_identificacion,
-            estadoId:props.Datos.estadoId
-
+            identificacion_personaId: props.Datos.identificacion_personaId,
+            tipo_documentoId: props.Datos.tipo_documentoId,
+            numero_identificacion: props.Datos.numero_identificacion,
+            estadoId: props.Datos.estadoId
         }
     );
 
+    const Update =async (e, datosFormulario, inputs) => {
+        e.preventDefault();
+        let method = 'PUT';
+        let response = await callApi('/persona/identificacion', {
+            method,
+            body: JSON.stringify(values)
+        });
+
+        const { error, body } = response;
+        const { code, data } = body;
+        if (error) {
+            Notificacion.error(body);
+        } else {
+            if (code === 0) {
+                Notificacion.success(data);
+            } else {
+                Notificacion.error(data);
+            }
+        }
+        props.actualizarTabla();
+        props.onCloseModal();
+    }
 
     return (
-        <ValidationForm onSubmit={props.onSubmitUpdate} onErrorSubmit={props.onErrorSubmit}>
-        <TextInput hidden name="identificacion_personaId" id="identificacion_personaId" value={DoctoPersona.identificacion_personaId}/>
+
+        <ValidationForm onSubmit={Update} onErrorSubmit={props.onErrorSubmit}>
             <Form.Row>
                 <Form.Group as={Col} md="12">
                     <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
@@ -85,8 +111,8 @@ const ActualizarDocumento = (props) => {
                         name="tipo_documentoId"
                         id="tipo_documentoId"
                         required
-                        value={DoctoPersona.tipo_documentoId}
-                        onChange={props.onChangeUpdate}
+                        value={values.tipo_documentoId}
+                        onChange={onChangeHandler}
                         errorMessage={errorMessage}>
                         <option value="">Seleccione un tipo de identificación</option>
                         {
@@ -105,21 +131,22 @@ const ActualizarDocumento = (props) => {
                         name="numero_identificacion"
                         id="numero_identificacion"
                         required
-                        value={DoctoPersona.numero_identificacion}
-                        onChange={props.onChangeUpdate}
+                        value={values.numero_identificacion}
+                        onChange={onChangeHandler}
                         errorMessage={errorMessage}
                         placeholder="Número de identificación"
                         autoComplete="off"
                     />
                 </Form.Group>
+
                 <Form.Group as={Col} md="12">
                     <Form.Label htmlFor="estadoId">Estado</Form.Label>
                     <SelectGroup
                         name="estadoId"
                         id="estadoId"
                         required
-                        value={DoctoPersona.estadoId}
-                        onChange={props.onChangeUpdate}
+                        value={values.estadoId}
+                        onChange={onChangeHandler}
                         errorMessage={errorMessage}>
                         <option value="">Seleccione un estado</option>
                         {
@@ -137,7 +164,7 @@ const ActualizarDocumento = (props) => {
                     <button type="button" onClick={props.onCloseModal} className="btn btn-warning"> Cancelar</button>
                 </div>
                 <div className="col-sm-3">
-                    <button type="submit" className="btn btn-success"> Registrar</button>
+                    <button type="submit" className="btn btn-success"> Actualizar</button>
                 </div>
             </Form.Row>
         </ValidationForm>
@@ -150,54 +177,49 @@ class ListadoIdentificaciones extends React.Component {
         Datos: {}
     };
 
-    handleOpenModal = e => {
-        console.log("Abrir modal", e);
-        this.setState({ modalIsOpen: true });
-    }
-
-    handleOpenModalEdit = (e) => {
-        console.log("e", e);
-        this.setState({ modalIsOpen: true });
-    }
     handleCloseModal = e => {
         this.setState({ modalIsOpen: false });
     }
-
-    handleSubmit = async (e, datosFormulario, inputs) => {
-        e.preventDefault();
-        console.log("Datos Identificación", datosFormulario);
-        datosFormulario.personaId = this.props.personaId;
-        let method = 'POST';
-
-        let response = await callApi('/persona/identificacion', {
-            method,
-            body: JSON.stringify(datosFormulario)
-        });
-
-        const { error, body } = response;
-        const { code, data } = body;
-        if (error) {
-            Notificacion.error(body);
-        } else {
-            if (code === 0) {
-                console.log("Data", data);
-                this.getIdentificaciones();
-                Notificacion.success("Documento de identifiación agregado exitosamente");
-            } else {
-                Notificacion.error(data);
-            }
-        }
-        this.setState({ modalIsOpen: false });
-
-    };
 
     handleErrorSubmit = (e, formData, errorInputs) => {
         console.log("Errores", errorInputs);
     };
 
-    editContact = (contact) => {
-        console.log("d", contact);
-        this.setState({ Datos: contact, modalIsOpen: true })
+    editar = (item) => {
+        this.setState({ Datos: item, modalIsOpen: true })
+    }
+    eliminar = (item) => {
+        const MySwal = withReactContent(Swal);
+        MySwal.fire({
+            title: 'Alerta?',
+            text: 'Esta seguro que desea eliminar el elemento',
+            type: 'warning',
+            showCloseButton: true,
+            showCancelButton: true
+        }).then(async(willDelete) => {
+            if (willDelete.value) {
+                let method = 'DELETE';
+                let response = await callApi(`/persona/identificacion/${item.identificacion_personaId}`, {
+                    method
+                });
+        
+                const { error, body } = response;
+                const { code, data } = body;
+                if (error) {
+                    Notificacion.error(body);
+                } else {
+                    if (code === 0) {
+                        Notificacion.success(data);
+                        this.props.actualizarTabla();
+                    } else {
+                        Notificacion.error(data);
+                    }
+                }
+            } else {
+                Notificacion.info('No se eliminó ningun elemento');
+            }
+        });
+
     }
     render() {
         return (
@@ -205,7 +227,7 @@ class ListadoIdentificaciones extends React.Component {
                 <Table ref="tbl" striped hover responsive bordered id="table_dentificaciones_persona">
                     <thead>
                         <tr>
-                            <th>Código</th>
+                            <th>No.</th>
                             <th>Tipo</th>
                             <th>Número</th>
                             <th>Estado</th>
@@ -214,16 +236,16 @@ class ListadoIdentificaciones extends React.Component {
                     </thead>
                     <tbody>
                         {
-                            this.props.data.map((item) => {
+                            this.props.data.map((item,i) => {
                                 return (
                                     <tr key={item.identificacion_personaId} id={item.identificacion_personaId}>
-                                        <td>{item.identificacion_personaId}</td>
+                                        <td>{i+1}</td>
                                         <td>{item.cat_tipo_documento.descripcion}</td>
                                         <td>{item.numero_identificacion}</td>
                                         <td>{item.cat_estado.descripcion}</td>
                                         <td>
-                                            <a onClick={this.editContact.bind(this, item)} className="btn btn-info btn-sm"><i className="feather icon-edit" />&nbsp;Editar </a>
-                                            <a href={DEMO.BLANK_LINK} className="btn btn-danger btn-sm"><i className="feather icon-trash-2" />&nbsp;Eliminar </a>
+                                            <a onClick={this.editar.bind(this, item)} className="btn btn-info btn-sm"><i className="feather icon-edit" />&nbsp;Editar </a>
+                                            <a onClick={this.eliminar.bind(this,item)} className="btn btn-danger btn-sm"><i className="feather icon-trash-2" />&nbsp;Eliminar </a>
                                         </td>
                                     </tr>
                                 )
@@ -238,15 +260,12 @@ class ListadoIdentificaciones extends React.Component {
                         <Modal.Title as="h5">Actualizar documento</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <ActualizarDocumento onSubmitUpdate={this.props.handleUpdate}
-                            onErrorSubmit={this.handleErrorSubmit}
+                        <ActualizarDocumento
                             TipoDocto={this.props.TipoDocto}
                             onCloseModal={this.handleCloseModal}
-                            onOpenModal={this.handleOpenModal}
-                            modalIsOpen={this.state.modalIsOpen}
                             Estados={this.props.Estados}
                             Datos={this.state.Datos}
-                            onChangeUpdate={this.props.onChangeUpdate}
+                            actualizarTabla={this.props.actualizarTabla}
                         />
                     </Modal.Body>
                 </Modal>
@@ -265,14 +284,9 @@ class RegistrarIdentificacion extends React.Component {
     };
 
     handleOpenModal = e => {
-        console.log("Abrir modal", e);
         this.setState({ modalIsOpen: true });
     }
 
-    handleOpenModalEdit = (e) => {
-        console.log("e", e);
-        this.setState({ modalIsOpen: true });
-    }
     handleCloseModal = e => {
         this.setState({ modalIsOpen: false });
     }
@@ -282,10 +296,13 @@ class RegistrarIdentificacion extends React.Component {
         this.getIdentificaciones();
         this.getEstados();
     }
+    actualizarTabla=(e)=>{
+        this.getIdentificaciones();
+    }
 
-    handleUpdate = async (e, datosFormulario, inputs) => {
-        e.preventDefault();
-        console.log({datosFormulario});
+    handleGetTodos(e){
+        this.getIdentificaciones();
+        this.setState({ modalIsOpen: false });
     }
 
     getTipoIdentificacion = async () => {
@@ -374,13 +391,6 @@ class RegistrarIdentificacion extends React.Component {
         this.setState({ modalIsOpen: false });
 
     };
-
-    handleErrorSubmit = (e, formData, errorInputs) => {
-        console.log("Errores", errorInputs);
-    };
-    onChangeUpdate=e=>{
-        console.log("Datos formulario",e);
-    }
     render() {
         return (
             <Aux>
@@ -397,7 +407,7 @@ class RegistrarIdentificacion extends React.Component {
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={() => this.setState({ modalIsOpen: true })}><i className="feather icon-plus" /> Agregar documento</Button>
                                     </Col>
                                 </Row>
-                                <ListadoIdentificaciones onChangeUpdate={this.onChangeUpdate} handleUpdate={this.handleUpdate} data={this.state.Identificaciones} OpenModal={this.handleOpenModalEdit} Estados={this.state.Estados} TipoDocto={this.state.TipoDocto}></ListadoIdentificaciones>
+                                <ListadoIdentificaciones data={this.state.Identificaciones} actualizarTabla={this.actualizarTabla} Estados={this.state.Estados} TipoDocto={this.state.TipoDocto}></ListadoIdentificaciones>
                             </Card.Body>
                         </Card>
                         <Modal show={this.state.modalIsOpen} onHide={() => this.setState({ modalIsOpen: false })}>
@@ -406,7 +416,6 @@ class RegistrarIdentificacion extends React.Component {
                             </Modal.Header>
                             <Modal.Body>
                                 <NuevoDocumento onSubmit={this.handleSubmit}
-                                    onErrorSubmit={this.handleErrorSubmit}
                                     TipoDocto={this.state.TipoDocto}
                                     onCloseModal={this.handleCloseModal}
                                     onOpenModal={this.handleOpenModal}
