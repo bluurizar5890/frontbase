@@ -24,8 +24,40 @@ const useDocumentoPersona=(data)=>{
 }
 
 const NuevoDocumento = (props) => {
+
+    const {values,onChangeHandler}=useDocumentoPersona(
+        {
+            personaId: props.personaId,
+            tipo_documentoId:"",
+            numero_identificacion:""
+        }
+    );
+
+    const handleSubmit = async (e, datosFormulario, inputs) => {
+        e.preventDefault();
+        let method = 'POST';
+        let response = await callApi('/persona/identificacion', {
+            method,
+            body: JSON.stringify(values)
+        });
+
+        const { error, body } = response;
+        const { code, data } = body;
+        if (error) {
+            Notificacion.error(body);
+        } else {
+            if (code === 0) {
+                props.getIdentificaciones();
+                Notificacion.success("Documento de identifiación agregado exitosamente");
+            } else {
+                Notificacion.error(data);
+            }
+        }
+    };
+
+
     return (
-        <ValidationForm onSubmit={props.onSubmit}>
+        <ValidationForm onSubmit={handleSubmit}>
             <Form.Row>
                 <Form.Group as={Col} md="12">
                     <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
@@ -33,6 +65,8 @@ const NuevoDocumento = (props) => {
                         name="tipo_documentoId"
                         id="tipo_documentoId"
                         required
+                        value={values.tipo_documentoId}
+                        onChange={onChangeHandler}
                         errorMessage={errorMessage}>
                         <option value="">Seleccione un tipo de identificación</option>
                         {
@@ -51,6 +85,8 @@ const NuevoDocumento = (props) => {
                         name="numero_identificacion"
                         id="numero_identificacion"
                         required
+                        value={values.numero_identificacion}
+                        onChange={onChangeHandler}
                         errorMessage={errorMessage}
                         placeholder="Número de identificación"
                         autoComplete="off"
@@ -341,7 +377,7 @@ class RegistrarIdentificacion extends React.Component {
                 Notificacion.error(data);
             }
         }
-
+        this.setState({ modalIsOpen: false });
     }
     getEstados = async () => {
         let response = await callApi(`/estado`, {
@@ -363,7 +399,7 @@ class RegistrarIdentificacion extends React.Component {
 
     }
 
-
+/*
     handleSubmit = async (e, datosFormulario, inputs) => {
         e.preventDefault();
         console.log("Datos Identificación", datosFormulario);
@@ -381,7 +417,6 @@ class RegistrarIdentificacion extends React.Component {
             Notificacion.error(body);
         } else {
             if (code === 0) {
-                console.log("Data", data);
                 this.getIdentificaciones();
                 Notificacion.success("Documento de identifiación agregado exitosamente");
             } else {
@@ -391,6 +426,7 @@ class RegistrarIdentificacion extends React.Component {
         this.setState({ modalIsOpen: false });
 
     };
+    */
     render() {
         return (
             <Aux>
@@ -415,11 +451,12 @@ class RegistrarIdentificacion extends React.Component {
                                 <Modal.Title as="h5">Nuevo Documento</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <NuevoDocumento onSubmit={this.handleSubmit}
+                                <NuevoDocumento getIdentificaciones={this.getIdentificaciones}
                                     TipoDocto={this.state.TipoDocto}
                                     onCloseModal={this.handleCloseModal}
                                     onOpenModal={this.handleOpenModal}
                                     modalIsOpen={this.state.modalIsOpen}
+                                    personaId={this.props.personaId}
                                 />
                             </Modal.Body>
                         </Modal>
@@ -429,6 +466,187 @@ class RegistrarIdentificacion extends React.Component {
         );
     }
 }
+
+class Identificaciones extends React.Component {
+    state = {
+        TipoDocto: [],
+        Identificaciones: [],
+        modalIsOpen: false,
+        Estados: []
+    };
+
+    handleOpenModal = e => {
+        this.setState({ modalIsOpen: true });
+    }
+
+    handleCloseModal = e => {
+        this.setState({ modalIsOpen: false });
+    }
+
+    componentDidMount() {
+        this.getTipoIdentificacion();
+        this.getIdentificaciones();
+        this.getEstados();
+    }
+    actualizarTabla=(e)=>{
+        this.getIdentificaciones();
+    }
+
+    handleGetTodos(e){
+        this.getIdentificaciones();
+        this.setState({ modalIsOpen: false });
+    }
+
+    getTipoIdentificacion = async () => {
+        let response = await callApi('/tipodocumento?estadoId=1', {
+            method: 'GET'
+        });
+        const { error, body } = response;
+        const { code, data } = body;
+        if (error) {
+            Notificacion.error(body);
+        } else {
+            if (code === 0) {
+                this.setState({
+                    TipoDocto: data
+                });
+            } else {
+                Notificacion.error(data);
+            }
+        }
+
+    }
+    getIdentificaciones = async () => {
+        let response = await callApi(`/persona/identificacion?personaId=${this.props.personaId}&estadoId=1;2`, {
+            method: 'GET'
+        });
+        const { error, body } = response;
+        const { code, data } = body;
+        if (error) {
+            Notificacion.error(body);
+        } else {
+            if (code === 0) {
+                this.setState({
+                    Identificaciones: data
+                });
+            } else {
+                Notificacion.error(data);
+            }
+        }
+        this.setState({ modalIsOpen: false });
+    }
+    getEstados = async () => {
+        let response = await callApi(`/estado`, {
+            method: 'GET'
+        });
+        const { error, body } = response;
+        const { code, data } = body;
+        if (error) {
+            Notificacion.error(body);
+        } else {
+            if (code === 0) {
+                this.setState({
+                    Estados: data
+                });
+            } else {
+                Notificacion.error(data);
+            }
+        }
+
+    }
+
+    editar = (item) => {
+        this.setState({ Datos: item, modalIsOpen: true })
+    }
+    eliminar = (item) => {
+        const MySwal = withReactContent(Swal);
+        MySwal.fire({
+            title: 'Alerta?',
+            text: 'Esta seguro que desea eliminar el elemento',
+            type: 'warning',
+            showCloseButton: true,
+            showCancelButton: true
+        }).then(async(willDelete) => {
+            if (willDelete.value) {
+                let method = 'DELETE';
+                let response = await callApi(`/persona/identificacion/${item.identificacion_personaId}`, {
+                    method
+                });
+        
+                const { error, body } = response;
+                const { code, data } = body;
+                if (error) {
+                    Notificacion.error(body);
+                } else {
+                    if (code === 0) {
+                        Notificacion.success(data);
+                        this.props.actualizarTabla();
+                    } else {
+                        Notificacion.error(data);
+                    }
+                }
+            } else {
+                Notificacion.info('No se eliminó ningun elemento');
+            }
+        });
+
+    }
+    
+    render() {
+        return (
+            <div>
+                <Table ref="tbl" striped hover responsive bordered id="table_dentificaciones_persona">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Tipo</th>
+                            <th>Número</th>
+                            <th>Estado</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            this.props.data.map((item,i) => {
+                                return (
+                                    <tr key={item.identificacion_personaId} id={item.identificacion_personaId}>
+                                        <td>{i+1}</td>
+                                        <td>{item.cat_tipo_documento.descripcion}</td>
+                                        <td>{item.numero_identificacion}</td>
+                                        <td>{item.cat_estado.descripcion}</td>
+                                        <td>
+                                            <a onClick={this.editar.bind(this, item)} className="btn btn-info btn-sm"><i className="feather icon-edit" />&nbsp;Editar </a>
+                                            <a onClick={this.eliminar.bind(this,item)} className="btn btn-danger btn-sm"><i className="feather icon-trash-2" />&nbsp;Eliminar </a>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+
+                    </tbody>
+                </Table>
+
+                <Modal show={this.state.modalIsOpen} onHide={() => this.setState({ modalIsOpen: false })}>
+                    <Modal.Header closeButton>
+                        <Modal.Title as="h5">Actualizar documento</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ActualizarDocumento
+                            TipoDocto={this.props.TipoDocto}
+                            onCloseModal={this.handleCloseModal}
+                            Estados={this.props.Estados}
+                            Datos={this.state.Datos}
+                            actualizarTabla={this.props.actualizarTabla}
+                        />
+                    </Modal.Body>
+                </Modal>
+
+            </div>
+        );
+    }
+}
+
+
 
 
 
