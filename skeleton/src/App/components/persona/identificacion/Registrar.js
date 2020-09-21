@@ -3,13 +3,13 @@
 import React from 'react';
 import { Row, Col, Card, Form, Modal, Button, Table } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
-import callApi from '../../../service/conectorApi';
 import Notificacion from '../../../service/alerts';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import Aux from "./../../../../hoc/_Aux";
 import { useState } from 'react';
+import callApi from '../../../../helpers/conectorApi';
 
 const errorMessage = "Este campo es requerido";
 const useDocumentoPersona=(data)=>{
@@ -39,7 +39,7 @@ const NuevoDocumento = (props) => {
         let response = await callApi('/persona/identificacion', {
             method,
             body: JSON.stringify(values)
-        });
+        },0);
 
         const { error, body } = response;
         const { code, data } = body;
@@ -344,7 +344,7 @@ class RegistrarIdentificacion extends React.Component {
     getTipoIdentificacion = async () => {
         let response = await callApi('/tipodocumento?estadoId=1', {
             method: 'GET'
-        });
+        },0);
         const { error, body } = response;
         const { code, data } = body;
         if (error) {
@@ -363,7 +363,7 @@ class RegistrarIdentificacion extends React.Component {
     getIdentificaciones = async () => {
         let response = await callApi(`/persona/identificacion?personaId=${this.props.personaId}&estadoId=1;2`, {
             method: 'GET'
-        });
+        },0);
         const { error, body } = response;
         const { code, data } = body;
         if (error) {
@@ -382,7 +382,7 @@ class RegistrarIdentificacion extends React.Component {
     getEstados = async () => {
         let response = await callApi(`/estado`, {
             method: 'GET'
-        });
+        },0);
         const { error, body } = response;
         const { code, data } = body;
         if (error) {

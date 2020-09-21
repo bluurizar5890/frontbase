@@ -5,11 +5,9 @@ import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-va
 import validator from 'validator';
 import { useForm } from '../../hooks/useForm';
 import moment from 'moment';
-import Datetime from 'react-datetime';
-import { useFetch } from '../../hooks/useFetch';
-import callApi from '../../service/conectorApi';
-import Notificacion from '../../../App/service/alerts';
-export const PersonaRegistrar = (props) => {
+import callApi from '../../../helpers/conectorApi';
+import { alert_exitoso,alert_warning } from '../../../helpers/Notificacion';
+export const PersonaRegistrar = ({ handleSetIdPersona }) => {
 
     const [persona, handleOnChange, , setFecha] = useForm({
         nombre1: '',
@@ -22,45 +20,35 @@ export const PersonaRegistrar = (props) => {
         email: '',
         generoId: ''
     });
-    //const { data, loading, error } = useFetch("persona", persona, "POST");
-    //console.log(data);
-    const handleOnSubmit =async (e) => {
+    const [edit, setEdit] = useState(true);
+    const [fNacimiento, setfNacimiento] = useState('')
+    const handleOnSubmit = async (e) => {
         e.preventDefault();
-        let response = await callApi('/persona', {
+        let response = await callApi('persona', {
             method: 'POST',
             body: JSON.stringify(persona)
         });
 
-        const { error, body } = response;
-        const { code, data } = body;
-        if (error) {
-            Notificacion.error(body);
-        } else {
-            if (code === 0) {
-                // this.setState({
-                //     persona: {
-                //         personaId: data.personaId
-                //     }
-                // });
-                Notificacion.success("Persona registrada exitosamente");
-            } else {
-                Notification.error(data);
-            }
+        if (response) {
+            alert_exitoso("Persona registrada exitosamente");
+            const { personaId } = response;
+            handleSetIdPersona(personaId);
+            setEdit(false);
         }
-
-        props.handleSetIdPersona("Soy el id");
     }
 
     const handleErrorSubmit = (e, formData, errorInputs) => {
-        console.log(errorInputs);
+            alert_warning("Por favor complete toda la información solicitada por el formulario");        
     };
 
     const handleSetFecha = (fecha) => {
-        const fechaFormat = moment(fecha).format('DD/MM/YYYY');
+        const fechaFormat = moment(fecha).format('YYYY/MM/DD');
         setFecha("fecha_nacimiento", fechaFormat);
+        setfNacimiento(fecha);
     }
 
     const errorMessage = "Campo obligatorio";
+    const textTransform='capitalize';
     return (
         <Card>
             <Card.Header>
@@ -79,6 +67,8 @@ export const PersonaRegistrar = (props) => {
                                 required value={persona.nombre1}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -90,6 +80,8 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.nombre2}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -101,6 +93,8 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.nombre_otros}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -114,6 +108,8 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.apellido1}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -125,6 +121,8 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.apellido2}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -136,37 +134,30 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.apellido_casada}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
 
                         <Form.Group as={Col} md="6">
-
                             <Form.Label htmlFor="fecha_nacimiento">Fecha de Nacimiento</Form.Label>
-                            {/* <Datetime 
-                                timeFormat={false} 
-                                inputProps={{placeholder: 'Por favor seleccione una fecha'}} 
-                                value={persona.fecha_nacimiento} 
-                                onChange={handleSetFecha} 
-
-                                /> */}
                             <div className="form-group">
                                 <DatePicker
                                     id="fecha_nacimiento"
                                     name="fecha_nacimiento"
                                     dateFormat="dd/MM/yyyy"
-                                    value={persona.fecha_nacimiento}
+                                    selected={fNacimiento}
                                     onChange={handleSetFecha}
                                     required
-                                    errorMessage={props.errorMessage}
+                                    errorMessage={errorMessage}
                                     className="form-control"
-                                    placeholderText="Fecha de nacimiento"
+                                    placeholderText="dd/MM/yyyy"
                                     autoComplete="off"
-                                    minDate={new Date()}
-
+                                    maxDate={new Date()}
+                                    readOnly={!edit}
                                 />
                             </div>
                         </Form.Group>
-
 
                         <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="email">Correo Electrónico</Form.Label>
@@ -181,6 +172,8 @@ export const PersonaRegistrar = (props) => {
                                 value={persona.email}
                                 onChange={handleOnChange}
                                 autoComplete="off"
+                                readOnly={!edit}
+                                style={{textTransform: 'lowercase'}}
                             />
                         </Form.Group>
 
@@ -190,6 +183,7 @@ export const PersonaRegistrar = (props) => {
                                 name="generoId"
                                 id="generoId"
                                 value={persona.generoId}
+                                disabled={!edit}
                                 required
                                 errorMessage={errorMessage}
                                 onChange={handleOnChange}>
@@ -200,7 +194,7 @@ export const PersonaRegistrar = (props) => {
                         </Form.Group>
 
                         <Form.Group as={Col} sm={12} className="mt-3">
-                            <Button type="submit">Registrar</Button>
+                            <Button type="submit" disabled={!edit}>Registrar</Button>
                         </Form.Group>
                     </Form.Row>
                 </ValidationForm>

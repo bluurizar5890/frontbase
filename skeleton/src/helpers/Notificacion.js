@@ -1,5 +1,5 @@
 import PNotify from "pnotify/dist/es/PNotify";
-const success = (mensaje) => {
+export const alert_exitoso = (mensaje) => {
     const notice = PNotify.success({
         title: 'Información!',
         text: mensaje,
@@ -17,8 +17,26 @@ const success = (mensaje) => {
     });
 }
 
-const error = (mensaje) => {
+export const alert_error = (mensaje) => {
     const notice = PNotify.error({
+        title: 'Error!',
+        text: mensaje,
+        hide: true,
+        icon: true,
+        modules: {
+            Buttons: {
+                closer: true,
+                sticker: true
+            }
+        }
+    });
+    notice.on('click', function () {
+        notice.close();
+    });
+}
+
+export const alert_info = (mensaje) => {
+    const notice = PNotify.info({
         title: 'Información!',
         text: mensaje,
         hide: true,
@@ -35,9 +53,9 @@ const error = (mensaje) => {
     });
 }
 
-const info = (mensaje) => {
-    const notice = PNotify.warwin({
-        title: 'Información!',
+export const alert_warning = (mensaje) => {
+    const notice = PNotify.notice({
+        title: 'Advertencia!',
         text: mensaje,
         hide: true,
         icon: true,
@@ -53,6 +71,3 @@ const info = (mensaje) => {
     });
 }
 
-
-
-export default { success, error, info }

@@ -4,8 +4,9 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
 import validator from 'validator';
-import callApi from '../../../service/conectorApi';
+// import callApi from '../../../service/conectorApi';
 import Notificacion from '../../../service/alerts';
+import callApi from '../../../../helpers/conectorApi';
 
 class RegistrarDireccion extends React.Component {
     state = {
@@ -18,7 +19,7 @@ class RegistrarDireccion extends React.Component {
     getDepartamentos = async () => {
         let response = await callApi('/departamento?estadoId=1', {
             method: 'GET'
-        });
+        },0);
         const { error, body } = response;
         const { code, data } = body;
         if (error) {
@@ -37,7 +38,7 @@ class RegistrarDireccion extends React.Component {
         let departamentoId = event.value;
         let response = await callApi(`/municipio?estadoId=1&departamentoId=${departamentoId}`, {
             method: 'GET'
-        });
+        },0);
         const { error, body } = response;
         const { code, data } = body;
         if (error) {

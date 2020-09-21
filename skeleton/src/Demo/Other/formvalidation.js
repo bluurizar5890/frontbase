@@ -12,9 +12,10 @@ import TabsPills from '../../App/components/persona/direccion';
 import RegistrarIdentificacion from '../../App/components/persona/identificacion/Registrar';
 import RegistrarDireccion from '../../App/components/persona/direccion/Registrar';
 
-import callApi from '../../App/service/conectorApi';
+//import callApi from '../../App/service/conectorApi';
 import Notificacion from '../../App/service/alerts';
 import DocumentoIden from '../../App/components/persona/DoctomentoIdentificacion';
+import callApi from '../../helpers/conectorApi';
 
 
 // class MaskWithValidation extends BaseFormControl {
@@ -88,7 +89,7 @@ class FormsValidation extends React.Component {
         let response = await callApi('/persona', {
             method: 'POST',
             body: JSON.stringify(this.state.persona)
-        });
+        },0);
 
         const { error, body } = response;
         const { code, data } = body;

@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
+import { Row, Col, Card, Tab, Nav } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux'
 import { PersonaRegistrar } from '../components/base/PersonaRegistrar'
-import { Row, Col, Card, Tab, Nav } from 'react-bootstrap';
+import { IdentificacionListar } from '../components/base/IdentificacionListar';
 const PersonaPage = () => {
-    const [idPersona, setIdPersona] = useState(0);
+    const [personaId, setPersonaId] = useState(1);
 
     const handleSetIdPersona = (id) => {
-        console.log(id);
-        setIdPersona(id);
+        setPersonaId(id);
     }
 
     return (
@@ -27,13 +27,13 @@ const PersonaPage = () => {
                                                 <Nav.Link eventKey="persona">Persona</Nav.Link>
                                             </Nav.Item>
                                             <Nav.Item>
-                                                <Nav.Link eventKey="identificaciones" disabled={idPersona <= 0 ? true : false}>Identificaciones</Nav.Link>
+                                                <Nav.Link eventKey="identificaciones" disabled={personaId <= 0 ? true : false}>Identificaciones</Nav.Link>
                                             </Nav.Item>
                                             <Nav.Item>
-                                                <Nav.Link eventKey="direcciones" disabled={idPersona <= 0 ? true : false}>Direcciones</Nav.Link>
+                                                <Nav.Link eventKey="direcciones" disabled={personaId <= 0 ? true : false}>Direcciones</Nav.Link>
                                             </Nav.Item>
                                             <Nav.Item>
-                                                <Nav.Link eventKey="telefonos" disabled={idPersona <= 0 ? true : false}>Teléfonos</Nav.Link>
+                                                <Nav.Link eventKey="telefonos" disabled={personaId <= 0 ? true : false}>Teléfonos</Nav.Link>
                                             </Nav.Item>
                                         </Nav>
                                     </Col>
@@ -41,16 +41,9 @@ const PersonaPage = () => {
                                         <Tab.Content>
                                             <Tab.Pane eventKey="persona">
                                                 <PersonaRegistrar handleSetIdPersona={handleSetIdPersona} />
-                                                {/* <RegistrarPersona/> */}
-                                                {/* <RegistrarPersona
-                                                        onChange={this.handleChange}
-                                                        persona={this.state.persona}
-                                                        onSubmit={this.handleSubmitPerson}
-                                                        onError={this.handleErrorSubmit}
-                                                        errorMessage={errorMessage}
-                                                    /> */}
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="identificaciones">
+                                                <IdentificacionListar personaId={personaId}/>
                                                 {/* <DocumentoIden onSubmit={this.handleSubmitPerson}
                                                         onError={this.handleErrorSubmit} 
                                                         open={true}/> */}

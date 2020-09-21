@@ -12,8 +12,9 @@ import {
 
 
 
-import callApi from '../../service/conectorApi';
+
 import Notificacion from '../../service/alerts';
+import callApi from '../../../helpers/conectorApi';
 function useTipoDocumento(){
     const [TipoDocumentos,setTipoDocumentos]=useState([]);
     useEffect(()=>{
