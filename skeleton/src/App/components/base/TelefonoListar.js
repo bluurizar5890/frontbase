@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import Aux from '../../../hoc/_Aux';
 import callApi from '../../../helpers/conectorApi';
+import Aux from '../../../hoc/_Aux';
+import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-import { DireccionUpSert } from './DireccionUpSert';
-const accesos = [1,2,3,4];
-export const DireccionListar = ({ personaId }) => {
+import { TelefonoUpSert } from './TelefonoUpSert';
+const accesos = [1, 2, 3, 4];
+export const TelefonoListar = ({ personaId }) => {
     const [abrirModal, setAbrirModal] = useState(false);
-    const [catDepartamento, setCatDepartamento] = useState([]);
-    const [direcciones, setDirecciones] = useState([]);
+    const [catTipoTelefono, setCatTipoTelefono] = useState([]);
+    const [telefonos, setTelefonos] = useState([]);
     const initData = {
         personaId,
-        municipioId: '',
-        direccion: '',
-        punto_referencia:'',
+        tipo_telefonoId: '',
+        telefono: '',
         estadoId: 1
     };
     const [dataInicial, setdataInicial] = useState(initData);
@@ -23,22 +22,20 @@ export const DireccionListar = ({ personaId }) => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
-    const GetDepartamentos = async () => {
-        let response = await callApi('departamento?estadoId=1');
-        setCatDepartamento(response);
+    const GetTipoTelefono = async () => {
+        let response = await callApi('tipotelefono?estadoId=1');
+        setCatTipoTelefono(response);
     }
-    const GetDirecciones = async (id) => {
-        let response = await callApi(`persona/direccion?personaId=${id}&estadoId=1;2`);
-        setDirecciones(response);
+    const GetTelefonos = async (id) => {
+        let response = await callApi(`persona/telefono?personaId=${id}&estadoId=1;2`);
+        setTelefonos(response);
     }
     const handleEditar = (id) => {
-        const { direccion_personaId, municipioId, direccion,punto_referencia, estadoId, cat_municipio: {cat_departamento: {departamentoId} }} = direcciones.find(item => item.direccion_personaId === id);
+        const { telefono_personaId, tipo_telefonoId, telefono, estadoId } = telefonos.find(item => item.telefono_personaId === id);
         setdataInicial({
-            direccion_personaId,
-            municipioId,
-            direccion,
-            punto_referencia,
-            departamentoId,
+            telefono_personaId,
+            tipo_telefonoId,
+            telefono,
             estadoId
         });
         setAbrirModal(true);
@@ -54,12 +51,12 @@ export const DireccionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/direccion/${id}&estadoId=1;2`, {
+                let response = await callApi(`persona/telefono/${id}`, {
                     method
                 });
                 if (response) {
                     alert_exitoso(response);
-                    GetDirecciones(personaId);
+                    GetTelefonos(personaId);
                 }
             } else {
                 alert_warning('No se eliminó ningun elemento');
@@ -67,8 +64,8 @@ export const DireccionListar = ({ personaId }) => {
         });
     }
     useEffect(() => {
-        GetDepartamentos();
-        GetDirecciones(personaId);
+        GetTipoTelefono();
+        GetTelefonos(personaId);
     }, [personaId]);
     return (
         <Aux>
@@ -76,7 +73,7 @@ export const DireccionListar = ({ personaId }) => {
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Direcciones</Card.Title>
+                            <Card.Title as="h5">Documentos de identificación</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
@@ -84,7 +81,7 @@ export const DireccionListar = ({ personaId }) => {
                                 <Col className="text-right">
                                     {
                                         accesos.find(acceso => acceso === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar dirección</Button>
+                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar teléfono</Button>
                                     }
                                 </Col>
                             </Row>
@@ -94,10 +91,8 @@ export const DireccionListar = ({ personaId }) => {
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Departamento</th>
-                                            <th>Municipio</th>
-                                            <th>Direccion</th>
-                                            <th>Punto de Referencia</th>
+                                            <th>Tipo</th>
+                                            <th>Número</th>
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -107,24 +102,22 @@ export const DireccionListar = ({ personaId }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            direcciones.map(({ direccion_personaId,direccion,punto_referencia, cat_municipio: { descripcion:municipio,cat_departamento: {descripcion:departamento} }, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={direccion_personaId}>
-                                                    <td>{direccion_personaId}</td>
-                                                    <td>{departamento}</td>
-                                                    <td>{municipio}</td>
-                                                    <td>{direccion}</td>
-                                                    <td>{punto_referencia}</td>
+                                            telefonos.map(({ telefono_personaId, cat_tipo_telefono: { descripcion: tipoTelefono }, telefono, cat_estado: { descripcion: estado } }) => (
+                                                <tr key={telefono_personaId}>
+                                                    <td>{telefono_personaId}</td>
+                                                    <td>{tipoTelefono}</td>
+                                                    <td>{telefono}</td>
                                                     <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "right", width: "100px" }}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(direccion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
+                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(telefono_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(direccion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
+                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(telefono_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
                                                             }
                                                         </td>
                                                     }
@@ -136,7 +129,7 @@ export const DireccionListar = ({ personaId }) => {
                             }
                             {
                                 abrirModal === true &&
-                                <DireccionUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catDepartamento={catDepartamento} personaId={personaId} GetDirecciones={GetDirecciones} dataInicial={dataInicial} />
+                                <TelefonoUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catTipoTelefono={catTipoTelefono} personaId={personaId} GetTelefonos={GetTelefonos} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>

@@ -4,12 +4,18 @@ import Aux from '../../hoc/_Aux'
 import { PersonaRegistrar } from '../components/base/PersonaRegistrar'
 import { IdentificacionListar } from '../components/base/IdentificacionListar';
 import { DireccionListar } from '../components/base/DireccionListar';
+import { TelefonoListar } from '../components/base/TelefonoListar';
+import { DatoExtraListar } from '../components/base/DatoExtraListar';
+import { PersonaListar } from '../components/base/PersonaListar';
+const menus = [13, 14, 15,16];
 const PersonaPage = () => {
-    const [personaId, setPersonaId] = useState(1);
-
+    const [personaId, setPersonaId] = useState(0);
     const handleSetIdPersona = (id) => {
         setPersonaId(id);
     }
+    return(
+    <PersonaListar/>
+    )
 
     return (
         <Aux>
@@ -27,15 +33,28 @@ const PersonaPage = () => {
                                             <Nav.Item>
                                                 <Nav.Link eventKey="persona">Persona</Nav.Link>
                                             </Nav.Item>
-                                            <Nav.Item>
-                                                <Nav.Link eventKey="identificaciones" disabled={personaId <= 0 ? true : false}>Identificaciones</Nav.Link>
-                                            </Nav.Item>
-                                            <Nav.Item>
-                                                <Nav.Link eventKey="direcciones" disabled={personaId <= 0 ? true : false}>Direcciones</Nav.Link>
-                                            </Nav.Item>
-                                            <Nav.Item>
-                                                <Nav.Link eventKey="telefonos" disabled={personaId <= 0 ? true : false}>Teléfonos</Nav.Link>
-                                            </Nav.Item>
+                                            {
+                                                menus.find(item => item === 13) &&
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="identificaciones" disabled={personaId <= 0 ? true : false}>Identificaciones</Nav.Link>
+                                                </Nav.Item>}
+                                            {
+                                                menus.find(item => item === 14) &&
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="direcciones" disabled={personaId <= 0 ? true : false}>Direcciones</Nav.Link>
+                                                </Nav.Item>}
+                                            {
+                                                menus.find(item => item === 15) &&
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="telefonos" disabled={personaId <= 0 ? true : false}>Teléfonos</Nav.Link>
+                                                </Nav.Item>
+                                            }
+                                            {
+                                                menus.find(item => item === 16) &&
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="datosExtra" disabled={personaId <= 0 ? true : false}>Información Adicional</Nav.Link>
+                                                </Nav.Item>
+                                            }
                                         </Nav>
                                     </Col>
                                     <Col sm={10}>
@@ -44,14 +63,17 @@ const PersonaPage = () => {
                                                 <PersonaRegistrar handleSetIdPersona={handleSetIdPersona} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="identificaciones">
-                                                <IdentificacionListar personaId={personaId}/>
+                                                <IdentificacionListar personaId={personaId} />
 
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="direcciones">
-                                               <DireccionListar personaId={personaId}/>
+                                                <DireccionListar personaId={personaId} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="telefonos">
-                                                {/* <TabsPills></TabsPills> */}
+                                                <TelefonoListar personaId={personaId} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey="datosExtra">
+                                                <DatoExtraListar personaId={personaId} />
                                             </Tab.Pane>
                                         </Tab.Content>
                                     </Col>

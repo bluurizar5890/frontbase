@@ -15,10 +15,10 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
-                    id: 'Formulario',
-                    title: 'Formulario de Prueba',
+                    id: 'persona',
+                    title: 'Persona',
                     type: 'item',
-                    url: '/formulario',
+                    url: '/persona',
                     classes: 'nav-item',
                     icon: 'feather icon-sidebar'
                 },

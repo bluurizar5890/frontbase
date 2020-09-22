@@ -1,38 +1,38 @@
 import React from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
-import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
+import { ValidationForm,  SelectGroup } from 'react-bootstrap4-form-validation';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
-export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirModal, catTipoDocumento, GetIdentificaciones }) => {
-    const [documento, handleOnChange] = useForm(dataInicial);
+export const DatoExtraUpSert = ({ dataInicial, personaId, abrirModal, setAbrirModal, catTipoSangre,catEstadoCivil, GetDatoExtra }) => {
+    const [datoExtra, handleOnChange] = useForm(dataInicial);
     const NuevoRegistro = async () => {
-        let response = await callApi('persona/identificacion', {
+        let response = await callApi('persona/datoextra', {
             method: 'POST',
-            body: JSON.stringify(documento)
+            body: JSON.stringify(datoExtra)
         });
 
         if (response) {
-            alert_exitoso("Documento de identificación registrado exitosamente");
-            GetIdentificaciones(personaId);
+            alert_exitoso("Información adicional registrada exitosamente");
+            GetDatoExtra(personaId);
             setAbrirModal(false);
         }
     }
     const ActualizarRegistro = async () => {
-        let response = await callApi('persona/identificacion', {
+        let response = await callApi('persona/datoextra', {
             method: 'PUT',
-            body: JSON.stringify(documento)
+            body: JSON.stringify(datoExtra)
         });
 
         if (response) {
             alert_exitoso(response);
-            GetIdentificaciones(personaId);
+            GetDatoExtra(personaId);
         }
         setAbrirModal(false);
     }
     const handleOnSubmit = async (e) => {
         e.preventDefault();
-        if (dataInicial.identificacion_personaId > 0) {
+        if (dataInicial.dato_extra_personaId > 0) {
             await ActualizarRegistro();
         } else {
             await NuevoRegistro();
@@ -46,24 +46,24 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
     return (
         <Modal show={abrirModal} onHide={() => setAbrirModal(false)}>
             <Modal.Header closeButton>
-                <Modal.Title as="h5">{dataInicial.identificacion_personaId > 0 ? 'Actualizar documento' : 'Nuevo Documento'}</Modal.Title>
+                <Modal.Title as="h5">{dataInicial.dato_extra_personaId > 0 ? 'Actualizar información adicional' : 'Registrar información adicional'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
                     <Form.Row>
                         <Form.Group as={Col} md="12">
-                            <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
+                            <Form.Label htmlFor="tipo_sangreId">Tipo sangre</Form.Label>
                             <SelectGroup
-                                name="tipo_documentoId"
-                                id="tipo_documentoId"
-                                required
-                                value={documento.tipo_documentoId}
+                                name="tipo_sangreId"
+                                id="tipo_sangreId"
+                                value={datoExtra.tipo_sangreId}
                                 onChange={handleOnChange}
+                                required
                                 errorMessage={errorMessage}>
-                                <option value="">Seleccione un tipo de identificación</option>
+                                <option value="">Seleccione un tipo de sangre</option>
                                 {
-                                    catTipoDocumento.map(({ tipo_documentoId, descripcion }) => (
-                                        <option value={tipo_documentoId} key={tipo_documentoId}>{descripcion}</option>
+                                    catTipoSangre.map(({ tipo_sangreId, descripcion }) => (
+                                        <option value={tipo_sangreId} key={tipo_sangreId}>{descripcion}</option>
                                     )
                                     )
                                 }
@@ -71,28 +71,32 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
                         </Form.Group>
 
                         <Form.Group as={Col} md="12">
-                            <Form.Label htmlFor="numero_identificacion">Número de Identificación</Form.Label>
-                            <TextInput
-                                name="numero_identificacion"
-                                id="numero_identificacion"
-                                required
-                                value={documento.numero_identificacion}
+                            <Form.Label htmlFor="estado_civilId">Estado civil</Form.Label>
+                            <SelectGroup
+                                name="estado_civilId"
+                                id="estado_civilId"
+                                value={datoExtra.estado_civilId}
                                 onChange={handleOnChange}
-                                errorMessage={errorMessage}
-                                minLength={documento.tipo_documentoId==="1"?"13":"0"}
-                                placeholder="Número de identificación"
-                                autoComplete="off"
-                                type="number"
-                            />
+                                required
+                                errorMessage={errorMessage}>
+                                <option value="">Seleccione un estado civil</option>
+                                {
+                                    catEstadoCivil.map(({ estado_civilId, descripcion }) => (
+                                        <option value={estado_civilId} key={estado_civilId}>{descripcion}</option>
+                                    )
+                                    )
+                                }
+                            </SelectGroup>
                         </Form.Group>
+                       
                         {
-                            dataInicial.identificacion_personaId > 0 &&
+                            dataInicial.dato_extra_personaId > 0 &&
                             <Form.Group as={Col} md="12">
                                 <Form.Label htmlFor="estadoId">Estado</Form.Label>
                                 <SelectGroup
                                     name="estadoId"
                                     id="estadoId"
-                                    value={documento.estadoId}
+                                    value={datoExtra.estadoId}
                                     required
                                     errorMessage={errorMessage}
                                     onChange={handleOnChange}>
@@ -107,7 +111,7 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
                             <button type="button" onClick={() => { setAbrirModal(false) }} className="btn btn-warning"> Cancelar</button>
                         </div>
                         <div className="col-sm-3">
-                            <button type="submit" className="btn btn-success"> {dataInicial.identificacion_personaId > 0 ? 'Actualizar' : 'Registrar'}</button>
+                            <button type="submit" className="btn btn-success"> {dataInicial.dato_extra_personaId > 0 ? 'Actualizar' : 'Registrar'}</button>
                         </div>
                     </Form.Row>
                 </ValidationForm>

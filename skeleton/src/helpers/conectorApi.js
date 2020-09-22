@@ -1,6 +1,6 @@
 import { alert_exitoso, alert_error, alert_info, alert_warning } from './Notificacion';
 const BASE_URL = "http://127.0.0.1:3000/api/";
-const callApi = async (endpoint, options = {}, manejarRespuesta = 1) => {
+const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
     try {
         options.headers = {
             'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzdWFyaW9JZCI6MX0sImlhdCI6MTU5ODY0NTkwOH0.D3CbE9CdG_kjliv8F3jjSf4dnNy0BvpqPntYhbfHVXI`,
@@ -14,7 +14,7 @@ const callApi = async (endpoint, options = {}, manejarRespuesta = 1) => {
         const response = await fetch(url, options);
         const result = await response.json();
 
-        if (manejarRespuesta === 1) {
+        if (manejarRespuesta === 0) {
             if (result) {
                 const { error, status, body } = result;
                 if (error === true) {

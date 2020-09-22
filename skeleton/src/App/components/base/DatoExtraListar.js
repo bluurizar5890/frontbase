@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import Aux from '../../../hoc/_Aux';
 import callApi from '../../../helpers/conectorApi';
+import Aux from '../../../hoc/_Aux';
+import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-import { DireccionUpSert } from './DireccionUpSert';
+import { DatoExtraUpSert } from './DatoExtraUpSert';
 const accesos = [1,2,3,4];
-export const DireccionListar = ({ personaId }) => {
+export const DatoExtraListar = ({ personaId }) => {
     const [abrirModal, setAbrirModal] = useState(false);
-    const [catDepartamento, setCatDepartamento] = useState([]);
-    const [direcciones, setDirecciones] = useState([]);
+    const [catTipoSangre, setTipoSangre] = useState([]);
+    const [catEstadoCivil, setCatEstadoCivil] = useState([]);
+    const [datoExtra, setDatoExtra] = useState([]);
     const initData = {
         personaId,
-        municipioId: '',
-        direccion: '',
-        punto_referencia:'',
+        tipo_sangreId: '',
+        estado_civilId: '',
         estadoId: 1
     };
     const [dataInicial, setdataInicial] = useState(initData);
@@ -23,22 +23,24 @@ export const DireccionListar = ({ personaId }) => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
-    const GetDepartamentos = async () => {
-        let response = await callApi('departamento?estadoId=1');
-        setCatDepartamento(response);
+    const GetTipoSangre = async () => {
+        let response = await callApi('tiposangre?estadoId=1');
+        setTipoSangre(response);
     }
-    const GetDirecciones = async (id) => {
-        let response = await callApi(`persona/direccion?personaId=${id}&estadoId=1;2`);
-        setDirecciones(response);
+    const GetEstadoCivil = async () => {
+        let response = await callApi('estadocivil?estadoId=1');
+        setCatEstadoCivil(response);
+    }
+    const GetDatoExtra = async (id) => {
+        let response = await callApi(`persona/datoextra?personaId=${id}&estadoId=1;2`);
+        setDatoExtra(response);
     }
     const handleEditar = (id) => {
-        const { direccion_personaId, municipioId, direccion,punto_referencia, estadoId, cat_municipio: {cat_departamento: {departamentoId} }} = direcciones.find(item => item.direccion_personaId === id);
+        const {dato_extra_personaId,tipo_sangreId,estado_civilId,estadoId}= datoExtra.find(item => item.dato_extra_personaId === id);
         setdataInicial({
-            direccion_personaId,
-            municipioId,
-            direccion,
-            punto_referencia,
-            departamentoId,
+            dato_extra_personaId,
+            tipo_sangreId,
+            estado_civilId,
             estadoId
         });
         setAbrirModal(true);
@@ -54,12 +56,12 @@ export const DireccionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/direccion/${id}&estadoId=1;2`, {
+                let response = await callApi(`persona/datoextra/${id}`, {
                     method
                 });
                 if (response) {
                     alert_exitoso(response);
-                    GetDirecciones(personaId);
+                    GetDatoExtra(personaId);
                 }
             } else {
                 alert_warning('No se eliminó ningun elemento');
@@ -67,8 +69,9 @@ export const DireccionListar = ({ personaId }) => {
         });
     }
     useEffect(() => {
-        GetDepartamentos();
-        GetDirecciones(personaId);
+        GetTipoSangre();
+        GetEstadoCivil();
+        GetDatoExtra(personaId);
     }, [personaId]);
     return (
         <Aux>
@@ -76,15 +79,15 @@ export const DireccionListar = ({ personaId }) => {
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Direcciones</Card.Title>
+                            <Card.Title as="h5">Información adicional</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar dirección</Button>
+                                        (accesos.find(acceso => acceso === 1) && datoExtra.length<=0)&&
+                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Información adicional</Button>
                                     }
                                 </Col>
                             </Row>
@@ -94,10 +97,8 @@ export const DireccionListar = ({ personaId }) => {
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Departamento</th>
-                                            <th>Municipio</th>
-                                            <th>Direccion</th>
-                                            <th>Punto de Referencia</th>
+                                            <th>Tipo de Sangre</th>
+                                            <th>Estado Civil</th>
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -107,36 +108,39 @@ export const DireccionListar = ({ personaId }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            direcciones.map(({ direccion_personaId,direccion,punto_referencia, cat_municipio: { descripcion:municipio,cat_departamento: {descripcion:departamento} }, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={direccion_personaId}>
-                                                    <td>{direccion_personaId}</td>
-                                                    <td>{departamento}</td>
-                                                    <td>{municipio}</td>
-                                                    <td>{direccion}</td>
-                                                    <td>{punto_referencia}</td>
+                                            datoExtra.map((item) => {
+                                                const{ dato_extra_personaId, cat_tipo_sangre,cat_estado_civil,cat_estado: { descripcion: estado } }=item;
+                                                const {descripcion:tipoSangre}=!!cat_tipo_sangre && cat_tipo_sangre;
+                                                const {descripcion:estadoCivil}=!!cat_estado_civil && cat_estado_civil;
+                                                return(
+                                                <tr key={dato_extra_personaId}>
+                                                    <td>{dato_extra_personaId}</td>
+                                                    <td>{tipoSangre}</td>
+                                                    <td>{estadoCivil}</td>
                                                     <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "right", width: "100px" }}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(direccion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
+                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(dato_extra_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(direccion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
+                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(dato_extra_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
                                                             }
                                                         </td>
                                                     }
                                                 </tr>
-                                            ))
+                                                )
+                                            })
                                         }
                                     </tbody>
                                 </Table>
                             }
                             {
                                 abrirModal === true &&
-                                <DireccionUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catDepartamento={catDepartamento} personaId={personaId} GetDirecciones={GetDirecciones} dataInicial={dataInicial} />
+                                <DatoExtraUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catTipoSangre={catTipoSangre} catEstadoCivil={catEstadoCivil} personaId={personaId} GetDatoExtra={GetDatoExtra} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>

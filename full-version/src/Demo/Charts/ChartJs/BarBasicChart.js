@@ -1,8 +1,7 @@
 import React from 'react';
-import {Bar} from 'react-chartjs-2';
-
+import { Bar } from 'react-chartjs-2';
+import { Exportar } from '../../../helpers/Exportar';
 class BarBasicChart extends React.Component {
-
     render() {
         const data = (canvas) => {
             let bar = canvas.getContext('2d');
@@ -15,6 +14,7 @@ class BarBasicChart extends React.Component {
 
             return {
                 labels: [0, 1, 2, 3],
+                title: "Prueba",
                 datasets: [{
                     label: "Data 1",
                     data: [25, 45, 74, 85],
@@ -34,12 +34,20 @@ class BarBasicChart extends React.Component {
         };
 
         return (
-            <Bar
-                data={data}
-                options={{
-                    barValueSpacing: 20
-                }}
-            />
+            <>
+                <Exportar id={"graficasLineas"} nombre="Grafica de prueba" />
+                <Bar id="graficasLineas"
+                    data={data}
+                    options={{
+                        barValueSpacing: 20,
+                        title: {
+                            display: true,
+                            text: 'Titulo de la gráfica',
+                            fontSize:24
+                        }
+                    }}
+                />
+            </>
         );
     }
 }

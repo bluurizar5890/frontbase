@@ -9,9 +9,7 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
     const [departamentoId, setDepartamentoId] = useState('');
     const [catMunicipio, setCatMunicipio] = useState([]);
 
-    if (dataInicial.departamentoId) {
-        setDepartamentoId(dataInicial.departamentoId);
-    }
+
     const onchangeDepartamento = ({ target }) => {
         setDepartamentoId(target.value)
     }
@@ -39,6 +37,11 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
         }
         setAbrirModal(false);
     }
+    useEffect(() => {
+        if (dataInicial.departamentoId) {
+            setDepartamentoId(dataInicial.departamentoId);
+        }
+    }, [dataInicial.departamentoId])
     const handleOnSubmit = async (e) => {
         e.preventDefault();
         if (dataInicial.direccion_personaId > 0) {
@@ -50,18 +53,17 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete toda la información solicitada por el formulario");
     };
-
     const GetMunicipio = async (id) => {
         if (id > 0) {
             let response = await callApi(`municipio?departamentoId=${id}&estadoId=1`);
             setCatMunicipio(response);
         }
     }
-
     useEffect(() => {
         GetMunicipio(departamentoId);
     }, [departamentoId]);
     const errorMessage = "Campo obligatorio";
+    const textTransform='capitalize';
     return (
         <Modal show={abrirModal} onHide={() => setAbrirModal(false)} size='lg'>
             <Modal.Header closeButton>
@@ -120,6 +122,8 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
                                 placeholder="Dirección"
                                 autoComplete="off"
                                 rows="3"
+                                minLength="5"
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="12">
@@ -135,6 +139,8 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
                                 placeholder="Punto de referencia"
                                 autoComplete="off"
                                 rows="3"
+                                minLength="5"
+                                style={{textTransform: textTransform}}
                             />
                         </Form.Group>
                         {

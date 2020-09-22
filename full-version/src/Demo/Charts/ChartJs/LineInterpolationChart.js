@@ -1,9 +1,11 @@
 import React from 'react';
 import {Line} from 'react-chartjs-2';
+import { Exportar } from '../../../helpers/Exportar';
 
 class LineInterpolationChart extends React.Component {
 
     render() {
+        console.log("Renderizando");
         const data = (canvas) => {
             let bar = canvas.getContext('2d');
             let theme_g1 = bar.createLinearGradient(0, 0, 500, 0);
@@ -49,15 +51,25 @@ class LineInterpolationChart extends React.Component {
         };
 
         return (
-            <Line
+            <>
+            <Exportar id={"nueva"} ancho={1583} altura={300} />
+            <div>
+            <Line id="nueva"
                 data={data}
                 responsive={true}
                 height={300}
                 options={{
                     barValueSpacing: 20,
                     maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Titulo de la gráfica',
+                        fontSize:24
+                    }
                 }}
             />
+            </div>
+            </>
         );
     }
 }

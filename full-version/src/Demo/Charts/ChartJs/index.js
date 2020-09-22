@@ -14,6 +14,7 @@ import RadarAreaChart2 from "./RadarAreaChart2";
 import RadarAreaChart3 from "./RadarAreaChart3";
 import PieChart from "./PieChart";
 import DoughnutChart from "./DoughnutChart";
+import { Exportar } from '../../../helpers/Exportar';
 
 class ChartJs extends React.Component {
     render() {
@@ -21,6 +22,7 @@ class ChartJs extends React.Component {
             <Aux>
                 <Row>
                     <Col xl={4} md={6}>
+                        <Exportar/>
                         <Card>
                             <Card.Header>
                                 <Card.Title as="h5">Bar Chart</Card.Title>

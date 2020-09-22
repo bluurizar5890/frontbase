@@ -30,7 +30,7 @@ export const IdentificacionListar = ({ personaId }) => {
         let response = await callApi(`persona/identificacion?personaId=${id}&estadoId=1;2`);
         setIdentificaciones(response);
     }
-    const handleEditIdentificacion = (id) => {
+    const handleEditar = (id) => {
         const { identificacion_personaId, tipo_documentoId, numero_identificacion, estadoId } = identificaciones.find(item => item.identificacion_personaId === id);
         setdataInicial({
             identificacion_personaId,
@@ -40,7 +40,7 @@ export const IdentificacionListar = ({ personaId }) => {
         });
         setAbrirModal(true);
     }
-    const handleDeleteIdentificacion = (id) => {
+    const handleDelete = (id) => {
         const MySwal = withReactContent(Swal);
         MySwal.fire({
             title: 'Alerta?',
@@ -51,7 +51,7 @@ export const IdentificacionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/identificacion/${id}`, {
+                let response = await callApi(`persona/identificacion/${id}&estadoId=1;2`, {
                     method
                 });
                 if (response) {
@@ -113,11 +113,11 @@ export const IdentificacionListar = ({ personaId }) => {
                                                         <td style={{ textAlign: "right", width: "100px" }}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditIdentificacion(identificacion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
+                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(identificacion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDeleteIdentificacion(identificacion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
+                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(identificacion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
                                                             }
                                                         </td>
                                                     }

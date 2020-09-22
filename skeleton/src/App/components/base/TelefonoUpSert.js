@@ -4,35 +4,35 @@ import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-va
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
-export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirModal, catTipoDocumento, GetIdentificaciones }) => {
-    const [documento, handleOnChange] = useForm(dataInicial);
+export const TelefonoUpSert = ({ dataInicial, personaId, abrirModal, setAbrirModal, catTipoTelefono, GetTelefonos }) => {
+    const [telefono, handleOnChange] = useForm(dataInicial);
     const NuevoRegistro = async () => {
-        let response = await callApi('persona/identificacion', {
+        let response = await callApi('persona/telefono', {
             method: 'POST',
-            body: JSON.stringify(documento)
+            body: JSON.stringify(telefono)
         });
 
         if (response) {
-            alert_exitoso("Documento de identificación registrado exitosamente");
-            GetIdentificaciones(personaId);
+            alert_exitoso("Número de teléfono registrado exitosamente");
+            GetTelefonos(personaId);
             setAbrirModal(false);
         }
     }
     const ActualizarRegistro = async () => {
-        let response = await callApi('persona/identificacion', {
+        let response = await callApi('persona/telefono', {
             method: 'PUT',
-            body: JSON.stringify(documento)
+            body: JSON.stringify(telefono)
         });
 
         if (response) {
             alert_exitoso(response);
-            GetIdentificaciones(personaId);
+            GetTelefonos(personaId);
         }
         setAbrirModal(false);
     }
     const handleOnSubmit = async (e) => {
         e.preventDefault();
-        if (dataInicial.identificacion_personaId > 0) {
+        if (dataInicial.telefono_personaId > 0) {
             await ActualizarRegistro();
         } else {
             await NuevoRegistro();
@@ -46,24 +46,24 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
     return (
         <Modal show={abrirModal} onHide={() => setAbrirModal(false)}>
             <Modal.Header closeButton>
-                <Modal.Title as="h5">{dataInicial.identificacion_personaId > 0 ? 'Actualizar documento' : 'Nuevo Documento'}</Modal.Title>
+                <Modal.Title as="h5">{dataInicial.telefono_personaId > 0 ? 'Actualizar teléfono' : 'Nuevo teléfono'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
                     <Form.Row>
                         <Form.Group as={Col} md="12">
-                            <Form.Label htmlFor="tipo_documentoId">Tipo Identificación</Form.Label>
+                            <Form.Label htmlFor="tipo_telefonoId">Tipo Identificación</Form.Label>
                             <SelectGroup
-                                name="tipo_documentoId"
-                                id="tipo_documentoId"
+                                name="tipo_telefonoId"
+                                id="tipo_telefonoId"
                                 required
-                                value={documento.tipo_documentoId}
+                                value={telefono.tipo_telefonoId}
                                 onChange={handleOnChange}
                                 errorMessage={errorMessage}>
-                                <option value="">Seleccione un tipo de identificación</option>
+                                <option value="">Seleccione un tipo de teléfono</option>
                                 {
-                                    catTipoDocumento.map(({ tipo_documentoId, descripcion }) => (
-                                        <option value={tipo_documentoId} key={tipo_documentoId}>{descripcion}</option>
+                                    catTipoTelefono.map(({ tipo_telefonoId, descripcion }) => (
+                                        <option value={tipo_telefonoId} key={tipo_telefonoId}>{descripcion}</option>
                                     )
                                     )
                                 }
@@ -71,28 +71,28 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
                         </Form.Group>
 
                         <Form.Group as={Col} md="12">
-                            <Form.Label htmlFor="numero_identificacion">Número de Identificación</Form.Label>
+                            <Form.Label htmlFor="telefono">Número de teléfono</Form.Label>
                             <TextInput
-                                name="numero_identificacion"
-                                id="numero_identificacion"
+                                name="telefono"
+                                id="telefono"
                                 required
-                                value={documento.numero_identificacion}
+                                value={telefono.telefono}
                                 onChange={handleOnChange}
                                 errorMessage={errorMessage}
-                                minLength={documento.tipo_documentoId==="1"?"13":"0"}
-                                placeholder="Número de identificación"
+                                placeholder="Número de teléfono"
                                 autoComplete="off"
+                                minLength="8"
                                 type="number"
                             />
                         </Form.Group>
                         {
-                            dataInicial.identificacion_personaId > 0 &&
+                            dataInicial.telefono_personaId > 0 &&
                             <Form.Group as={Col} md="12">
                                 <Form.Label htmlFor="estadoId">Estado</Form.Label>
                                 <SelectGroup
                                     name="estadoId"
                                     id="estadoId"
-                                    value={documento.estadoId}
+                                    value={telefono.estadoId}
                                     required
                                     errorMessage={errorMessage}
                                     onChange={handleOnChange}>
@@ -107,7 +107,7 @@ export const IdentificacionUpSert = ({ dataInicial, personaId, abrirModal, setAb
                             <button type="button" onClick={() => { setAbrirModal(false) }} className="btn btn-warning"> Cancelar</button>
                         </div>
                         <div className="col-sm-3">
-                            <button type="submit" className="btn btn-success"> {dataInicial.identificacion_personaId > 0 ? 'Actualizar' : 'Registrar'}</button>
+                            <button type="submit" className="btn btn-success"> {dataInicial.telefono_personaId > 0 ? 'Actualizar' : 'Registrar'}</button>
                         </div>
                     </Form.Row>
                 </ValidationForm>
