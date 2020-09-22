@@ -3,6 +3,7 @@ import { Row, Col, Card, Tab, Nav } from 'react-bootstrap';
 import Aux from '../../hoc/_Aux'
 import { PersonaRegistrar } from '../components/base/PersonaRegistrar'
 import { IdentificacionListar } from '../components/base/IdentificacionListar';
+import { DireccionListar } from '../components/base/DireccionListar';
 const PersonaPage = () => {
     const [personaId, setPersonaId] = useState(1);
 
@@ -44,21 +45,10 @@ const PersonaPage = () => {
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="identificaciones">
                                                 <IdentificacionListar personaId={personaId}/>
-                                                {/* <DocumentoIden onSubmit={this.handleSubmitPerson}
-                                                        onError={this.handleErrorSubmit} 
-                                                        open={true}/> */}
-                                                {/* <RegistrarIdentificacion
-                                                        personaId={this.state.persona.personaId}
-                                                    />  */}
 
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="direcciones">
-                                                {/* <RegistrarDireccion
-                                                        onSubmit={this.handleSubmitAddress}
-                                                        onError={this.handleErrorSubmit}
-                                                        errorMessage={errorMessage}
-                                                        
-                                                    /> */}
+                                               <DireccionListar personaId={personaId}/>
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="telefonos">
                                                 {/* <TabsPills></TabsPills> */}

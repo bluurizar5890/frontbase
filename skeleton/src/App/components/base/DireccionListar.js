@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import callApi from '../../../helpers/conectorApi';
-import Aux from '../../../hoc/_Aux';
-import { IdentificacionUpSert } from './IdentificacionUpSert';
 import withReactContent from 'sweetalert2-react-content';
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
+import { DireccionUpSert } from './DireccionUpSert';
 const accesos = [1,2,3,4];
-export const IdentificacionListar = ({ personaId }) => {
+export const DireccionListar = ({ personaId }) => {
     const [abrirModal, setAbrirModal] = useState(false);
-    const [catTipoDocumento, setCatTipoDocumento] = useState([]);
-    const [identificaciones, setIdentificaciones] = useState([]);
+    const [catDepartamento, setCatDepartamento] = useState([]);
+    const [direcciones, setDirecciones] = useState([]);
     const initData = {
         personaId,
-        tipo_documentoId: '',
-        numero_identificacion: '',
+        municipioId: '',
+        direccion: '',
+        punto_referencia:'',
         estadoId: 1
     };
     const [dataInicial, setdataInicial] = useState(initData);
@@ -22,25 +23,27 @@ export const IdentificacionListar = ({ personaId }) => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
-    const GetTiposIdentificaciones = async () => {
-        let response = await callApi('tipodocumento?estadoId=1');
-        setCatTipoDocumento(response);
+    const GetDepartamentos = async () => {
+        let response = await callApi('departamento?estadoId=1');
+        setCatDepartamento(response);
     }
-    const GetIdentificaciones = async (id) => {
-        let response = await callApi(`persona/identificacion?personaId=${id}&estadoId=1;2`);
-        setIdentificaciones(response);
+    const GetDirecciones = async (id) => {
+        let response = await callApi(`persona/direccion?personaId=${id}&estadoId=1;2`);
+        setDirecciones(response);
     }
-    const handleEditIdentificacion = (id) => {
-        const { identificacion_personaId, tipo_documentoId, numero_identificacion, estadoId } = identificaciones.find(item => item.identificacion_personaId === id);
+    const handleEditDireccion = (id) => {
+        const { direccion_personaId, municipioId, direccion,punto_referencia, estadoId, cat_municipio: {cat_departamento: {departamentoId} }} = direcciones.find(item => item.direccion_personaId === id);
         setdataInicial({
-            identificacion_personaId,
-            tipo_documentoId,
-            numero_identificacion,
+            direccion_personaId,
+            municipioId,
+            direccion,
+            punto_referencia,
+            departamentoId,
             estadoId
         });
         setAbrirModal(true);
     }
-    const handleDeleteIdentificacion = (id) => {
+    const handleDeleteDireccion = (id) => {
         const MySwal = withReactContent(Swal);
         MySwal.fire({
             title: 'Alerta?',
@@ -51,12 +54,12 @@ export const IdentificacionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/identificacion/${id}`, {
+                let response = await callApi(`persona/direccion/${id}`, {
                     method
                 });
                 if (response) {
                     alert_exitoso(response);
-                    GetIdentificaciones(personaId);
+                    GetDirecciones(personaId);
                 }
             } else {
                 alert_warning('No se eliminó ningun elemento');
@@ -64,8 +67,8 @@ export const IdentificacionListar = ({ personaId }) => {
         });
     }
     useEffect(() => {
-        GetTiposIdentificaciones();
-        GetIdentificaciones(personaId);
+        GetDepartamentos();
+        GetDirecciones(personaId);
     }, [personaId]);
     return (
         <Aux>
@@ -73,7 +76,7 @@ export const IdentificacionListar = ({ personaId }) => {
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Documentos de identificación</Card.Title>
+                            <Card.Title as="h5">Direcciones</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
@@ -81,7 +84,7 @@ export const IdentificacionListar = ({ personaId }) => {
                                 <Col className="text-right">
                                     {
                                         accesos.find(acceso => acceso === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar documento</Button>
+                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar dirección</Button>
                                     }
                                 </Col>
                             </Row>
@@ -91,8 +94,10 @@ export const IdentificacionListar = ({ personaId }) => {
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Tipo</th>
-                                            <th>Número</th>
+                                            <th>Departamento</th>
+                                            <th>Municipio</th>
+                                            <th>Direccion</th>
+                                            <th>Punto de Referencia</th>
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -102,22 +107,24 @@ export const IdentificacionListar = ({ personaId }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            identificaciones.map(({ identificacion_personaId, cat_tipo_documento: { descripcion: tipoDoc }, numero_identificacion, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={identificacion_personaId}>
-                                                    <td>{identificacion_personaId}</td>
-                                                    <td>{tipoDoc}</td>
-                                                    <td>{numero_identificacion}</td>
+                                            direcciones.map(({ direccion_personaId,direccion,punto_referencia, cat_municipio: { descripcion:municipio,cat_departamento: {descripcion:departamento} }, cat_estado: { descripcion: estado } }) => (
+                                                <tr key={direccion_personaId}>
+                                                    <td>{direccion_personaId}</td>
+                                                    <td>{departamento}</td>
+                                                    <td>{municipio}</td>
+                                                    <td>{direccion}</td>
+                                                    <td>{punto_referencia}</td>
                                                     <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "right", width: "100px" }}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditIdentificacion(identificacion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
+                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditDireccion(direccion_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDeleteIdentificacion(identificacion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
+                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDeleteDireccion(direccion_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
                                                             }
                                                         </td>
                                                     }
@@ -129,7 +136,7 @@ export const IdentificacionListar = ({ personaId }) => {
                             }
                             {
                                 abrirModal === true &&
-                                <IdentificacionUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catTipoDocumento={catTipoDocumento} personaId={personaId} GetIdentificaciones={GetIdentificaciones} dataInicial={dataInicial} />
+                                <DireccionUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catDepartamento={catDepartamento} personaId={personaId} GetDirecciones={GetDirecciones} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>
