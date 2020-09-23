@@ -47,6 +47,7 @@
     "jodit": "^3.2.46",
     "jodit-react": "^1.0.26",
     "jspdf": "^2.1.1",
+    "jspdf-react": "^1.0.11",
     "jszip": "^3.2.2",
     "nib-core": "^1.0.4",
     "pdfmake": "^0.1.57",
