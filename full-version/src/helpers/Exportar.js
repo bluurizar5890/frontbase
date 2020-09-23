@@ -1,7 +1,6 @@
 import React from 'react'
 import pdfConverter from 'jspdf';
 import { saveAs } from 'file-saver';
-//import PDF, { Text, AddPage, Line, Image, Table, Html } from 'jspdf-react';
 import iconoEmpresa from '../assets/images/fafg/imgFafg.png';
 var alturaHojaPx = 0;
 var anchoHojaPx = 0;
@@ -59,7 +58,7 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
             pdf.setLineWidth(0.8);
             pdf.line(20, alturaHojaPx - 40, anchoHojaPx - 20, alturaHojaPx - 40);
             pdf.setFontSize(12);
-            const descripcionPaginas = "Pagina 1 de 1";
+            const descripcionPaginas = "Página 1 de 1";
             const calculoDescripcionPaginas = (pdf.internal.pageSize.width - 20) - (pdf.getStringUnitWidth(descripcionPaginas) * pdf.internal.getFontSize());
             pdf.text(descripcionPaginas, calculoDescripcionPaginas, alturaHojaPx - 25);
 
@@ -107,7 +106,7 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
             pdf.setLineWidth(0.8);
             pdf.line(20, alturaHojaPx - 40, anchoHojaPx - 20, alturaHojaPx - 40);
             pdf.setFontSize(12);
-            const descripcionPaginas = `Pagina ${pagina} de ${totalPaginas}`;
+            const descripcionPaginas = `Página ${pagina} de ${totalPaginas}`;
             const calculoDescripcionPaginas = (pdf.internal.pageSize.width - 20) - (pdf.getStringUnitWidth(descripcionPaginas) * pdf.internal.getFontSize());
             pdf.text(descripcionPaginas, calculoDescripcionPaginas, alturaHojaPx - 25);
 

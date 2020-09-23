@@ -123,11 +123,11 @@ export const DatoExtraListar = ({ personaId }) => {
                                                         <td style={{ textAlign: "right", width: "100px" }}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn btn-info btn-sm" onClick={() => { handleEditar(dato_extra_personaId) }}><i className="feather icon-edit" />&nbsp;Editar </button>
+                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(dato_extra_personaId) }}><i className="feather icon-edit" /></button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn btn-danger btn-sm" onClick={() => { handleDelete(dato_extra_personaId) }}><i className="feather icon-trash-2" />&nbsp;Eliminar </button>
+                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(dato_extra_personaId) }}><i className="feather icon-trash-2" /></button>
                                                             }
                                                         </td>
                                                     }

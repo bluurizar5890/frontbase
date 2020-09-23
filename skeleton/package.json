@@ -45,7 +45,7 @@
     "jodit": "^3.2.46",
     "jodit-react": "^1.0.26",
     "jszip": "^3.2.2",
-    "moment": "^2.27.0",
+    "moment": "^2.29.0",
     "nib-core": "^1.0.4",
     "pdfmake": "^0.1.57",
     "peity-react": "0.0.7",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DatePicker from "react-datepicker";
 import { Col, Card, Form, Button } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
@@ -6,10 +6,10 @@ import validator from 'validator';
 import { useForm } from '../../hooks/useForm';
 import moment from 'moment';
 import callApi from '../../../helpers/conectorApi';
-import { alert_exitoso,alert_warning } from '../../../helpers/Notificacion';
-export const PersonaRegistrar = ({ handleSetIdPersona }) => {
+import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
+export const PersonaRegistrar = ({ handleSetIdPersona, personaId }) => {
 
-    const [persona, handleOnChange, , setFecha] = useForm({
+    const [persona, handleOnChange, , setFecha, setValues] = useForm({
         nombre1: '',
         nombre2: '',
         nombre_otros: '',
@@ -18,27 +18,56 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
         apellido_casada: '',
         fecha_nacimiento: '',
         email: '',
-        generoId: ''
+        generoId: '',
+        estadoId: 1
     });
     const [edit, setEdit] = useState(true);
-    const [fNacimiento, setfNacimiento] = useState('')
-    const handleOnSubmit = async (e) => {
-        e.preventDefault();
+    const [fNacimiento, setfNacimiento] = useState('');
+
+    const NuevoRegistro = async () => {
         let response = await callApi('persona', {
             method: 'POST',
             body: JSON.stringify(persona)
         });
-
         if (response) {
             alert_exitoso("Persona registrada exitosamente");
-            const { personaId } = response;
-            handleSetIdPersona(personaId);
+            const { personaId: id } = response;
+            handleSetIdPersona(id);
+            setEdit(false);
+        }
+    }
+    const ActualizarRegistro = async () => {
+        let response = await callApi('persona', {
+            method: 'PUT',
+            body: JSON.stringify(persona)
+        });
+
+        if (response) {
+            alert_exitoso(response);
+            setEdit(false);
+        }
+    }
+
+    const handleOnSubmit = async (e) => {
+        e.preventDefault();
+        if (personaId > 0) {
+            await ActualizarRegistro();
+        } else {
+            await NuevoRegistro();
+        }
+    }
+
+    const GetInfoPersona = async (id) => {
+        if (id > 0) {
+            let response = await callApi(`persona?id=${id}&include=0`);
+            setValues(response[0]);
+            setfNacimiento(new Date(response[0].fecha_nacimiento));
             setEdit(false);
         }
     }
 
     const handleErrorSubmit = (e, formData, errorInputs) => {
-            alert_warning("Por favor complete toda la información solicitada por el formulario");        
+        alert_warning("Por favor complete toda la información solicitada por el formulario");
     };
 
     const handleSetFecha = (fecha) => {
@@ -47,8 +76,12 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
         setfNacimiento(fecha);
     }
 
+    useEffect(() => {
+        GetInfoPersona(personaId);
+    }, [personaId])
+
     const errorMessage = "Campo obligatorio";
-    const textTransform='capitalize';
+    const textTransform = 'capitalize';
     return (
         <Card>
             <Card.Header>
@@ -68,7 +101,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -81,7 +114,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -94,7 +127,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -109,7 +142,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -122,7 +155,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="6">
@@ -135,7 +168,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
 
@@ -173,7 +206,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                                 onChange={handleOnChange}
                                 autoComplete="off"
                                 readOnly={!edit}
-                                style={{textTransform: 'lowercase'}}
+                                style={{ textTransform: 'lowercase' }}
                             />
                         </Form.Group>
 
@@ -193,8 +226,31 @@ export const PersonaRegistrar = ({ handleSetIdPersona }) => {
                             </SelectGroup>
                         </Form.Group>
 
+                        {
+                            personaId > 0 &&
+                            <Form.Group as={Col} md="6">
+                                <Form.Label htmlFor="estadoId">Estado</Form.Label>
+                                <SelectGroup
+                                    name="estadoId"
+                                    id="estadoId"
+                                    value={persona.estadoId}
+                                    disabled={!edit}
+                                    required
+                                    errorMessage={errorMessage}
+                                    onChange={handleOnChange}>
+                                    <option value="">Seleccione un estado</option>
+                                    <option value="1">Activo</option>
+                                    <option value="2">Inactivo</option>
+                                </SelectGroup>
+                            </Form.Group>
+                        }
+
                         <Form.Group as={Col} sm={12} className="mt-3">
-                            <Button type="submit" disabled={!edit}>Registrar</Button>
+                            <Button type="submit" className="btn btn-primary mr-2" disabled={(!edit && personaId>0)}>{personaId > 0 ? 'Actualizar' : 'Registrar'}</Button>
+                            {
+                                personaId > 0 &&
+                                <Button type="button" className="btn btn-success" disabled={edit} onClick={() => { setEdit(!edit) }}>Editar</Button>
+                            }
                         </Form.Group>
                     </Form.Row>
                 </ValidationForm>
