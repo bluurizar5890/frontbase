@@ -22,13 +22,12 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
 
     const handleExportar = () => {
         const canvas = document.getElementById(id);
-        const pdf = new pdfConverter("l", "pt", "letter");
+        const pdf = new pdfConverter("l", "pt", "letter",true);
         anchoHojaPx = pdf.internal.pageSize.width;
         alturaHojaPx = pdf.internal.pageSize.height;
         let anchoC = canvas.clientWidth;
         let alturaC = canvas.clientHeight;
-        let x = 10;
-        let y = 80;
+
         if (anchoC > anchoHojaPx || alturaC > alturaHojaPx) {
             const item = calcular(anchoC, alturaC);
             console.log(item);
@@ -36,10 +35,6 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
             anchoC = ancho;
             alturaC = altura;
         }
-
-        const auxAncho = anchoHojaPx - anchoC;
-        x = auxAncho / 2;
-
         // Inicio Encabezado
         const agregarEncabezado = () => {
             pdf.addImage(iconoEmpresa, "JPEG", 40, 20, 113, 57);
@@ -62,15 +57,20 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
 
 
             pdf.setLineWidth(0.8);
-            pdf.line(20, alturaHojaPx-40, anchoHojaPx - 20,  alturaHojaPx-40);
+            pdf.line(20, alturaHojaPx - 40, anchoHojaPx - 20, alturaHojaPx - 40);
             pdf.setFontSize(12);
-            const descripcionPaginas = "Pagina 1 de 10";
-            const calculoDescripcionPaginas =(pdf.internal.pageSize.width-20) - (pdf.getStringUnitWidth(descripcionPaginas) * pdf.internal.getFontSize());
-            pdf.text(descripcionPaginas, calculoDescripcionPaginas, alturaHojaPx-25);
+            const descripcionPaginas = "Pagina 1 de 1";
+            const calculoDescripcionPaginas = (pdf.internal.pageSize.width - 20) - (pdf.getStringUnitWidth(descripcionPaginas) * pdf.internal.getFontSize());
+            pdf.text(descripcionPaginas, calculoDescripcionPaginas, alturaHojaPx - 25);
 
         }
         // Fin Encabezado
         agregarEncabezado();
+
+        let x = 10;
+        let y = 80;
+        const auxAncho = anchoHojaPx - anchoC;
+        x = auxAncho / 2;
         const base64Image = canvas.toDataURL();
         pdf.addImage(base64Image, "JPEG", x, y, anchoC, alturaC);
         pdf.save(`${nombre}.pdf`);
@@ -78,14 +78,51 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
 
     const handleTodos = () => {
         const canvass = document.getElementsByTagName("canvas");
-        const pdf = new pdfConverter("l", "pt", "letter");
-        let y = 40;
-        console.log("total Imagenes", canvass.length);
-        let pagina = 1;
+        const pdf = new pdfConverter("l", "pt", "letter",true);
+        let posicionInicialY = 80;
+        let posicionInicialX = 10;
+        let totalPaginas = canvass.length;
+        let paginaActual = 1;
+        // Inicio Encabezado
+        const agregarEncabezado = (pagina) => {
+            pdf.addImage(iconoEmpresa, "JPEG", 40, 20, 113, 57);
+            pdf.setFontSize(12);
+            const titulo = "Fundación de Antropología Forence de Guatemala";
+            const calculoXTitulo = (pdf.internal.pageSize.width / 2) - (pdf.getStringUnitWidth(titulo) * pdf.internal.getFontSize() / 2);
+            pdf.text(titulo, calculoXTitulo, 40);
+
+            pdf.setFontSize(10);
+            const subTitulo = "Dirección de generación de reportes";
+            const calculoXSubTitulo = (pdf.internal.pageSize.width / 2) - (pdf.getStringUnitWidth(subTitulo) * pdf.internal.getFontSize() / 2);
+            pdf.text(subTitulo, calculoXSubTitulo, 52);
+
+            pdf.setFontSize(12);
+            const descripcionReporte = "Reporte de Graficas";
+            const calculoXDescripcionReporte = (pdf.internal.pageSize.width / 2) - (pdf.getStringUnitWidth(descripcionReporte) * pdf.internal.getFontSize() / 2);
+            pdf.text(descripcionReporte, calculoXDescripcionReporte, 64);
+            pdf.setLineWidth(0.8);
+            pdf.line(20, 80, anchoHojaPx - 20, 80);
+
+
+            pdf.setLineWidth(0.8);
+            pdf.line(20, alturaHojaPx - 40, anchoHojaPx - 20, alturaHojaPx - 40);
+            pdf.setFontSize(12);
+            const descripcionPaginas = `Pagina ${pagina} de ${totalPaginas}`;
+            const calculoDescripcionPaginas = (pdf.internal.pageSize.width - 20) - (pdf.getStringUnitWidth(descripcionPaginas) * pdf.internal.getFontSize());
+            pdf.text(descripcionPaginas, calculoDescripcionPaginas, alturaHojaPx - 25);
+
+        }
+        // Fin Encabezado
+
         for (let canvas of canvass) {
+            
+            anchoHojaPx = pdf.internal.pageSize.width;
+            alturaHojaPx = pdf.internal.pageSize.height;
             let anchoC = canvas.clientWidth;
             let alturaC = canvas.clientHeight;
-            let x = 10;
+            let x = posicionInicialX;
+            let y = posicionInicialY;
+
             if (anchoC > anchoHojaPx || alturaC > alturaHojaPx) {
                 const item = calcular(anchoC, alturaC);
                 console.log(item);
@@ -97,18 +134,12 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
             const auxAncho = anchoHojaPx - anchoC;
             x = auxAncho / 2;
             const base64Image = canvas.toDataURL();
-
-            pdf.text("Fundación para el desarrollo FONDESOL", 10, 40);
-            if ((y + alturaC) >= alturaHojaPx) {
-                pdf.addPage();
-                y = 40;
-                // pagina++;
-                // pdf.text('Page ' + String(pagina) + ' of ' + String(10), pdf.internal.pageSize.width / 2, 287, {
-                //     align: 'center'
-                //   })
-            }
             pdf.addImage(base64Image, "JPEG", x, y, anchoC, alturaC);
-            y += alturaC + 30;
+            agregarEncabezado(paginaActual);
+            if (paginaActual < totalPaginas) {
+                pdf.addPage();
+            }
+            paginaActual++;
         }
         pdf.save(`${nombre}.pdf`);
     }
