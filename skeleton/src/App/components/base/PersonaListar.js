@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Row,
     Col,
@@ -10,7 +10,7 @@ import Aux from '../../../hoc/_Aux';
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import callApi from '../../../helpers/conectorApi';
-import moment from 'moment'
+import moment from 'moment';
 import { PersonaView } from './PersonaView';
 
 $.DataTable = require('datatables.net-bs');
@@ -26,6 +26,8 @@ export const PersonaListar = () => {
 
     const [abrirModal, setAbrirModal] = useState(false);
     const [personas, setPersonas] = useState([]);
+    const [personaId, setPersonaId] = useState(0);
+
     const GetPersonas = async () => {
         let response = await callApi(`persona?&estadoId=1;2`);
         setPersonas(response);
@@ -35,8 +37,10 @@ export const PersonaListar = () => {
         GetPersonas();
     }, []);
 
-    const handleVerDetalle = () => {
+    const handleVerDetalle = (id) => {
         setAbrirModal(true);
+        setPersonaId(id);
+        console.log("Id persona seleccionada",id);
     }
 
 
@@ -97,7 +101,7 @@ export const PersonaListar = () => {
                                             }
                                             return (
                                                 <tr key={personaId}>
-                                                    <td><button className="btn-icon btn btn-outline-primary btn-sm" onClick={handleVerDetalle}><i className="feather icon-eye" /></button></td>
+                                                    <td><button className="btn-icon btn btn-outline-primary btn-sm" onClick={()=>{handleVerDetalle(personaId)}}><i className="feather icon-eye" /></button></td>
                                                     <td>{nombreCompleto}</td>
                                                     <td>{moment(fecha_nacimiento).format('DD/MM/YYYY')}</td>
                                                     <td>{email}</td>
@@ -116,7 +120,7 @@ export const PersonaListar = () => {
                         </Card.Body>
                         {
                             abrirModal &&
-                            <PersonaView abrirModal={abrirModal} setAbrirModal={setAbrirModal} />
+                            <PersonaView abrirModal={abrirModal} setAbrirModal={setAbrirModal} personaId={personaId} />
                         }
                     </Card>
                 </Col>
