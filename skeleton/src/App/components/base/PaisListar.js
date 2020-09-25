@@ -47,7 +47,7 @@ export const PaisListar = () => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/telefono/${id}`, {
+                let response = await callApi(`pais/${id}`, {
                     method
                 });
                 if (response) {
@@ -97,12 +97,12 @@ export const PaisListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            paises.map(({ paisId, descripcion, nacionalidad, estadoId  }) => (
+                                            paises.map(({ paisId, descripcion, nacionalidad, cat_estado:{descripcion:estado}  }) => (
                                                 <tr key={paisId}>
                                                     <td>{paisId}</td>
                                                     <td>{descripcion}</td>
                                                     <td>{nacionalidad}</td>
-                                                    <td>{estadoId}</td>
+                                                    <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "center"}}>

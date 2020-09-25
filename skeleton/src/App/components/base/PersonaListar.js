@@ -27,10 +27,12 @@ export const PersonaListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
     const [personas, setPersonas] = useState([]);
     const [personaId, setPersonaId] = useState(0);
+    const [estiloTabla, setEstiloTabla] = useState(false)
 
     const GetPersonas = async () => {
         let response = await callApi(`persona?&estadoId=1;2`);
         setPersonas(response);
+        setEstiloTabla(true);
     }
     useEffect(() => {
         console.log("use efect");
@@ -44,10 +46,11 @@ export const PersonaListar = () => {
     }
 
 
-    // useLayoutEffect(() => {
-    //     atable();
-    //     console.log("uselayoutefect");
-    // }, [personas])
+    useEffect(() => {
+        if(estiloTabla){
+            atable();
+        }
+    }, [estiloTabla])
     return (
         <Aux>
             <Row className='btn-page'>

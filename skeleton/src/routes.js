@@ -7,13 +7,15 @@ global.jQuery = $;
 
 const OtherSamplePage = React.lazy(() => import('./Demo/Other/SamplePage'));
 const pais=React.lazy(() => import('./App/pages/PaisPage'));
+const departamento=React.lazy(() => import('./App/pages/DepartamentoPage'));
 const persona = React.lazy(() => import('./App/pages/PersonaPage'));
 const personaupsert = React.lazy(() => import('./App/pages/PersonaUpSertPage'));
 const rol=React.lazy(() => import('./App/pages/RolPage'));
 
 const routes = [
-    { path: '/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },
     { path: '/catalogo/pais', exact: true, name: 'Pais', component: pais },
+    { path: '/catalogo/departamento', exact: true, name: 'Departamento', component: departamento },
+    { path: '/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },
     { path: '/catalogo/persona', exact: true, name: 'persona', component: persona },
     { path: '/catalogo/personaupsert/:idpersona', exact: true, name: 'personaUpSert', component: personaupsert },
     { path: '/catalogo/personaupsert', exact: true, name: 'personaUpSert', component: personaupsert },

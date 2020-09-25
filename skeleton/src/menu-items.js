@@ -31,6 +31,14 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
+                    id: 'departamento',
+                    title: 'Departamento',
+                    type: 'item',
+                    url: '/catalogo/departamento',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
                     id: 'menu-level',
                     title: 'Menu Levels',
                     type: 'collapse',

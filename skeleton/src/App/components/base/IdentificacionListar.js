@@ -52,7 +52,7 @@ export const IdentificacionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/identificacion/${id}&estadoId=1;2`, {
+                let response = await callApi(`persona/identificacion/${id}`, {
                     method
                 });
                 if (response) {
