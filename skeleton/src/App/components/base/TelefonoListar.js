@@ -96,7 +96,7 @@ export const TelefonoListar = ({ personaId }) => {
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th>Opciones</th>
+                                                <th></th>
                                             }
                                         </tr>
                                     </thead>
@@ -110,7 +110,7 @@ export const TelefonoListar = ({ personaId }) => {
                                                     <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "right", width: "100px" }}>
+                                                        <td style={{ textAlign: "center"}}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
                                                                 <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(telefono_personaId) }}><i className="feather icon-edit" /></button>

@@ -3,40 +3,35 @@ import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import { IdentificacionUpSert } from './IdentificacionUpSert';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-const accesos = [1,2,3,4];
-export const IdentificacionListar = ({ personaId }) => {
+import { PaisUpSert } from './PaisUpSert';
+const accesos = [1, 2, 3, 4];
+export const PaisListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
-    const [catTipoDocumento, setCatTipoDocumento] = useState([]);
-    const [identificaciones, setIdentificaciones] = useState([]);
+    const [paises, setPaises] = useState([]);
     const initData = {
-        personaId,
-        tipo_documentoId: '',
-        numero_identificacion: '',
+        paisId: '',
+        descripcion: '',
+        nacionalidad:'',
         estadoId: 1
     };
-
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
-    const GetTiposIdentificaciones = async () => {
-        let response = await callApi('tipodocumento?estadoId=1');
-        setCatTipoDocumento(response);
-    }
-    const GetIdentificaciones = async (id) => {
-        let response = await callApi(`persona/identificacion?personaId=${id}&estadoId=1;2`);
-        setIdentificaciones(response);
+    
+    const GetPaises = async () => {
+        let response = await callApi(`pais?estadoId=1;2`);
+        setPaises(response);
     }
     const handleEditar = (id) => {
-        const { identificacion_personaId, tipo_documentoId, numero_identificacion, estadoId } = identificaciones.find(item => item.identificacion_personaId === id);
+        const { paisId, descripcion, nacionalidad, estadoId } = paises.find(item => item.paisId === id);
         setdataInicial({
-            identificacion_personaId,
-            tipo_documentoId,
-            numero_identificacion,
+            paisId,
+            descripcion,
+            nacionalidad,
             estadoId
         });
         setAbrirModal(true);
@@ -52,12 +47,12 @@ export const IdentificacionListar = ({ personaId }) => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`persona/identificacion/${id}&estadoId=1;2`, {
+                let response = await callApi(`persona/telefono/${id}`, {
                     method
                 });
                 if (response) {
                     alert_exitoso(response);
-                    GetIdentificaciones(personaId);
+                    GetPaises();
                 }
             } else {
                 alert_warning('No se eliminó ningun elemento');
@@ -65,16 +60,15 @@ export const IdentificacionListar = ({ personaId }) => {
         });
     }
     useEffect(() => {
-        GetTiposIdentificaciones();
-        GetIdentificaciones(personaId);
-    }, [personaId]);
+        GetPaises();
+    }, []);
     return (
         <Aux>
             <Row className='btn-page'>
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Documentos de identificación</Card.Title>
+                            <Card.Title as="h5">Pais</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
@@ -82,7 +76,7 @@ export const IdentificacionListar = ({ personaId }) => {
                                 <Col className="text-right">
                                     {
                                         accesos.find(acceso => acceso === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar documento</Button>
+                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Pais</Button>
                                     }
                                 </Col>
                             </Row>
@@ -91,9 +85,9 @@ export const IdentificacionListar = ({ personaId }) => {
                                 <Table striped hover responsive bordered id="table_dentificaciones_persona">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Tipo</th>
-                                            <th>Número</th>
+                                            <th>Código</th>
+                                            <th>Nombre</th>
+                                            <th>Nacionalidad</th>
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -103,22 +97,22 @@ export const IdentificacionListar = ({ personaId }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            identificaciones.map(({ identificacion_personaId, cat_tipo_documento: { descripcion: tipoDoc }, numero_identificacion, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={identificacion_personaId}>
-                                                    <td>{identificacion_personaId}</td>
-                                                    <td>{tipoDoc}</td>
-                                                    <td>{numero_identificacion}</td>
-                                                    <td>{estado}</td>
+                                            paises.map(({ paisId, descripcion, nacionalidad, estadoId  }) => (
+                                                <tr key={paisId}>
+                                                    <td>{paisId}</td>
+                                                    <td>{descripcion}</td>
+                                                    <td>{nacionalidad}</td>
+                                                    <td>{estadoId}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center" }}>
+                                                        <td style={{ textAlign: "center"}}>
                                                             {
                                                                 accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(identificacion_personaId) }}><i className="feather icon-edit" /></button>
+                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(paisId) }}><i className="feather icon-edit" /></button>
                                                             }
                                                             {
                                                                 accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(identificacion_personaId) }}><i className="feather icon-trash-2" /></button>
+                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(paisId) }}><i className="feather icon-trash-2" /></button>
                                                             }
                                                         </td>
                                                     }
@@ -130,7 +124,7 @@ export const IdentificacionListar = ({ personaId }) => {
                             }
                             {
                                 abrirModal === true &&
-                                <IdentificacionUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catTipoDocumento={catTipoDocumento} personaId={personaId} GetIdentificaciones={GetIdentificaciones} dataInicial={dataInicial} />
+                                <PaisUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} GetPaises={GetPaises} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>

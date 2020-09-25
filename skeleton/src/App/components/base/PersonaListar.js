@@ -57,19 +57,19 @@ export const PersonaListar = () => {
                             <Row className="align-items-center m-l-0">
                                 <Col />
                                 <Col className="text-right">
-                                    <Link variant="success" className="btn-sm btn-round has-ripple" to="/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
+                                    <Link variant="success" className="btn-sm btn-round has-ripple" to="/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
                                 </Col>
                             </Row>
                             <Table striped hover responsive bordered id="data-table-zero">
                                 <thead>
                                     <tr>
-                                        <th>Ver</th>
+                                        {/* <th>Ver</th> */}
                                         <th>Nombre</th>
                                         <th>Fecha de Nacimiento</th>
                                         <th>Correo</th>
                                         <th>Genero</th>
                                         <th>Estado</th>
-                                        <th>Options</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,14 +101,14 @@ export const PersonaListar = () => {
                                             }
                                             return (
                                                 <tr key={personaId}>
-                                                    <td><button className="btn-icon btn btn-outline-primary btn-sm" onClick={()=>{handleVerDetalle(personaId)}}><i className="feather icon-eye" /></button></td>
+                                                    {/* <td><button className="btn-icon btn btn-outline-primary btn-sm" onClick={()=>{handleVerDetalle(personaId)}}><i className="feather icon-eye" /></button></td> */}
                                                     <td>{nombreCompleto}</td>
                                                     <td>{moment(fecha_nacimiento).format('DD/MM/YYYY')}</td>
                                                     <td>{email}</td>
                                                     <td>{genero}</td>
                                                     <td>{estado}</td>
-                                                    <td style={{ textAlign: "right", width: "100px" }}>
-                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/personaupsert/${item.personaId}`}><i className="feather icon-edit" /></Link>
+                                                    <td style={{ textAlign: "center", width: "100px" }}>
+                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/catalogo/personaupsert/${item.personaId}`}><i className="feather icon-edit" /></Link>
                                                         <button className="btn-icon btn btn-danger btn-sm"><i className="feather icon-trash-2" /></button>
                                                     </td>
                                                 </tr>

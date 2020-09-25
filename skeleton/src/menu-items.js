@@ -18,7 +18,15 @@ export default {
                     id: 'persona',
                     title: 'Persona',
                     type: 'item',
-                    url: '/persona',
+                    url: '/catalogo/persona',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'pais',
+                    title: 'Pais',
+                    type: 'item',
+                    url: '/catalogo/pais',
                     classes: 'nav-item',
                     icon: 'feather icon-sidebar'
                 },
