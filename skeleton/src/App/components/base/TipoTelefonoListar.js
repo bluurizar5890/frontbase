@@ -6,12 +6,12 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { TipoTelefonoUpSert } from './TipoTelefonoUpSert';
-const accesos = [1,2,3,4];
+const accesos = [1, 2, 3, 4];
 export const TipoTelefonoListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoTelefono, setCatTipoTelefono] = useState([]);
     const initData = {
-        tipo_telefonoId:'',
+        tipo_telefonoId: '',
         descripcion: '',
         estadoId: 1
     };
@@ -50,7 +50,7 @@ export const TipoTelefonoListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
-                    let listActual=catTipoTelefono.filter(item=>item.tipo_telefonoId!==id);
+                    let listActual = catTipoTelefono.filter(item => item.tipo_telefonoId !== id);
                     setCatTipoTelefono(listActual);
                 }
             } else {
@@ -95,11 +95,11 @@ export const TipoTelefonoListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catTipoTelefono.map(({ tipo_telefonoId, descripcion}) => (
+                                            catTipoTelefono.map(({ tipo_telefonoId, descripcion, cat_estado: { descripcion: estado } }) => (
                                                 <tr key={tipo_telefonoId}>
                                                     <td>{tipo_telefonoId}</td>
                                                     <td>{descripcion}</td>
-                                                    <td>""</td>
+                                                    <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "center" }}>

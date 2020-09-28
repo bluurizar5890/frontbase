@@ -3,91 +3,13 @@ import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import $ from 'jquery';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DepartamentoUpSert } from './DepartamentoUpSert';
-
-$.DataTable = require('datatables.net-bs');
-require('datatables.net-responsive-bs');
-function limpiar(){
-      $("#mytable").DataTable().destroy();
-}
-function atable() {
-    if($.fn.dataTable.isDataTable("#mytable")){
-
-        console.log("Ya tiene estilo");
-       
-        let tableZero = '#mytable';
-        $.fn.dataTable.ext.errMode = 'throw';
-        $(tableZero).DataTable({
-            "searching": true,
-            "bLengthChange": false,
-            "bAutoWidth": false,
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-            language: {
-                processing: "Cargando información",
-                search: "Filtrar por:",
-                lengthMenu: "Mostrar _MENU_ filas",
-                info: "Vizualización  _END_ de _TOTAL_ filas",
-                infoEmpty: "Vizualización del elemento 0 a 0 de 0 filas",
-                infoFiltered: "(Filtrado de _MAX_ filas en total)",
-                infoPostFix: "",
-                loadingRecords: "Cargando...",
-                zeroRecords: "No se logró encontrar ninguna coincidencia",
-                emptyTable: "No existen registros",
-                paginate: {
-                    first: "Primera",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    last: "Ultima"
-                },
-                aria: {
-                    sortAscending: ": active para ordenar la columna en orden ascendente",
-                    sortDescending: ": active para ordenar la columna en orden descendente"
-                }
-            }
-        });
-    }else{
-        $("#mytable").DataTable().destroy();
-        console.log("No tiene estilo");
-    let tableZero = '#mytable';
-    $.fn.dataTable.ext.errMode = 'throw';
-    $(tableZero).DataTable({
-        "searching": true,
-        "bLengthChange": false,
-        "bAutoWidth": false,
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-        language: {
-            processing: "Cargando información",
-            search: "Filtrar por:",
-            lengthMenu: "Mostrar _MENU_ filas",
-            info: "Vizualización  _END_ de _TOTAL_ filas",
-            infoEmpty: "Vizualización del elemento 0 a 0 de 0 filas",
-            infoFiltered: "(Filtrado de _MAX_ filas en total)",
-            infoPostFix: "",
-            loadingRecords: "Cargando...",
-            zeroRecords: "No se logró encontrar ninguna coincidencia",
-            emptyTable: "No existen registros",
-            paginate: {
-                first: "Primera",
-                previous: "Anterior",
-                next: "Siguiente",
-                last: "Ultima"
-            },
-            aria: {
-                sortAscending: ": active para ordenar la columna en orden ascendente",
-                sortDescending: ": active para ordenar la columna en orden descendente"
-            }
-        }
-    });
-}
-}
-
+import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
 const accesos = [1, 2, 3, 4];
 export const DepartamentoListar = ({ personaId }) => {
     const [abrirModal, setAbrirModal] = useState(false);
-    const [estiloTabla, setEstiloTabla] = useState(false)
     const [catPaises, setCatPais] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
     const initData = {
@@ -108,8 +30,9 @@ export const DepartamentoListar = ({ personaId }) => {
     }
     const GetDepartamentos = async () => {
         let response = await callApi('departamento?estadoId=1;2');
+        limpiarEstiloTabla("#mytable");
         setDepartamentos(response);
-        atable();
+        asignarEstiloTabla("#mytable");
     }
     const handleEditar = (id) => {
         const { departamentoId, paisId, descripcion, estadoId } = departamentos.find(item => item.departamentoId === id);
@@ -137,7 +60,8 @@ export const DepartamentoListar = ({ personaId }) => {
                 });
                 if (response) {
                     alert_exitoso(response);
-                    GetDepartamentos();
+                    let listActual = departamentos.filter(item => item.departamentoId !== id);
+                    setDepartamentos(listActual);
                 }
             } else {
                 alert_warning('No se eliminó ningun elemento');

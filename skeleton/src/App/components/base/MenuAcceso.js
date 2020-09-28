@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Form, Modal } from 'react-bootstrap';
 import callApi from '../../../helpers/conectorApi';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
+import { alert_exitoso } from '../../../helpers/Notificacion';
 export const MenuAcceso = ({ menuId, abrirModal, setAbrirModal, catAcceso, GetCatMenu }) => {
-    console.log("2");
     const [catAccesosAsignados, setCatAccesosAsignado] = useState([]);
     const NuevoRegistro = async (data) => {
         let response = await callApi('menuacceso', {
@@ -61,31 +58,6 @@ export const MenuAcceso = ({ menuId, abrirModal, setAbrirModal, catAcceso, GetCa
         }
     }
 
-    const handleDelete = (id) => {
-        const MySwal = withReactContent(Swal);
-        MySwal.fire({
-            title: 'Alerta?',
-            text: 'Esta seguro que desea eliminar el elemento',
-            type: 'warning',
-            showCloseButton: true,
-            showCancelButton: true
-        }).then(async (willDelete) => {
-            if (willDelete.value) {
-                let method = 'DELETE';
-                let response = await callApi(`menu/${id}`, {
-                    method
-                });
-                if (response) {
-                    alert_exitoso(response);
-                    let listActual = catAccesosAsignados.filter(item => item.menu_accesoId !== id);
-                    setCatAccesosAsignado(listActual);
-                }
-            } else {
-                alert_warning('No se eliminó ningun elemento');
-            }
-        });
-    }
-
 
     useEffect(() => {
         GetAccesosAsignado(menuId);
@@ -102,8 +74,7 @@ export const MenuAcceso = ({ menuId, abrirModal, setAbrirModal, catAcceso, GetCa
                         <tr>
                             <th>Codigo acceso</th>
                             <th>Acceso</th>
-                            <th>Asignado</th>
-                            <th></th>
+                            <th>Estado</th>
                         </tr>
 
                     </thead>
@@ -127,27 +98,23 @@ export const MenuAcceso = ({ menuId, abrirModal, setAbrirModal, catAcceso, GetCa
                                                 <td style={{ textAlign: "center" }}>
                                                     <Form.Group>
                                                         <div className="switch switch-alternative d-inline m-r-10">
-                                                            <Form.Control type="checkbox" id="checked-alternative" checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
-                                                            <Form.Label htmlFor="checked-alternative" className="cr" />
+                                                            <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
+                                                            <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
                                                         </div>
-                                                        <Form.Label>{
+                                                        <Form.Label htmlFor={`accesoid_${accesoId}`}>{
                                                             asignado ? 'Activo' : 'Inactivo'
                                                         }</Form.Label>
                                                     </Form.Group>
                                                 </td>
-                                                <td style={{ textAlign: "center" }}>
-
-                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={()=>{handleDelete(menu_accesoId)}} ><i className="feather icon-trash-2" /></button>
-                                                </td>
                                             </>
                                             :
-                                            <td style={{ textAlign: "center" }} colSpan="2">
+                                            <td style={{ textAlign: "center" }}>
                                             <Form.Group>
                                                 <div className="switch switch-alternative d-inline m-r-10">
-                                                    <Form.Control type="checkbox" id="checked-alternative" checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
-                                                    <Form.Label htmlFor="checked-alternative" className="cr" />
+                                                    <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
+                                                    <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
                                                 </div>
-                                                <Form.Label>Asignar acceso a menu</Form.Label>
+                                                <Form.Label htmlFor={`accesoid_${accesoId}`}>Asignar acceso a menu</Form.Label>
                                             </Form.Group>
                                         </td>
                                         }

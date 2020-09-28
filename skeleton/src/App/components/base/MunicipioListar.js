@@ -159,8 +159,8 @@ export const MunicipioListar = () => {
                                     <thead>
                                         <tr>
                                             <th>Codigo</th>
+                                            <th>Municipio</th>
                                             <th>Departamento</th>
-                                            <th>Pais</th>
                                             <th>Estado</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -170,12 +170,12 @@ export const MunicipioListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            municipios.map(({ municipioId, descripcion }) => (
+                                            municipios.map(({ municipioId, descripcion,cat_departamento:{descripcion:departamento},cat_estado:{descripcion:estado} }) => (
                                                 <tr key={municipioId}>
                                                     <td>{municipioId}</td>
                                                     <td>{descripcion}</td>
-                                                    <td>""</td>
-                                                    <td>""</td>
+                                                    <td>{departamento}</td>
+                                                    <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "center" }}>

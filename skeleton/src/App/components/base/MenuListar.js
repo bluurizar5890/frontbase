@@ -7,6 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MenuUpSert } from './MenuUpSert';
 import { MenuAcceso } from './MenuAcceso';
+import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
 const accesos = [1, 2, 3, 4, 5];
 export const MenuListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
@@ -30,7 +31,11 @@ export const MenuListar = () => {
     }
     const GetCatMenu = async () => {
         let response = await callApi('menu?estadoId=1;2');
-        setCatMenu(response);
+        if(response){
+            limpiarEstiloTabla("#mytable");
+            setCatMenu(response);
+            asignarEstiloTabla("#mytable");
+        }
     }
     const handleEditar = (id) => {
         const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId } = catMenu.find(item => item.menuId === id);
@@ -59,7 +64,7 @@ export const MenuListar = () => {
         setAbrirModalAcceso(true);
     }
 
-    
+
     const handleDelete = (id) => {
         const MySwal = withReactContent(Swal);
         MySwal.fire({
@@ -135,7 +140,7 @@ export const MenuListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catMenu.map(({ menuId, descripcion, posicion, href, icono, menu_padreId, estadoId }) => {
+                                            catMenu.map(({ menuId, descripcion, posicion, href, icono, menu_padreId, cat_estado: { descripcion: estado } }) => {
                                                 const item = catMenu.find(item => item.menuId === menu_padreId);
                                                 const { descripcion: descPadre } = !!item && item;
                                                 return (
@@ -146,7 +151,7 @@ export const MenuListar = () => {
                                                         <td>{href}</td>
                                                         <td>{icono}</td>
                                                         <td>{descPadre}</td>
-                                                        <td>""</td>
+                                                        <td>{estado}</td>
                                                         {
                                                             accesos.find(acceso => acceso === 5) &&
                                                             <td style={{ textAlign: "center" }}>
@@ -178,7 +183,7 @@ export const MenuListar = () => {
                                 abrirModal === true &&
                                 <MenuUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} GetCatMenu={GetCatMenu} catMenu={catMenu} dataInicial={dataInicial} />
                             }
-                              {
+                            {
                                 abrirModalAcceso === true &&
                                 <MenuAcceso abrirModal={abrirModalAcceso} setAbrirModal={setAbrirModalAcceso} GetCatMenu={GetCatMenu} catAcceso={catAcceso} menuId={dataInicial.menuId} />
                             }

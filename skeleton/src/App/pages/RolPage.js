@@ -1,10 +1,9 @@
 import React from 'react'
+import { RolListar } from '../components/base/RolListar'
 
 const RolPage = () => {
     return (
-        <div>
-            <h1>Rol Page</h1>
-        </div>
+       <RolListar/>
     )
 }
 

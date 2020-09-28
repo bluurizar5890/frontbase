@@ -6,12 +6,12 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { TipoDocumentoUpSert } from './TipoDocumentoUpSert';
-const accesos = [1,2,3,4];
+const accesos = [1, 2, 3, 4];
 export const TipoDocumentoListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoDocumento, setCatTipoDocumento] = useState([]);
     const initData = {
-        tipo_documentoId:'',
+        tipo_documentoId: '',
         descripcion: '',
         estadoId: 1
     };
@@ -50,7 +50,7 @@ export const TipoDocumentoListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
-                    let listActual=catTipoDocumento.filter(item=>item.tipo_documentoId!==id);
+                    let listActual = catTipoDocumento.filter(item => item.tipo_documentoId !== id);
                     setCatTipoDocumento(listActual);
                 }
             } else {
@@ -95,11 +95,11 @@ export const TipoDocumentoListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catTipoDocumento.map(({ tipo_documentoId, descripcion}) => (
+                                            catTipoDocumento.map(({ tipo_documentoId, descripcion, cat_estado: { descripcion: estado } }) => (
                                                 <tr key={tipo_documentoId}>
                                                     <td>{tipo_documentoId}</td>
                                                     <td>{descripcion}</td>
-                                                    <td>""</td>
+                                                    <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "center" }}>

@@ -95,6 +95,22 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
+                    id: 'rol',
+                    title: 'Rol',
+                    type: 'item',
+                    url: '/seguridad/rol',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'rolmenuacceso',
+                    title: 'Rol Menu Acceso',
+                    type: 'item',
+                    url: '/seguridad/rolmenuacceso/1',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
                     id: 'menu-level',
                     title: 'Menu Levels',
                     type: 'collapse',

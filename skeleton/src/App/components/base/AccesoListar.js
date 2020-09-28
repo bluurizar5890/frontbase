@@ -6,12 +6,12 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { AccesoUpSert } from './AccesoUpSert';
-const accesos = [1,2,3,4];
+const accesos = [1, 2, 3, 4];
 export const AccesoListar = () => {
     const [abrirModal, setAbrirModal] = useState(false);
     const [catAcceso, setCatAcceso] = useState([]);
     const initData = {
-        accesoId:'',
+        accesoId: '',
         descripcion: '',
         estadoId: 1
     };
@@ -50,7 +50,7 @@ export const AccesoListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
-                    let listActual=catAcceso.filter(item=>item.accesoId!==id);
+                    let listActual = catAcceso.filter(item => item.accesoId !== id);
                     setCatAcceso(listActual);
                 }
             } else {
@@ -95,11 +95,11 @@ export const AccesoListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catAcceso.map(({ accesoId, descripcion}) => (
+                                            catAcceso.map(({ accesoId, descripcion, cat_estado: { descripcion: estado } }) => (
                                                 <tr key={accesoId}>
                                                     <td>{accesoId}</td>
                                                     <td>{descripcion}</td>
-                                                    <td>""</td>
+                                                    <td>{estado}</td>
                                                     {
                                                         accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                         <td style={{ textAlign: "center" }}>
