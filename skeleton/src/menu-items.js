@@ -39,6 +39,62 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
+                    id: 'municipio',
+                    title: 'Municipio',
+                    type: 'item',
+                    url: '/catalogo/municipio',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'tipodocumento',
+                    title: 'Tipo Documento',
+                    type: 'item',
+                    url: '/catalogo/tipodocumento',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'tipotelefono',
+                    title: 'Tipo Teléfono',
+                    type: 'item',
+                    url: '/catalogo/tipotelefono',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'tiposangre',
+                    title: 'Tipo Sangre',
+                    type: 'item',
+                    url: '/catalogo/tiposangre',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'estadocivil',
+                    title: 'Estado Civil',
+                    type: 'item',
+                    url: '/catalogo/estadocivil',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'acceso',
+                    title: 'Accesos',
+                    type: 'item',
+                    url: '/seguridad/acceso',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
+                    id: 'menu',
+                    title: 'Menu',
+                    type: 'item',
+                    url: '/seguridad/menu',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
                     id: 'menu-level',
                     title: 'Menu Levels',
                     type: 'collapse',

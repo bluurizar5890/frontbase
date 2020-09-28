@@ -1,6 +1,6 @@
 export default {
     defaultPath: '/sample-page',
-    basename: '/react/default', // only at build time to set, like ///able-pro/react/default
+    basename: '/app', // only at build time to set, like ///able-pro/react/default
     layout: 'vertical', // vertical, horizontal
     subLayout: '', // horizontal-2
     collapseMenu: false, // mini-menu
