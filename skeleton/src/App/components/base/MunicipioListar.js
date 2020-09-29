@@ -85,7 +85,7 @@ export const MunicipioListar = () => {
                     setMunicipios(muns);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

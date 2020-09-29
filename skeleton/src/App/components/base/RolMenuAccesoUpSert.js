@@ -4,7 +4,7 @@ import { ValidationForm,  SelectGroup } from 'react-bootstrap4-form-validation';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
-export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu,GetRolMenuAcceso }) => {
+export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu,GetRolMenuAcceso,rolMenuAcceso }) => {
     const [values, handleOnChange] = useForm(dataInicial);
     const [menuId, setMenuid] = useState(dataInicial.menuId);
     const [menuAcceso, setMenuAcceso] = useState([]);
@@ -55,11 +55,14 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
         let auxMenuAcceso=[];
         if (response) {
             response.map(({menu_accesoId,cat_acceso:{descripcion}})=>{
+                const existe=rolMenuAcceso.find(i=>i.menu_accesoId===menu_accesoId && (i.estadoId===1 || i.estadoId===2));
+                if(!existe){
                 let aux={
                     menu_accesoId,
                     descripcion
                 }
                 auxMenuAcceso.push(aux);
+            }
             });
             setMenuAcceso(auxMenuAcceso);
         }

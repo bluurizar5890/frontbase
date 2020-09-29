@@ -111,6 +111,14 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
+                    id: 'usuario',
+                    title: 'Usuarios',
+                    type: 'item',
+                    url: '/seguridad/usuario',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
                     id: 'menu-level',
                     title: 'Menu Levels',
                     type: 'collapse',

@@ -24,7 +24,7 @@ export const DireccionListar = ({ personaId }) => {
         setdataInicial(initData);
     }
     const GetDepartamentos = async () => {
-        let response = await callApi('departamento?estadoId=1');
+        let response = await callApi('departamento?estadoId=1&include=0');
         setCatDepartamento(response);
     }
     const GetDirecciones = async (id) => {
@@ -62,7 +62,7 @@ export const DireccionListar = ({ personaId }) => {
                     GetDirecciones(personaId);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

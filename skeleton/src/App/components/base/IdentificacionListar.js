@@ -24,7 +24,7 @@ export const IdentificacionListar = ({ personaId }) => {
         setdataInicial(initData);
     }
     const GetTiposIdentificaciones = async () => {
-        let response = await callApi('tipodocumento?estadoId=1');
+        let response = await callApi('tipodocumento?estadoId=1&include=0');
         setCatTipoDocumento(response);
     }
     const GetIdentificaciones = async (id) => {
@@ -60,7 +60,7 @@ export const IdentificacionListar = ({ personaId }) => {
                     GetIdentificaciones(personaId);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

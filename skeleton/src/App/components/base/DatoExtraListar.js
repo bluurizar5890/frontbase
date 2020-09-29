@@ -24,11 +24,11 @@ export const DatoExtraListar = ({ personaId }) => {
         setdataInicial(initData);
     }
     const GetTipoSangre = async () => {
-        let response = await callApi('tiposangre?estadoId=1');
+        let response = await callApi('tiposangre?estadoId=1&include=0');
         setTipoSangre(response);
     }
     const GetEstadoCivil = async () => {
-        let response = await callApi('estadocivil?estadoId=1');
+        let response = await callApi('estadocivil?estadoId=1&include=0');
         setCatEstadoCivil(response);
     }
     const GetDatoExtra = async (id) => {
@@ -64,7 +64,7 @@ export const DatoExtraListar = ({ personaId }) => {
                     GetDatoExtra(personaId);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

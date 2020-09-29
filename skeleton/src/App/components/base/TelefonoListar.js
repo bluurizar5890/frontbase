@@ -23,7 +23,7 @@ export const TelefonoListar = ({ personaId }) => {
         setdataInicial(initData);
     }
     const GetTipoTelefono = async () => {
-        let response = await callApi('tipotelefono?estadoId=1');
+        let response = await callApi('tipotelefono?estadoId=1&include=0');
         setCatTipoTelefono(response);
     }
     const GetTelefonos = async (id) => {
@@ -59,7 +59,7 @@ export const TelefonoListar = ({ personaId }) => {
                     GetTelefonos(personaId);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

@@ -78,7 +78,7 @@ export const RolMenuAccesoListar = ({idrol}) => {
                     setRolMenuAcceso(listActual);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }
@@ -96,7 +96,7 @@ export const RolMenuAccesoListar = ({idrol}) => {
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">{`${infoRol.nombre}`} Permisos</Card.Title>
+                            <Card.Title as="h5">{`${infoRol.nombre}`} Acceso</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
@@ -104,7 +104,7 @@ export const RolMenuAccesoListar = ({idrol}) => {
                                 <Col className="text-right">
                                     {
                                         accesos.find(acceso => acceso === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Permiso</Button>
+                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Acceso</Button>
                                     }
                                 </Col>
                             </Row>
@@ -155,7 +155,7 @@ export const RolMenuAccesoListar = ({idrol}) => {
                             }
                             {
                                 abrirModal === true &&
-                                <RolMenuAccesoUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catMenu={catMenu} dataInicial={dataInicial} GetRolMenuAcceso={GetRolMenuAcceso} />
+                                <RolMenuAccesoUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catMenu={catMenu} dataInicial={dataInicial} GetRolMenuAcceso={GetRolMenuAcceso} rolMenuAcceso={rolMenuAcceso} />
                             }
                         </Card.Body>
                     </Card>

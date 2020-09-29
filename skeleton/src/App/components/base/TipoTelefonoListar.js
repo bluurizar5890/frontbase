@@ -54,7 +54,7 @@ export const TipoTelefonoListar = () => {
                     setCatTipoTelefono(listActual);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }

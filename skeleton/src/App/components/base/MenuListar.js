@@ -85,7 +85,7 @@ export const MenuListar = () => {
                     setCatMenu(listActual);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }
@@ -130,7 +130,7 @@ export const MenuListar = () => {
                                             <th>Menu Padre</th>
                                             <th>Estado</th>
                                             {
-                                                accesos.find(acceso => acceso === 5) && <th>Accesos</th>
+                                                accesos.find(acceso => acceso === 5) && <th>Acciones</th>
                                             }
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
@@ -155,7 +155,7 @@ export const MenuListar = () => {
                                                         {
                                                             accesos.find(acceso => acceso === 5) &&
                                                             <td style={{ textAlign: "center" }}>
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(menuId) }}><i className="feather icon-lock" /></button>
+                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(menuId) }}><i className="feather icon-zap" /></button>
                                                             </td>
                                                         }
                                                         {

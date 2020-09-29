@@ -7,32 +7,22 @@ import {
 } from 'react-bootstrap';
 
 import Aux from '../../../hoc/_Aux';
-import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import callApi from '../../../helpers/conectorApi';
 import moment from 'moment';
 import { PersonaView } from './PersonaView';
-
-$.DataTable = require('datatables.net-bs');
-require('datatables.net-responsive-bs');
-
-function atable() {
-    // $("#data-table-zero").DataTable().destroy();
-    let tableZero = '#data-table-zero';
-    $.fn.dataTable.ext.errMode = 'throw';
-    $(tableZero).DataTable();
-}
+import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
 export const PersonaListar = () => {
 
     const [abrirModal, setAbrirModal] = useState(false);
     const [personas, setPersonas] = useState([]);
     const [personaId, setPersonaId] = useState(0);
-    const [estiloTabla, setEstiloTabla] = useState(false)
 
     const GetPersonas = async () => {
         let response = await callApi(`persona?&estadoId=1;2`);
+        limpiarEstiloTabla("#mytable");
         setPersonas(response);
-        setEstiloTabla(true);
+        asignarEstiloTabla("#mytable");
     }
     useEffect(() => {
         console.log("use efect");
@@ -44,13 +34,7 @@ export const PersonaListar = () => {
         setPersonaId(id);
         console.log("Id persona seleccionada",id);
     }
-
-
-    useEffect(() => {
-        if(estiloTabla){
-            atable();
-        }
-    }, [estiloTabla])
+   
     return (
         <Aux>
             <Row className='btn-page'>
@@ -63,10 +47,11 @@ export const PersonaListar = () => {
                                     <Link variant="success" className="btn-sm btn-round has-ripple" to="/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
                                 </Col>
                             </Row>
-                            <Table striped hover responsive bordered id="data-table-zero">
+                            <Table striped hover responsive bordered id="mytable">
                                 <thead>
                                     <tr>
                                         {/* <th>Ver</th> */}
+                                        <th>Codigo</th>
                                         <th>Nombre</th>
                                         <th>Fecha de Nacimiento</th>
                                         <th>Correo</th>
@@ -105,6 +90,7 @@ export const PersonaListar = () => {
                                             return (
                                                 <tr key={personaId}>
                                                     {/* <td><button className="btn-icon btn btn-outline-primary btn-sm" onClick={()=>{handleVerDetalle(personaId)}}><i className="feather icon-eye" /></button></td> */}
+                                                    <td>{personaId}</td>
                                                     <td>{nombreCompleto}</td>
                                                     <td>{moment(fecha_nacimiento).format('DD/MM/YYYY')}</td>
                                                     <td>{email}</td>

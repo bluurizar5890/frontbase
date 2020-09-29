@@ -61,7 +61,7 @@ export const RolListar = () => {
                     setCatRol(listActual);
                 }
             } else {
-                alert_warning('No se eliminó ningun elemento');
+                alert_warning('No se eliminó ningún elemento');
             }
         });
     }
@@ -101,7 +101,7 @@ export const RolListar = () => {
                                             <th>Nombre</th>
                                             <th>Descripción</th>
                                             <th>Estado</th>
-                                            <th>Permisos</th>
+                                            <th>Accesos</th>
                                             {
                                                 accesos.find(acceso => acceso === 3 || acceso === 4) &&
                                                 <th></th>

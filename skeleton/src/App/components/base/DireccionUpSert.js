@@ -55,7 +55,7 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
     };
     const GetMunicipio = async (id) => {
         if (id > 0) {
-            let response = await callApi(`municipio?departamentoId=${id}&estadoId=1`);
+            let response = await callApi(`municipio?departamentoId=${id}&estadoId=1&include=0`);
             setCatMunicipio(response);
         }
     }
