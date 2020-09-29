@@ -46,8 +46,11 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
 
     }
     const handleUserName = ({ target: { value } }) => {
-        let auxUsername = String(value).trim();
+        let auxUsername = String(value).trim().toUpperCase();
         setValues({ ...values, user_name: auxUsername });
+    }
+    const handlePassWord = ({ target: { value } }) => {
+        setValues({ ...values, password: value });
     }
     const handleDuracionContrasenia = ({ target: { value } }) => {
         setDuracionContrasenia(value);
@@ -111,7 +114,6 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
                                         errorMessage={errorMessage}
                                         placeholder="Nombre de Usuario"
                                         autoComplete="off"
-                                        style={{ textTransform: 'uppercase' }}
                                         type="text"
                                     />
                                 </Form.Group>
@@ -129,7 +131,7 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
                                     id="password"
                                     required
                                     value={values.password}
-                                    onChange={handleOnChange}
+                                    onChange={handlePassWord}
                                     errorMessage={errorMessage}
                                     placeholder="Contraseña"
                                     autoComplete="off"

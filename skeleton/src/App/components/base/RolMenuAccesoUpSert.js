@@ -8,7 +8,6 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
     const [values, handleOnChange] = useForm(dataInicial);
     const [menuId, setMenuid] = useState(dataInicial.menuId);
     const [menuAcceso, setMenuAcceso] = useState([]);
-    console.log({dataInicial});
     const NuevoRegistro = async () => {
         let response = await callApi('rolmenuacceso', {
             method: 'POST',

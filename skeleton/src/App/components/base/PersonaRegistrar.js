@@ -81,7 +81,7 @@ export const PersonaRegistrar = ({ handleSetIdPersona, personaId }) => {
     }, [personaId])
 
     const errorMessage = "Campo obligatorio";
-    const textTransform = 'capitalize';
+    const textTransform = 'uppercase';
     return (
         <Card>
             <Card.Header>
