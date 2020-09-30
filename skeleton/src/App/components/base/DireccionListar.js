@@ -6,8 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DireccionUpSert } from './DireccionUpSert';
-const accesos = [1,2,3,4];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 15;
+const menuIdDepartamento = 9;
 export const DireccionListar = ({ personaId }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catDepartamento, setCatDepartamento] = useState([]);
     const [direcciones, setDirecciones] = useState([]);
@@ -15,24 +20,42 @@ export const DireccionListar = ({ personaId }) => {
         personaId,
         municipioId: '',
         direccion: '',
-        punto_referencia:'',
+        punto_referencia: '',
         estadoId: 1
     };
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdDepartamento);
+            setAccesos(misAccesos);
+        }
+    }
+
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
     const GetDepartamentos = async () => {
-        let response = await callApi('departamento?estadoId=1&include=0');
-        setCatDepartamento(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdDepartamento && acceso.accesoId === 3)) {
+            let response = await callApi('departamento?estadoId=1&include=0');
+            if (response) {
+                setCatDepartamento(response);
+            }
+        } else {
+            setCatDepartamento([{ departamentoId: '', descripcion: 'No esta autorizado' }]);
+        }
     }
     const GetDirecciones = async (id) => {
-        let response = await callApi(`persona/direccion?personaId=${id}&estadoId=1;2`);
-        setDirecciones(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi(`persona/direccion?personaId=${id}&estadoId=1;2`);
+            if (response) {
+                setDirecciones(response);
+            }
+        }
     }
     const handleEditar = (id) => {
-        const { direccion_personaId, municipioId, direccion,punto_referencia, estadoId, cat_municipio: {cat_departamento: {departamentoId} }} = direcciones.find(item => item.direccion_personaId === id);
+        const { direccion_personaId, municipioId, direccion, punto_referencia, estadoId, cat_municipio: { cat_departamento: { departamentoId } } } = direcciones.find(item => item.direccion_personaId === id);
         setdataInicial({
             direccion_personaId,
             municipioId,
@@ -66,10 +89,15 @@ export const DireccionListar = ({ personaId }) => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetDepartamentos();
         GetDirecciones(personaId);
-    }, [personaId]);
+    }, [personaId, accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -83,56 +111,57 @@ export const DireccionListar = ({ personaId }) => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar dirección</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Departamento</th>
-                                            <th>Municipio</th>
-                                            <th>Direccion</th>
-                                            <th>Punto de Referencia</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="table_dentificaciones_persona">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Departamento</th>
+                                                <th>Municipio</th>
+                                                <th>Direccion</th>
+                                                <th>Punto de Referencia</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
+                                                direcciones.map(({ direccion_personaId, direccion, punto_referencia, cat_municipio: { descripcion: municipio, cat_departamento: { descripcion: departamento } }, cat_estado: { descripcion: estado } }) => (
+                                                    <tr key={direccion_personaId}>
+                                                        <td>{direccion_personaId}</td>
+                                                        <td>{departamento}</td>
+                                                        <td>{municipio}</td>
+                                                        <td>{direccion}</td>
+                                                        <td>{punto_referencia}</td>
+                                                        <td>{estado}</td>
+                                                        {
+                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(direccion_personaId) }}><i className="feather icon-edit" /></button>
+                                                                }
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(direccion_personaId) }}><i className="feather icon-trash-2" /></button>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                ))
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            direcciones.map(({ direccion_personaId,direccion,punto_referencia, cat_municipio: { descripcion:municipio,cat_departamento: {descripcion:departamento} }, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={direccion_personaId}>
-                                                    <td>{direccion_personaId}</td>
-                                                    <td>{departamento}</td>
-                                                    <td>{municipio}</td>
-                                                    <td>{direccion}</td>
-                                                    <td>{punto_referencia}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center"}}>
-                                                            {
-                                                                accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(direccion_personaId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(direccion_personaId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&

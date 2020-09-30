@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Form, Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso } from '../../../helpers/Notificacion';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 18;
+const menuIdRol = 11;
 export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [catRolesAsignados, setRolesAsignados] = useState([]);
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdRol);
+            setAccesos(misAccesos);
+        }
+    }
+
     const NuevoRegistro = async (data) => {
         let response = await callApi('usuario/rol', {
             method: 'POST',
@@ -51,15 +66,21 @@ export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => 
         }
     }
     const GetRolesAsignados = async (id) => {
-        let response = await callApi(`usuario/rol?usuarioId=${id}&estadoId=1;2`);
-        if (response) {
-            setRolesAsignados(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi(`usuario/rol?usuarioId=${id}&estadoId=1;2`);
+            if (response) {
+                setRolesAsignados(response);
+            }
         }
     }
 
     useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
+    useEffect(() => {
         GetRolesAsignados(usuarioId);
-    }, [usuarioId]);
+    }, [usuarioId, accesos]);
 
     return (
         <Modal show={abrirModal} onHide={() => setAbrirModal(false)} size="lg">
@@ -67,62 +88,81 @@ export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => 
                 <Modal.Title as="h5">Perfiles</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Table striped hover responsive bordered id="mytable">
-                    <thead>
-                        <tr>
-                            <th>Codigo acceso</th>
-                            <th>Acceso</th>
-                            <th>Estado</th>
-                        </tr>
-
-                    </thead>
-                    <tbody>
-                        {
-                            catRol.map(({ rolId, nombre }) => {
-                                const filaRol = catRolesAsignados.find(item => item.rolId === rolId);
-                                let asignado = false;
-                                const { usuario_rolId = 0, estadoId = 0 } = !!filaRol && filaRol;
-                                if (estadoId === 1) {
-                                    asignado = true;
-                                }
-                                return (
-                                    <tr key={rolId}>
-                                        <td>{rolId}</td>
-                                        <td>{nombre}</td>
+                {
+                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                        accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3) ?
+                            <Table striped hover responsive bordered id="mytable">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo acceso</th>
+                                        <th>Acceso</th>
                                         {
-                                            (estadoId === 1 || estadoId === 2) ?
-                                            <>
-                                                <td style={{ textAlign: "center" }}>
-                                                    <Form.Group>
-                                                        <div className="switch switch-alternative d-inline m-r-10">
-                                                            <Form.Control type="checkbox" id={`rolId_${rolId}`} checked={asignado} onChange={() => { handleChangeChecbox(usuario_rolId, rolId, estadoId); }} />
-                                                            <Form.Label htmlFor={`rolId_${rolId}`} className="cr" />
-                                                        </div>
-                                                        <Form.Label htmlFor={`rolId_${rolId}`}>{
-                                                            asignado ? 'Activo' : 'Inactivo'
-                                                        }</Form.Label>
-                                                    </Form.Group>
-                                                </td>
-                                            </>
-                                            :
-                                            <td style={{ textAlign: "center" }}>
-                                            <Form.Group>
-                                                <div className="switch switch-alternative d-inline m-r-10">
-                                                    <Form.Control type="checkbox" id={`rolId_${rolId}`} checked={asignado} onChange={() => { handleChangeChecbox(usuario_rolId, rolId, estadoId); }} />
-                                                    <Form.Label htmlFor={`rolId_${rolId}`} className="cr" />
-                                                </div>
-                                                <Form.Label htmlFor={`rolId_${rolId}`}>Asignar Perfil</Form.Label>
-                                            </Form.Group>
-                                        </td>
+                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) || accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1)) &&
+                                        <th></th>
                                         }
                                     </tr>
-                                )
-                            })
-                        }
 
-                    </tbody>
-                </Table>
+                                </thead>
+                                <tbody>
+                                    {
+                                        catRol.map(({ rolId, nombre }) => {
+                                            const filaRol = catRolesAsignados.find(item => item.rolId === rolId);
+                                            let asignado = false;
+                                            const { usuario_rolId = 0, estadoId = 0 } = !!filaRol && filaRol;
+                                            if (estadoId === 1) {
+                                                asignado = true;
+                                            }
+                                            return (
+                                                (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || asignado || usuario_rolId>0) &&
+                                                <tr key={rolId}>
+                                                    <td>{rolId}</td>
+                                                    <td>{nombre}</td>
+                                                    {
+                                                        (estadoId === 1 || estadoId === 2) ?
+                                                            <>{
+                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) ?
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Form.Group>
+                                                                            <div className="switch switch-alternative d-inline m-r-10">
+                                                                                <Form.Control type="checkbox" id={`rolId_${rolId}`} checked={asignado} onChange={() => { handleChangeChecbox(usuario_rolId, rolId, estadoId); }} />
+                                                                                <Form.Label htmlFor={`rolId_${rolId}`} className="cr" />
+                                                                            </div>
+                                                                            <Form.Label htmlFor={`rolId_${rolId}`}>{
+                                                                                asignado ? 'Activo' : 'Inactivo'
+                                                                            }</Form.Label>
+                                                                        </Form.Group>
+                                                                    </td>
+                                                                    : 
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
+                                                                    <td style={{ textAlign: "center" }}><label className="text-danger">No Autorizado</label></td>
+                                                            }
+                                                            </>
+                                                            :
+                                                            <>
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) ?
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <Form.Group>
+                                                                                <div className="switch switch-alternative d-inline m-r-10">
+                                                                                    <Form.Control type="checkbox" id={`rolId_${rolId}`} checked={asignado} onChange={() => { handleChangeChecbox(usuario_rolId, rolId, estadoId); }} />
+                                                                                    <Form.Label htmlFor={`rolId_${rolId}`} className="cr" />
+                                                                                </div>
+                                                                                <Form.Label htmlFor={`rolId_${rolId}`}>Asignar Perfil</Form.Label>
+                                                                            </Form.Group>
+                                                                        </td> : <td></td>
+                                                                }
+                                                            </>
+                                                    }
+                                                </tr>
+                                            )
+                                        })
+                                    }
 
+                                </tbody>
+                            </Table>
+                            : <NoAutorizado />
+                        : <NoAutorizado />
+                }
             </Modal.Body>
         </Modal>
     )

@@ -6,8 +6,12 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { PaisUpSert } from './PaisUpSert';
-const accesos = [1, 2, 3, 4];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 8;
 export const PaisListar = () => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [paises, setPaises] = useState([]);
     const initData = {
@@ -16,6 +20,14 @@ export const PaisListar = () => {
         nacionalidad:'',
         estadoId: 1
     };
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId);
+            setAccesos(misAccesos);
+        }
+    }
+
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
@@ -23,8 +35,12 @@ export const PaisListar = () => {
     }
     
     const GetPaises = async () => {
+        if (accesos.find(acceso => acceso.accesoId === 3)) {
         let response = await callApi(`pais?estadoId=1;2`);
-        setPaises(response);
+        if(response){
+            setPaises(response);
+        }
+        }
     }
     const handleEditar = (id) => {
         const { paisId, descripcion, nacionalidad, estadoId } = paises.find(item => item.paisId === id);
@@ -60,8 +76,12 @@ export const PaisListar = () => {
         });
     }
     useEffect(() => {
-        GetPaises();
+        GetAccesosByMenuId();
     }, []);
+
+    useEffect(() => {
+        GetPaises();
+    }, [accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -75,13 +95,13 @@ export const PaisListar = () => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso =>  acceso.accesoId=== 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Pais</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
+                                accesos.find(acceso =>  acceso.accesoId===3) ?
                                 <Table striped hover responsive bordered id="table_dentificaciones_persona">
                                     <thead>
                                         <tr>
@@ -90,7 +110,7 @@ export const PaisListar = () => {
                                             <th>Nacionalidad</th>
                                             <th>Estado</th>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
+                                                accesos.find(acceso =>  acceso.accesoId===2 ||  acceso.accesoId=== 4) &&
                                                 <th></th>
                                             }
                                         </tr>
@@ -104,14 +124,14 @@ export const PaisListar = () => {
                                                     <td>{nacionalidad}</td>
                                                     <td>{estado}</td>
                                                     {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
+                                                        accesos.find(acceso =>  acceso.accesoId===2 ||  acceso.accesoId=== 4) &&
                                                         <td style={{ textAlign: "center"}}>
                                                             {
-                                                                accesos.find(acceso => acceso === 3) &&
+                                                                accesos.find(acceso =>  acceso.accesoId===2) &&
                                                                 <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(paisId) }}><i className="feather icon-edit" /></button>
                                                             }
                                                             {
-                                                                accesos.find(acceso => acceso === 4) &&
+                                                                accesos.find(acceso =>  acceso.accesoId=== 4) &&
                                                                 <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(paisId) }}><i className="feather icon-trash-2" /></button>
                                                             }
                                                         </td>
@@ -121,6 +141,7 @@ export const PaisListar = () => {
                                         }
                                     </tbody>
                                 </Table>
+                                :<NoAutorizado/>
                             }
                             {
                                 abrirModal === true &&

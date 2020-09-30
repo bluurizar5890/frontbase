@@ -6,8 +6,14 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DatoExtraUpSert } from './DatoExtraUpSert';
-const accesos = [1,2,3,4];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 16;
+const menuIdEstadoCivil = 4;
+const menuIdTipoSangre = 6;
 export const DatoExtraListar = ({ personaId }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoSangre, setTipoSangre] = useState([]);
     const [catEstadoCivil, setCatEstadoCivil] = useState([]);
@@ -18,25 +24,50 @@ export const DatoExtraListar = ({ personaId }) => {
         estado_civilId: '',
         estadoId: 1
     };
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdEstadoCivil || item.menuId === menuIdTipoSangre);
+            setAccesos(misAccesos);
+        }
+    }
+
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
     const GetTipoSangre = async () => {
-        let response = await callApi('tiposangre?estadoId=1&include=0');
-        setTipoSangre(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdTipoSangre && acceso.accesoId === 3)) {
+            let response = await callApi('tiposangre?estadoId=1&include=0');
+            if (response) {
+                setTipoSangre(response);
+            }
+        } else {
+            setTipoSangre([{ tipo_sangreId: '', descripcion: 'No esta autorizado' }]);
+        }
     }
     const GetEstadoCivil = async () => {
-        let response = await callApi('estadocivil?estadoId=1&include=0');
-        setCatEstadoCivil(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdEstadoCivil && acceso.accesoId === 3)) {
+            let response = await callApi('estadocivil?estadoId=1&include=0');
+            if (response) {
+                setCatEstadoCivil(response);
+            }
+        } else {
+            setCatEstadoCivil([{ estado_civilId: '', descripcion: 'No esta autorizado' }]);
+        }
     }
     const GetDatoExtra = async (id) => {
-        let response = await callApi(`persona/datoextra?personaId=${id}&estadoId=1;2`);
-        setDatoExtra(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi(`persona/datoextra?personaId=${id}&estadoId=1;2`);
+            if (response) {
+                setDatoExtra(response);
+            }
+        }
     }
     const handleEditar = (id) => {
-        const {dato_extra_personaId,tipo_sangreId,estado_civilId,estadoId}= datoExtra.find(item => item.dato_extra_personaId === id);
+        const { dato_extra_personaId, tipo_sangreId, estado_civilId, estadoId } = datoExtra.find(item => item.dato_extra_personaId === id);
         setdataInicial({
             dato_extra_personaId,
             tipo_sangreId,
@@ -68,11 +99,16 @@ export const DatoExtraListar = ({ personaId }) => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetTipoSangre();
         GetEstadoCivil();
         GetDatoExtra(personaId);
-    }, [personaId]);
+    }, [personaId, accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -86,57 +122,58 @@ export const DatoExtraListar = ({ personaId }) => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        (accesos.find(acceso => acceso === 1) && datoExtra.length<=0)&&
+                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) && datoExtra.length <= 0) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Información adicional</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Tipo de Sangre</th>
-                                            <th>Estado Civil</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="table_dentificaciones_persona">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Tipo de Sangre</th>
+                                                <th>Estado Civil</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
+                                                datoExtra.map((item) => {
+                                                    const { dato_extra_personaId, cat_tipo_sangre, cat_estado_civil, cat_estado: { descripcion: estado } } = item;
+                                                    const { descripcion: tipoSangre } = !!cat_tipo_sangre && cat_tipo_sangre;
+                                                    const { descripcion: estadoCivil } = !!cat_estado_civil && cat_estado_civil;
+                                                    return (
+                                                        <tr key={dato_extra_personaId}>
+                                                            <td>{dato_extra_personaId}</td>
+                                                            <td>{tipoSangre}</td>
+                                                            <td>{estadoCivil}</td>
+                                                            <td>{estado}</td>
+                                                            {
+                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                        <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(dato_extra_personaId) }}><i className="feather icon-edit" /></button>
+                                                                    }
+                                                                    {
+                                                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                        <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(dato_extra_personaId) }}><i className="feather icon-trash-2" /></button>
+                                                                    }
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            datoExtra.map((item) => {
-                                                const{ dato_extra_personaId, cat_tipo_sangre,cat_estado_civil,cat_estado: { descripcion: estado } }=item;
-                                                const {descripcion:tipoSangre}=!!cat_tipo_sangre && cat_tipo_sangre;
-                                                const {descripcion:estadoCivil}=!!cat_estado_civil && cat_estado_civil;
-                                                return(
-                                                <tr key={dato_extra_personaId}>
-                                                    <td>{dato_extra_personaId}</td>
-                                                    <td>{tipoSangre}</td>
-                                                    <td>{estadoCivil}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center"}}>
-                                                            {
-                                                                accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(dato_extra_personaId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(dato_extra_personaId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&

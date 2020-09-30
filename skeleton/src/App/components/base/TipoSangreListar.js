@@ -6,8 +6,12 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { TipoSangreUpSert } from './TipoSangreUpSert';
-const accesos = [1, 2, 3, 4];
+import { NoAutorizado } from '../NoAutorizado';
+import { useSelector } from 'react-redux';
+const menuId = 6;
 export const TipoSangreListar = () => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoSangre, setCatTipoSangre] = useState([]);
     const initData = {
@@ -15,6 +19,13 @@ export const TipoSangreListar = () => {
         descripcion: '',
         estadoId: 1
     };
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId);
+            setAccesos(misAccesos);
+        }
+    }
 
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
@@ -22,8 +33,12 @@ export const TipoSangreListar = () => {
         setdataInicial(initData);
     }
     const GetTipoSangre = async () => {
+        if (accesos.find(acceso => acceso.accesoId === 3)) {
         let response = await callApi('tiposangre?estadoId=1;2');
+        if(response){
         setCatTipoSangre(response);
+        }
+        }
     }
     const handleEditar = (id) => {
         const { tipo_sangreId, descripcion, estadoId } = catTipoSangre.find(item => item.tipo_sangreId === id);
@@ -58,9 +73,14 @@ export const TipoSangreListar = () => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetTipoSangre();
-    }, []);
+    }, [accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -74,13 +94,13 @@ export const TipoSangreListar = () => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Tipo de Sangre</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
+                                accesos.find(acceso => acceso.accesoId === 3) ?
                                 <Table striped hover responsive bordered id="mytable">
                                     <thead>
                                         <tr>
@@ -88,7 +108,7 @@ export const TipoSangreListar = () => {
                                             <th>Descripción</th>
                                             <th>Estado</th>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
+                                                accesos.find(acceso => acceso.accesoId ===2 || acceso.accesoId === 4) &&
                                                 <th></th>
                                             }
                                         </tr>
@@ -101,14 +121,14 @@ export const TipoSangreListar = () => {
                                                     <td>{descripcion}</td>
                                                     <td>{estado}</td>
                                                     {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
+                                                        accesos.find(acceso => acceso.accesoId ===2 || acceso.accesoId === 4) &&
                                                         <td style={{ textAlign: "center" }}>
                                                             {
-                                                                accesos.find(acceso => acceso === 3) &&
+                                                                accesos.find(acceso => acceso.accesoId ===2) &&
                                                                 <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(tipo_sangreId) }}><i className="feather icon-edit" /></button>
                                                             }
                                                             {
-                                                                accesos.find(acceso => acceso === 4) &&
+                                                                accesos.find(acceso => acceso.accesoId === 4) &&
                                                                 <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(tipo_sangreId) }}><i className="feather icon-trash-2" /></button>
                                                             }
                                                         </td>
@@ -118,6 +138,7 @@ export const TipoSangreListar = () => {
                                         }
                                     </tbody>
                                 </Table>
+                                :<NoAutorizado/>
                             }
                             {
                                 abrirModal === true &&

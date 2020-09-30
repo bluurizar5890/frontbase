@@ -6,15 +6,36 @@ import { IdentificacionListar } from '../components/base/IdentificacionListar';
 import { DireccionListar } from '../components/base/DireccionListar';
 import { TelefonoListar } from '../components/base/TelefonoListar';
 import { DatoExtraListar } from '../components/base/DatoExtraListar';
-// import { useParams } from 'react-router-dom';
-const menus = [13, 14, 15, 16];
+import { useSelector } from 'react-redux';
+const menuId = 12;
+const menuIdIdentificacionPersona = 13;
+const menuIdTelefonoPersona = 14;
+const menuIdDireccionPersona = 15;
+const menuIdDatoExtraPersona = 16;
+
 const PersonaUpSertPage = ({ match }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     let { idpersona } = match.params;
     idpersona = !idpersona ? 0 : idpersona;
     const [personaId, setPersonaId] = useState(idpersona);
     const handleSetIdPersona = (id) => {
         setPersonaId(id);
     }
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => (item.menuId === menuId || item.menuId === menuIdIdentificacionPersona || item.menuId === menuIdTelefonoPersona || item.menuId === menuIdDireccionPersona || item.menuId === menuIdDatoExtraPersona));
+            setAccesos(misAccesos);
+        }
+    }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
+
     return (
         <Aux>
             <Row>
@@ -23,7 +44,7 @@ const PersonaUpSertPage = ({ match }) => {
                         <Card.Header>
                             <Card.Title as='h5'>
                                 {
-                                personaId > 0 ? 'Actualización de Información de Persona' : 'Registro de Información de Persona'
+                                    personaId > 0 ? 'Actualización de Información de Persona' : 'Registro de Información de Persona'
                                 }
                             </Card.Title>
                         </Card.Header>
@@ -32,27 +53,31 @@ const PersonaUpSertPage = ({ match }) => {
                                 <Row>
                                     <Col sm={2}>
                                         <Nav variant="pills" className="flex-column">
-                                            <Nav.Item>
-                                                <Nav.Link eventKey="persona">Persona</Nav.Link>
-                                            </Nav.Item>
                                             {
-                                                menus.find(item => item === 13) &&
+                                                accesos.find(acceso => acceso.menuId === menuId) &&
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="persona">Persona</Nav.Link>
+                                                </Nav.Item>
+                                            }
+
+                                            {
+                                                accesos.find(acceso => acceso.menuId === menuIdIdentificacionPersona) &&
                                                 <Nav.Item>
                                                     <Nav.Link eventKey="identificaciones" disabled={personaId <= 0 ? true : false}>Identificaciones</Nav.Link>
                                                 </Nav.Item>}
                                             {
-                                                menus.find(item => item === 14) &&
+                                                accesos.find(acceso => acceso.menuId === menuIdDireccionPersona) &&
                                                 <Nav.Item>
                                                     <Nav.Link eventKey="direcciones" disabled={personaId <= 0 ? true : false}>Direcciones</Nav.Link>
                                                 </Nav.Item>}
                                             {
-                                                menus.find(item => item === 15) &&
+                                                accesos.find(acceso => acceso.menuId === menuIdTelefonoPersona) &&
                                                 <Nav.Item>
                                                     <Nav.Link eventKey="telefonos" disabled={personaId <= 0 ? true : false}>Teléfonos</Nav.Link>
                                                 </Nav.Item>
                                             }
                                             {
-                                                menus.find(item => item === 16) &&
+                                                accesos.find(acceso => acceso.menuId === menuIdDatoExtraPersona) &&
                                                 <Nav.Item>
                                                     <Nav.Link eventKey="datosExtra" disabled={personaId <= 0 ? true : false}>Información Adicional</Nav.Link>
                                                 </Nav.Item>
@@ -66,7 +91,6 @@ const PersonaUpSertPage = ({ match }) => {
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="identificaciones">
                                                 <IdentificacionListar personaId={personaId} />
-
                                             </Tab.Pane>
                                             <Tab.Pane eventKey="direcciones">
                                                 <DireccionListar personaId={personaId} />

@@ -54,7 +54,7 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
         let auxMenuAcceso=[];
         if (response) {
             response.map(({menu_accesoId,cat_acceso:{descripcion}})=>{
-                const existe=rolMenuAcceso.find(i=>i.menu_accesoId===menu_accesoId && (i.estadoId===1 || i.estadoId===2));
+                const existe=rolMenuAcceso.find(i=>i.menu_accesoId===menu_accesoId && (i.estadoId===1 || i.estadoId===2) && i.menu_accesoId!==dataInicial.menu_accesoId);
                 if(!existe){
                 let aux={
                     menu_accesoId,

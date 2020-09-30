@@ -8,8 +8,15 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { UsuarioUpSert } from './UsuarioUpSert';
 import { UsuarioRol } from './UsuarioRol';
-const accesos = [1, 2, 3, 4,5];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 17;
+const menuIdRol = 11;
+const menuIdPersona = 12;
+const menuIdUsuarioRol = 18;
 export const UsuarioListar = () => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [abrirModalUsuarioRol, setAbrirModalUsuarioRol] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
@@ -21,9 +28,17 @@ export const UsuarioListar = () => {
         password: '',
         forzar_cambio_password: false,
         fecha_cambio_password: '',
-        dias_cambio_password:0,
+        dias_cambio_password: 0,
         estadoId: 1
     };
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdRol || item.menuId === menuIdPersona || item.menuId === menuIdUsuarioRol);
+            setAccesos(misAccesos);
+        }
+    }
 
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
@@ -31,45 +46,51 @@ export const UsuarioListar = () => {
         setdataInicial(initData);
     }
     const GetUsuarios = async () => {
-        let response = await callApi('usuario?estadoId=1;2');
-        if(response){
-            setUsuarios(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi('usuario?estadoId=1;2');
+            if (response) {
+                setUsuarios(response);
+            }
         }
     }
     const GetPersonas = async () => {
-        let response = await callApi('persona?include=0&estadoId=1');
-        if(response){
-            let listPersonas=[];
-            response.map(({ personaId,nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email})=>{
-                let nombreCompleto = nombre1;
-                if (nombre2) {
-                    nombreCompleto += " " + nombre2;
-                }
-                if (nombre_otros) {
-                    nombreCompleto += " " + nombre_otros;
-                }
-                nombreCompleto += " " + apellido1;
+        if (accesos.find(acceso => acceso.menuId === menuIdPersona && acceso.accesoId === 3)) {
+            let response = await callApi('persona?include=0&estadoId=1');
+            if (response) {
+                let listPersonas = [];
+                response.map(({ personaId, nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email }) => {
+                    let nombreCompleto = nombre1;
+                    if (nombre2) {
+                        nombreCompleto += " " + nombre2;
+                    }
+                    if (nombre_otros) {
+                        nombreCompleto += " " + nombre_otros;
+                    }
+                    nombreCompleto += " " + apellido1;
 
-                if (apellido2) {
-                    nombreCompleto += " " + apellido2;
-                }
-                if (apellido_casada) {
-                    nombreCompleto += " " + apellido_casada;
-                }
-                let item={
-                    value:personaId,
-                    label:nombreCompleto,
-                }
-                listPersonas.push(item);
-            });
+                    if (apellido2) {
+                        nombreCompleto += " " + apellido2;
+                    }
+                    if (apellido_casada) {
+                        nombreCompleto += " " + apellido_casada;
+                    }
+                    let item = {
+                        value: personaId,
+                        label: nombreCompleto,
+                    }
+                    listPersonas.push(item);
+                });
 
-        setPersonas(listPersonas);
+                setPersonas(listPersonas);
+            }
+        } else {
+            setPersonas([{ value: '', label: 'No esta autorizado' }]);
         }
     }
     const handleEditar = (id) => {
-        let { usuarioId, personaId, user_name, forzar_cambio_password,dias_cambio_password, estadoId } = usuarios.find(item => item.usuarioId === id);
-        if(dias_cambio_password===null){
-            dias_cambio_password=0;
+        let { usuarioId, personaId, user_name, forzar_cambio_password, dias_cambio_password, estadoId } = usuarios.find(item => item.usuarioId === id);
+        if (dias_cambio_password === null) {
+            dias_cambio_password = 0;
         }
         setdataInicial({
             usuarioId,
@@ -90,19 +111,21 @@ export const UsuarioListar = () => {
         setAbrirModalUsuarioRol(true);
     }
 
-    
+
     const GetCatRol = async () => {
-        let response = await callApi('rol?estadoId=1&include=0');
-        if(response){
-            setCatRol(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3)) {
+            let response = await callApi('rol?estadoId=1&include=0');
+            if (response) {
+                setCatRol(response);
+            }
         }
     }
     const handleCanbioPass = (id) => {
         let { usuarioId } = usuarios.find(item => item.usuarioId === id);
         setdataInicial({
             usuarioId,
-            password:'',
-           cambioPass:true
+            password: '',
+            cambioPass: true
         });
         setAbrirModal(true);
     }
@@ -131,11 +154,16 @@ export const UsuarioListar = () => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetUsuarios();
         GetPersonas();
         GetCatRol();
-    }, []);
+    }, [accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -149,101 +177,105 @@ export const UsuarioListar = () => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Usuario</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="mytable">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Usuario</th>
-                                            <th>Correo</th>
-                                            <th>Fecha Vencimiento Contraseña</th>
-                                            <th>Fecha Creación</th>
-                                            <th>Estado</th>
-                                            {
-                                                accesos.find(acceso => acceso === 5)&&
-                                                <th>Perfiles</th>
-                                            }
-                                            <th>Cambio Contraseña</th>
-                                            {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            usuarios.map(({ usuarioId, user_name, fecha_cambio_password, fecha_crea, persona: { nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email }, cat_estado: { descripcion: estado } }) => {
-                                                let nombreCompleto = nombre1;
-                                                if (nombre2) {
-                                                    nombreCompleto += " " + nombre2;
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="mytable">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>Nombre</th>
+                                                <th>Usuario</th>
+                                                <th>Correo</th>
+                                                <th>Fecha Vencimiento Contraseña</th>
+                                                <th>Fecha Creación</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuIdUsuarioRol && acceso.accesoId === 3) &&
+                                                    <th>Perfiles</th>
                                                 }
-                                                if (nombre_otros) {
-                                                    nombreCompleto += " " + nombre_otros;
+                                                <th>Cambio Contraseña</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
                                                 }
-                                                nombreCompleto += " " + apellido1;
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                usuarios.map(({ usuarioId, user_name, fecha_cambio_password, fecha_crea, persona: { nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email }, cat_estado: { descripcion: estado } }) => {
+                                                    let nombreCompleto = nombre1;
+                                                    if (nombre2) {
+                                                        nombreCompleto += " " + nombre2;
+                                                    }
+                                                    if (nombre_otros) {
+                                                        nombreCompleto += " " + nombre_otros;
+                                                    }
+                                                    nombreCompleto += " " + apellido1;
 
-                                                if (apellido2) {
-                                                    nombreCompleto += " " + apellido2;
-                                                }
-                                                if (apellido_casada) {
-                                                    nombreCompleto += " " + apellido_casada;
-                                                }
-                                                return (
-                                                    <tr key={usuarioId}>
-                                                        <td>{usuarioId}</td>
-                                                        <td>{nombreCompleto}</td>
-                                                        <td>{user_name}</td>
-                                                        <td>{email}</td>
-                                                        <td>{
-                                                            fecha_cambio_password!==null &&
-                                                            moment(fecha_cambio_password).format('DD/MM/YYYY')
+                                                    if (apellido2) {
+                                                        nombreCompleto += " " + apellido2;
+                                                    }
+                                                    if (apellido_casada) {
+                                                        nombreCompleto += " " + apellido_casada;
+                                                    }
+                                                    return (
+                                                        <tr key={usuarioId}>
+                                                            <td>{usuarioId}</td>
+                                                            <td>{nombreCompleto}</td>
+                                                            <td>{user_name}</td>
+                                                            <td>{email}</td>
+                                                            <td>{
+                                                                fecha_cambio_password !== null &&
+                                                                moment(fecha_cambio_password).format('DD/MM/YYYY')
                                                             }
                                                             </td>
-                                                        <td>{moment(fecha_crea).format('DD/MM/YYYY')}</td>
-                                                        <td>{estado}</td>
-                                                        {
-                                                            accesos.find(acceso => acceso === 5)&&
-                                                            <td style={{ textAlign: "center" }}>
-                                                            <button className="btn-icon btn btn-warning btn-sm" onClick={() => { handleUsuarioRol(usuarioId) }}><i className="feather icon-check-square" /></button>
-                                                            </td>
-                                                        }
-                                                        {
-                                                            accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                            <>
-                                                            <td style={{ textAlign: "center" }}>
-                                                            <button className="btn-icon btn btn-success btn-sm" onClick={() => { handleCanbioPass(usuarioId) }}><i className="feather icon-unlock" /></button>
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    accesos.find(acceso => acceso === 3) &&
-                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(usuarioId) }}><i className="feather icon-edit" /></button>
-                                                                }
-                                                                {
-                                                                    accesos.find(acceso => acceso === 4) &&
-                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(usuarioId) }}><i className="feather icon-trash-2" /></button>
-                                                                }
-                                                            </td>
-                                                            </>
-                                                        }
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
+                                                            <td>{moment(fecha_crea).format('DD/MM/YYYY')}</td>
+                                                            <td>{estado}</td>
+                                                            {
+                                                                accesos.find(acceso => acceso.menuId === menuIdUsuarioRol && acceso.accesoId === 3) &&
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <button className="btn-icon btn btn-warning btn-sm" onClick={() => { handleUsuarioRol(usuarioId) }}><i className="feather icon-check-square" /></button>
+                                                                </td>
+                                                            }
+                                                            {
+                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                <>
+                                                                    {
+                                                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <button className="btn-icon btn btn-success btn-sm" onClick={() => { handleCanbioPass(usuarioId) }}><i className="feather icon-unlock" /></button>
+                                                                        </td>
+                                                                    }
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                            <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(usuarioId) }}><i className="feather icon-edit" /></button>
+                                                                        }
+                                                                        {
+                                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                            <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(usuarioId) }}><i className="feather icon-trash-2" /></button>
+                                                                        }
+                                                                    </td>
+                                                                </>
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&
                                 <UsuarioUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} personas={personas} GetUsuarios={GetUsuarios} dataInicial={dataInicial} />
                             }
-                             {
+                            {
                                 abrirModalUsuarioRol === true &&
                                 <UsuarioRol abrirModal={abrirModalUsuarioRol} setAbrirModal={setAbrirModalUsuarioRol} catRol={catRol} usuarioId={dataInicial.usuarioId} />
                             }

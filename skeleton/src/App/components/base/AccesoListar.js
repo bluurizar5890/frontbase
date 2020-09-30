@@ -6,12 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { AccesoUpSert } from './AccesoUpSert';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
 const menuId = 1;
 export const AccesoListar = () => {
     const state = useSelector(state => state);
 
-    const [accesos, setAccesos] = useState([])
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catAcceso, setCatAcceso] = useState([]);
     const initData = {
@@ -34,8 +35,12 @@ export const AccesoListar = () => {
         setdataInicial(initData);
     }
     const GetAccesos = async () => {
-        let response = await callApi('acceso?estadoId=1;2');
-        setCatAcceso(response);
+        if (accesos.find(acceso => acceso.accesoId === 3)) {
+            let response = await callApi('acceso?estadoId=1;2');
+            if (response) {
+                setCatAcceso(response);
+            }
+        }
     }
     const handleEditar = (id) => {
         const { accesoId, descripcion, estadoId } = catAcceso.find(item => item.accesoId === id);
@@ -71,9 +76,12 @@ export const AccesoListar = () => {
         });
     }
     useEffect(() => {
-        GetAccesos();
         GetAccesosByMenuId();
     }, []);
+
+    useEffect(() => {
+        GetAccesos();
+    }, [accesos])
     return (
         <Aux>
             <Row className='btn-page'>
@@ -93,44 +101,46 @@ export const AccesoListar = () => {
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso.accesoId === 2) &&
-                                <Table striped hover responsive bordered id="mytable">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Descripción</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="mytable">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>Descripción</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso.accesoId === 3 || acceso.accesoId === 4) &&
-                                                <th></th>
+                                                catAcceso.map(({ accesoId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                                    <tr key={accesoId}>
+                                                        <td>{accesoId}</td>
+                                                        <td>{descripcion}</td>
+                                                        <td>{estado}</td>
+                                                        {
+                                                            accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    accesos.find(acceso => acceso.accesoId === 2) &&
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(accesoId) }}><i className="feather icon-edit" /></button>
+                                                                }
+                                                                {
+                                                                    accesos.find(acceso => acceso.accesoId === 4) &&
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(accesoId) }}><i className="feather icon-trash-2" /></button>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                ))
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            catAcceso.map(({ accesoId, descripcion, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={accesoId}>
-                                                    <td>{accesoId}</td>
-                                                    <td>{descripcion}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso.accesoId === 3 || acceso.accesoId === 4) &&
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                accesos.find(acceso => acceso.accesoId === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(accesoId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso.accesoId === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(accesoId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    :
+                                    <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&

@@ -6,8 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { TelefonoUpSert } from './TelefonoUpSert';
-const accesos = [1, 2, 3, 4];
+import { NoAutorizado } from '../NoAutorizado';
+import { useSelector } from 'react-redux';
+const menuId = 14;
+const menuIdTipoTelefono = 7;
 export const TelefonoListar = ({ personaId }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoTelefono, setCatTipoTelefono] = useState([]);
     const [telefonos, setTelefonos] = useState([]);
@@ -17,19 +22,39 @@ export const TelefonoListar = ({ personaId }) => {
         telefono: '',
         estadoId: 1
     };
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdTipoTelefono);
+            setAccesos(misAccesos);
+        }
+    }
+
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
     const GetTipoTelefono = async () => {
-        let response = await callApi('tipotelefono?estadoId=1&include=0');
-        setCatTipoTelefono(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdTipoTelefono && acceso.accesoId === 3)) {
+            let response = await callApi('tipotelefono?estadoId=1&include=0');
+            if (response) {
+                setCatTipoTelefono(response);
+            }
+        } else {
+            setCatTipoTelefono([{ tipo_telefonoId: '', descripcion: 'No esta autorizado' }]);
+        }
     }
     const GetTelefonos = async (id) => {
-        let response = await callApi(`persona/telefono?personaId=${id}&estadoId=1;2`);
-        setTelefonos(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi(`persona/telefono?personaId=${id}&estadoId=1;2`);
+            if (response) {
+                setTelefonos(response);
+            }
+        }
     }
+
     const handleEditar = (id) => {
         const { telefono_personaId, tipo_telefonoId, telefono, estadoId } = telefonos.find(item => item.telefono_personaId === id);
         setdataInicial({
@@ -63,10 +88,15 @@ export const TelefonoListar = ({ personaId }) => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetTipoTelefono();
         GetTelefonos(personaId);
-    }, [personaId]);
+    }, [personaId, accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -80,52 +110,53 @@ export const TelefonoListar = ({ personaId }) => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar teléfono</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Tipo</th>
-                                            <th>Número</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="table_dentificaciones_persona">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Tipo</th>
+                                                <th>Número</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
+                                                telefonos.map(({ telefono_personaId, cat_tipo_telefono: { descripcion: tipoTelefono }, telefono, cat_estado: { descripcion: estado } }) => (
+                                                    <tr key={telefono_personaId}>
+                                                        <td>{telefono_personaId}</td>
+                                                        <td>{tipoTelefono}</td>
+                                                        <td>{telefono}</td>
+                                                        <td>{estado}</td>
+                                                        {
+                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(telefono_personaId) }}><i className="feather icon-edit" /></button>
+                                                                }
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(telefono_personaId) }}><i className="feather icon-trash-2" /></button>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                ))
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            telefonos.map(({ telefono_personaId, cat_tipo_telefono: { descripcion: tipoTelefono }, telefono, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={telefono_personaId}>
-                                                    <td>{telefono_personaId}</td>
-                                                    <td>{tipoTelefono}</td>
-                                                    <td>{telefono}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center"}}>
-                                                            {
-                                                                accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(telefono_personaId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(telefono_personaId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&

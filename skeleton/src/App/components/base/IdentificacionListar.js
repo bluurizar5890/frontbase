@@ -6,8 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import { IdentificacionUpSert } from './IdentificacionUpSert';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-const accesos = [1,2,3,4];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 13;
+const menuIdTipoDocumento = 5;
 export const IdentificacionListar = ({ personaId }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catTipoDocumento, setCatTipoDocumento] = useState([]);
     const [identificaciones, setIdentificaciones] = useState([]);
@@ -18,18 +23,36 @@ export const IdentificacionListar = ({ personaId }) => {
         estadoId: 1
     };
 
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdTipoDocumento);
+            setAccesos(misAccesos);
+        }
+    }
+
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
     const GetTiposIdentificaciones = async () => {
-        let response = await callApi('tipodocumento?estadoId=1&include=0');
-        setCatTipoDocumento(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdTipoDocumento && acceso.accesoId === 3)) {
+            let response = await callApi('tipodocumento?estadoId=1&include=0');
+            if (response) {
+                setCatTipoDocumento(response);
+            }
+        } else {
+            setCatTipoDocumento([{ tipo_documentoId: '', descripcion: 'No esta autorizado' }]);
+        }
     }
     const GetIdentificaciones = async (id) => {
-        let response = await callApi(`persona/identificacion?personaId=${id}&estadoId=1;2`);
-        setIdentificaciones(response);
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi(`persona/identificacion?personaId=${id}&estadoId=1;2`);
+            if (response) {
+                setIdentificaciones(response);
+            }
+        }
     }
     const handleEditar = (id) => {
         const { identificacion_personaId, tipo_documentoId, numero_identificacion, estadoId } = identificaciones.find(item => item.identificacion_personaId === id);
@@ -64,10 +87,15 @@ export const IdentificacionListar = ({ personaId }) => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetTiposIdentificaciones();
         GetIdentificaciones(personaId);
-    }, [personaId]);
+    }, [personaId, accesos]);
     return (
         <Aux>
             <Row className='btn-page'>
@@ -81,52 +109,53 @@ export const IdentificacionListar = ({ personaId }) => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar documento</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Tipo</th>
-                                            <th>Número</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="table_dentificaciones_persona">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Tipo</th>
+                                                <th>Número</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso =>acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
+                                                identificaciones.map(({ identificacion_personaId, cat_tipo_documento: { descripcion: tipoDoc }, numero_identificacion, cat_estado: { descripcion: estado } }) => (
+                                                    <tr key={identificacion_personaId}>
+                                                        <td>{identificacion_personaId}</td>
+                                                        <td>{tipoDoc}</td>
+                                                        <td>{numero_identificacion}</td>
+                                                        <td>{estado}</td>
+                                                        {
+                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(identificacion_personaId) }}><i className="feather icon-edit" /></button>
+                                                                }
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(identificacion_personaId) }}><i className="feather icon-trash-2" /></button>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                ))
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            identificaciones.map(({ identificacion_personaId, cat_tipo_documento: { descripcion: tipoDoc }, numero_identificacion, cat_estado: { descripcion: estado } }) => (
-                                                <tr key={identificacion_personaId}>
-                                                    <td>{identificacion_personaId}</td>
-                                                    <td>{tipoDoc}</td>
-                                                    <td>{numero_identificacion}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(identificacion_personaId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(identificacion_personaId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&

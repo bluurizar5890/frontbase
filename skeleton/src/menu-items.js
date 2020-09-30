@@ -15,6 +15,14 @@ export default {
                     icon: 'feather icon-sidebar'
                 },
                 {
+                    id: 'login',
+                    title: 'Login',
+                    type: 'item',
+                    url: '/auth/login',
+                    classes: 'nav-item',
+                    icon: 'feather icon-sidebar'
+                },
+                {
                     id: 'persona',
                     title: 'Persona',
                     type: 'item',

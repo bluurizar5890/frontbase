@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
+import { useSelector } from 'react-redux';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
+const menuIdMunicipio = 10;
 export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirModal, catDepartamento, GetDirecciones }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [direccion, handleOnChange] = useForm(dataInicial);
     const [departamentoId, setDepartamentoId] = useState('');
     const [catMunicipio, setCatMunicipio] = useState([]);
 
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => item.menuId === menuIdMunicipio);
+            setAccesos(misAccesos);
+        }
+    }
 
     const onchangeDepartamento = ({ target }) => {
         setDepartamentoId(target.value)
@@ -55,15 +66,25 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
     };
     const GetMunicipio = async (id) => {
         if (id > 0) {
-            let response = await callApi(`municipio?departamentoId=${id}&estadoId=1&include=0`);
-            setCatMunicipio(response);
+            if (accesos.find(acceso => acceso.menuId === menuIdMunicipio && acceso.accesoId === 3)) {
+                let response = await callApi(`municipio?departamentoId=${id}&estadoId=1&include=0`);
+                if (response) {
+                    setCatMunicipio(response);
+                }
+            } else {
+                setCatMunicipio([{ municipioId: '', descripcion: 'No esta autorizado' }]);
+            }
         }
     }
     useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
+    useEffect(() => {
         GetMunicipio(departamentoId);
-    }, [departamentoId]);
+    }, [departamentoId, accesos]);
     const errorMessage = "Campo obligatorio";
-    const textTransform='capitalize';
+    const textTransform = 'capitalize';
     return (
         <Modal show={abrirModal} onHide={() => setAbrirModal(false)} size='lg'>
             <Modal.Header closeButton>
@@ -123,7 +144,7 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
                                 autoComplete="off"
                                 rows="3"
                                 minLength="5"
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="12">
@@ -140,7 +161,7 @@ export const DireccionUpSert = ({ dataInicial, personaId, abrirModal, setAbrirMo
                                 autoComplete="off"
                                 rows="3"
                                 minLength="5"
-                                style={{textTransform: textTransform}}
+                                style={{ textTransform: textTransform }}
                             />
                         </Form.Group>
                         {

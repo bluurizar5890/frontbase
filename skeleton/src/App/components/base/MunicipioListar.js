@@ -7,11 +7,14 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MunicipioUpSert } from './MunicipioUpSert';
-
-
-const accesos = [1, 2, 3, 4];
+import { useSelector } from 'react-redux';
+import { NoAutorizado } from '../NoAutorizado';
+const menuId = 10;
+const menuIdDepartamento = 9;
+const menuIdPais = 8;
 export const MunicipioListar = () => {
-
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catPaises, setCatPais] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
@@ -20,9 +23,18 @@ export const MunicipioListar = () => {
         departamentoId: '',
         paisId: '',
         descripcion: '',
-        municipioId_depto:'',
+        municipioId_depto: '',
         estadoId: 1
     };
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => (item.menuId === menuId || item.menuId === menuIdDepartamento || item.menuId === menuIdPais));
+            setAccesos(misAccesos);
+        }
+    }
+
 
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
@@ -30,31 +42,48 @@ export const MunicipioListar = () => {
         setdataInicial(initData);
     }
     const GetPaises = async () => {
-        let response = await callApi('pais?include=0?estadoId=1');
-        setCatPais(response);
-
-    }
-    const GetDepartamentos = async (id) => {
-        let response = await callApi(`departamento?paisId=${id}&estadoId=1&include=0`);
-        setDepartamentos(response);
-    }
-    const GetMunicipios = async (id) => {
-        if(id>0){
-        let response = await callApi(`municipio?departamentoId=${id}&estadoId=1;2`);
-        setMunicipios(response);
+        if (accesos.find(acceso => acceso.menuId === menuIdPais && acceso.accesoId === 3)) {
+            let response = await callApi('pais?include=0?estadoId=1');
+            if (response) {
+                setCatPais(response);
+            }
+        } else {
+            setCatPais([{ paisId: '', descripcion: 'No esta autorizado' }]);
         }
     }
-    
-    const handleChangePais=({target:{value}})=>{
+    const GetDepartamentos = async (id) => {
+        if (id > 0) {
+            if (accesos.find(acceso => acceso.menuId === menuIdDepartamento && acceso.accesoId === 3)) {
+                let response = await callApi(`departamento?paisId=${id}&estadoId=1&include=0`);
+                if (response) {
+                    setDepartamentos(response);
+                }
+            } else {
+                setDepartamentos([{ departamentoId: '', descripcion: 'No esta autorizado' }]);
+            }
+        }
+    }
+    const GetMunicipios = async (id) => {
+        if (id > 0) {
+            if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+                let response = await callApi(`municipio?departamentoId=${id}&estadoId=1;2`);
+                if (response) {
+                    setMunicipios(response);
+                }
+            }
+        }
+    }
+
+    const handleChangePais = ({ target: { value } }) => {
         GetDepartamentos(value);
         setMunicipios([]);
     }
-    const handleChageDepartamento=({target:{value}})=>{
+    const handleChageDepartamento = ({ target: { value } }) => {
         GetMunicipios(value);
     }
     const handleEditar = (id) => {
-        const { municipioId, departamentoId, municipioId_depto,descripcion, estadoId } = municipios.find(item => item.municipioId === id);
-        const {paisId}=departamentos.find(item=>item.departamentoId===departamentoId);
+        const { municipioId, departamentoId, municipioId_depto, descripcion, estadoId } = municipios.find(item => item.municipioId === id);
+        const { paisId } = departamentos.find(item => item.departamentoId === departamentoId);
         setdataInicial({
             municipioId,
             departamentoId,
@@ -81,7 +110,7 @@ export const MunicipioListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
-                    let muns=municipios.filter(item=>item.municipioId!==id);
+                    let muns = municipios.filter(item => item.municipioId !== id);
                     setMunicipios(muns);
                 }
             } else {
@@ -89,9 +118,14 @@ export const MunicipioListar = () => {
             }
         });
     }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
+
     useEffect(() => {
         GetPaises();
-    }, [])
+    }, [accesos])
 
     return (
         <Aux>
@@ -103,97 +137,98 @@ export const MunicipioListar = () => {
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
-                            <Col>
-                                <ValidationForm onSubmit={GetDepartamentos} onErrorSubmit={GetDepartamentos}>
-                                    <Form.Row>
-                                    <Form.Group as={Col} md="6">
-                                            <Form.Label htmlFor="paisId">Pais</Form.Label>
-                                            <SelectGroup 
-                                                onChange={handleChangePais}
-                                                name="paisId"
-                                                id="paisId"
-                                                errorMessage="Seleccione un Pais"
-                                                required>
-                                                        <option value="">Seleccione un Pais</option>
-                                                {
-                                                    catPaises.map(({paisId,descripcion})=>(
-                                                    <option value={paisId} key={paisId}>{descripcion}</option>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                       
-                                        </Form.Group>
-                                        <Form.Group as={Col} md="6">
-                                            <Form.Label htmlFor="departamentoId">Departamento</Form.Label>
-                                            <SelectGroup
-                                                onChange={handleChageDepartamento}
-                                                name="departamentoId"
-                                                id="departamentoId"
-                                                errorMessage="Seleccione un Departamento"
-                                                required>
+                                <Col>
+                                    <ValidationForm onSubmit={GetDepartamentos} onErrorSubmit={GetDepartamentos}>
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Label htmlFor="paisId">Pais</Form.Label>
+                                                <SelectGroup
+                                                    onChange={handleChangePais}
+                                                    name="paisId"
+                                                    id="paisId"
+                                                    errorMessage="Seleccione un Pais"
+                                                    required>
+                                                    <option value="">Seleccione un Pais</option>
+                                                    {
+                                                        catPaises.map(({ paisId, descripcion }) => (
+                                                            <option value={paisId} key={paisId}>{descripcion}</option>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Label htmlFor="departamentoId">Departamento</Form.Label>
+                                                <SelectGroup
+                                                    onChange={handleChageDepartamento}
+                                                    name="departamentoId"
+                                                    id="departamentoId"
+                                                    errorMessage="Seleccione un Departamento"
+                                                    required>
                                                     <option value="">Seleccione un Departamento</option>
-                                                {
-                                                    departamentos.map(({departamentoId,descripcion})=>(
-                                                    <option value={departamentoId} key={departamentoId}>{descripcion}</option>
-                                                    ))
-                                                }
-                                            </SelectGroup>
-                                        </Form.Group>
-                                    </Form.Row>
-                                </ValidationForm>
+                                                    {
+                                                        departamentos.map(({ departamentoId, descripcion }) => (
+                                                            <option value={departamentoId} key={departamentoId}>{descripcion}</option>
+                                                        ))
+                                                    }
+                                                </SelectGroup>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </ValidationForm>
                                 </Col>
                             </Row>
                             <Row className="align-items-center m-l-0">
-                            <Col/> 
-                            <Col className="text-right" md="2">
+                                <Col />
+                                <Col className="text-right" md="2">
                                     {
-                                        accesos.find(acceso => acceso === 1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Municipio</Button>
                                     }
                                 </Col>
                             </Row>
                             <hr></hr>
                             {
-                                accesos.find(acceso => acceso === 2) &&
-                                <Table striped hover responsive bordered id="mytable">
-                                    <thead>
-                                        <tr>
-                                            <th>Codigo</th>
-                                            <th>Municipio</th>
-                                            <th>Departamento</th>
-                                            <th>Estado</th>
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="mytable">
+                                        <thead>
+                                            <tr>
+                                                <th>Codigo</th>
+                                                <th>Municipio</th>
+                                                <th>Departamento</th>
+                                                <th>Estado</th>
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             {
-                                                accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                <th></th>
+                                                municipios.map(({ municipioId, descripcion, cat_departamento: { descripcion: departamento }, cat_estado: { descripcion: estado } }) => (
+                                                    <tr key={municipioId}>
+                                                        <td>{municipioId}</td>
+                                                        <td>{descripcion}</td>
+                                                        <td>{departamento}</td>
+                                                        <td>{estado}</td>
+                                                        {
+                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(municipioId) }}><i className="feather icon-edit" /></button>
+                                                                }
+                                                                {
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(municipioId) }}><i className="feather icon-trash-2" /></button>
+                                                                }
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                ))
                                             }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            municipios.map(({ municipioId, descripcion,cat_departamento:{descripcion:departamento},cat_estado:{descripcion:estado} }) => (
-                                                <tr key={municipioId}>
-                                                    <td>{municipioId}</td>
-                                                    <td>{descripcion}</td>
-                                                    <td>{departamento}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso => acceso === 3 || acceso === 4) &&
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                accesos.find(acceso => acceso === 3) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(municipioId) }}><i className="feather icon-edit" /></button>
-                                                            }
-                                                            {
-                                                                accesos.find(acceso => acceso === 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(municipioId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
                             }
                             {
                                 abrirModal === true &&
