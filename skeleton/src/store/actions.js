@@ -15,3 +15,6 @@ export const HEADER_FIXED_LAYOUT = 'HEADER_FIXED_LAYOUT';
 export const BOX_LAYOUT = 'BOX_LAYOUT';
 export const NAV_CONTENT_LEAVE = 'NAV_CONTENT_LEAVE';
 export const NAV_COLLAPSE_LEAVE = 'NAV_COLLAPSE_LEAVE';
+
+
+export const LOGIN="LOGIN";

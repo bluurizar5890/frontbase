@@ -67,8 +67,8 @@ const reducer = (state = initialState, action) => {
                     isTrigger: trigger,
                 };
             }
-            return {...state};
-        case actionTypes.FULL_SCREEN :
+            return { ...state };
+        case actionTypes.FULL_SCREEN:
             return {
                 ...state,
                 isFullScreen: !state.isFullScreen
@@ -138,6 +138,12 @@ const reducer = (state = initialState, action) => {
                 headerFixedLayout: initialState.headerFixedLayout,
                 boxLayout: initialState.boxLayout
             };
+        case actionTypes.LOGIN:
+            return {
+                ...state,
+                token: action.payload.token,
+                accesos:action.payload.accesos
+            }
         default:
             return state;
     }
