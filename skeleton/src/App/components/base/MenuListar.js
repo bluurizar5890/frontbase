@@ -177,7 +177,7 @@ export const MenuListar = () => {
                                                         {
                                                             accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId==3) &&
                                                             <td style={{ textAlign: "center" }}>
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(menuId) }}><i className="feather icon-zap" /></button>
+                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(id) }}><i className="feather icon-zap" /></button>
                                                             </td>
                                                         }
                                                         {
@@ -186,11 +186,11 @@ export const MenuListar = () => {
 
                                                                 {
                                                                     accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===2) &&
-                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(menuId) }}><i className="feather icon-edit" /></button>
+                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(id) }}><i className="feather icon-edit" /></button>
                                                                 }
                                                                 {
                                                                     accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId==4) &&
-                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(menuId) }}><i className="feather icon-trash-2" /></button>
+                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(id) }}><i className="feather icon-trash-2" /></button>
                                                                 }
                                                             </td>
                                                         }

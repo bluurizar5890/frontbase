@@ -5,11 +5,9 @@ import * as actionTypes from '../../store/actions'
 const LoginPage = () => {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
-    console.log(state);
     const handleLogin = (e) => {
         e.preventDefault();
         dispatch(loginBackend("blopez","username"));
-        console.log("Login button");
     }
     return (
         <div>

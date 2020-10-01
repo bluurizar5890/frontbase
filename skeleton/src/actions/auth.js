@@ -5,7 +5,10 @@ export const loginBackend = (user_name, password) => {
     return async(dispatch) => {
         let values={
             user_name:'blopez',
-            password:'12354'
+            password:'blopez',
+            accesos:true,
+            menu:true,
+            userInfo:true
         }
         let data = await callApi('auth', {
             method: 'POST',

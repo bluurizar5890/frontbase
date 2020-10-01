@@ -77,8 +77,7 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
     useEffect(() => {
         GetAccesosByMenuId();
     }, []);
-
-    console.log(catAccesosAsignados);
+    
     useEffect(() => {
         GetAccesosAsignado(idMenu);
     }, [idMenu, accesos]);

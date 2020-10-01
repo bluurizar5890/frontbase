@@ -1,13 +1,26 @@
 import React,{useEffect, useState} from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm,  SelectGroup } from 'react-bootstrap4-form-validation';
+import { useSelector } from 'react-redux';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
+const menuIdMenuAcceso=19;
 export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu,GetRolMenuAcceso,rolMenuAcceso }) => {
+    const state = useSelector(state => state);
+    const [accesos, setAccesos] = useState([]);
     const [values, handleOnChange] = useForm(dataInicial);
     const [menuId, setMenuid] = useState(dataInicial.menuId);
     const [menuAcceso, setMenuAcceso] = useState([]);
+
+    const GetAccesosByMenuId = () => {
+        if (state?.accesos) {
+            const { accesos } = state;
+            const misAccesos = accesos.filter(item => (item.menuId === menuIdMenuAcceso));
+            setAccesos(misAccesos);
+        }
+    }
+
     const NuevoRegistro = async () => {
         let response = await callApi('rolmenuacceso', {
             method: 'POST',
@@ -45,11 +58,11 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
     };
 
     const handleMenuSeleccionado=({target:{value}})=>{
-        console.log(value);
         setMenuid(value);
     }
 
     const GetMenuAcceso = async (id) => {
+        if (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 3)) {
         let response = await callApi(`menuacceso?menuId=${id}&estadoId=1`);
         let auxMenuAcceso=[];
         if (response) {
@@ -65,10 +78,17 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
             });
             setMenuAcceso(auxMenuAcceso);
         }
+    }else{
+        setMenuAcceso([{ menu_accesoId: '', descripcion: 'No esta autorizado' }]);
     }
+    }
+
+    useEffect(() => {
+        GetAccesosByMenuId();
+    }, []);
     useEffect(() => {
         GetMenuAcceso(menuId);
-    }, [menuId])
+    }, [menuId,accesos])
 
     const errorMessage = "Campo obligatorio";
     return (
