@@ -1,99 +1,140 @@
-import React, { useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Exportar } from '../../../helpers/Exportar';
+import React from 'react'
 import Aux from "../../../hoc/_Aux/index";
 import { Row, Col, Card } from 'react-bootstrap';
-const Graficas = () => {
-    const [calidadPerfil, setCalidadPerfil] = useState([]);
-
-    const analisisData = () => {
-        const calidadPerfilAux = [];
-        dataApi.data.rows.map(({ EstadoCoincidencia:{descripcion} }) => {
-            calidadPerfilAux.push(descripcion);
-        });
-
-        let colores=['#4680ff','#0e9e4a','#16B4F4','#05CE63','#4680ff','#0e9e4a','#16B4F4','#05CE63'];
-
-        
-
-        console.log(calidadPerfilAux);
-        // let unicos=calidadPerfilAux.unique();
-        // console.log({unicos});
-        
-            const result = [];
-            const map = new Map();
-            for (const item of calidadPerfilAux) {
-            if(!map.has(item)){
-            map.set(item, true);    // set any value to Map
-            result.push(item);
-            }
-            }
-
-            console.log(result);
-
-    }
-    const data = (canvas) => {
-        let bar = canvas.getContext('2d');
-        analisisData();
-        return {
-            labels: ['-'],
-            title: "Prueba",
-            datasets: [{
-                label: "Data 1",
-                data: [25],
-                backgroundColor: '#4680ff'
-            },
-            {
-                label: "Data 1",
-                data: [200],
-                backgroundColor: '#0e9e4a'
-            },
-            {
-                label: "Data 1",
-                data: [250],
-                backgroundColor: '#16B4F4'
-            },
-            {
-                label: "Data 1",
-                data: [150],
-                backgroundColor: '#05CE63'
-            }]
-        }
-    };
-
-
+import { EstadoCoincidencia } from './EstadoCoincidencia';
+import { CalidadPerfil } from './CalidadPerfil';
+import { EstadoInvestigacion } from './EstadoInvestigacion';
+import { TipodeCaso } from './TipodeCaso';
+import { BaseDeDatos } from './BaseDeDatos';
+import { AnioConfirmacion } from './AnioConfirmacion';
+import { DePartamentoEchoVictima } from './DePartamentoEchoVictima';
+import { OsamentaGenero } from './OsamentaGenero';
+import { DepartamentoExhumacion } from './DepartamentoExhumacion';
+import { AnioExhumacion } from './AnioExhumacion';
+import { Exportar } from '../../../helpers/Exportar';
+const index = () => {
     return (
-
         <Aux>
+                <Exportar/>
             <Row>
                 <Col xl={6} md={6}>
-                    <Card>
+                <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Bar Chart</Card.Title>
+                            <Card.Title as="h5">Calidad de Perfil</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <Exportar id={"graficasLineas"} nombre="Grafica de prueba" />
-                            <Bar id="graficasLineas"
-                                data={data}
-                                options={{
-                                    barValueSpacing: 20,
-                                    title: {
-                                        display: true,
-                                        text: 'Titulo de la gráfica',
-                                        fontSize: 24
-                                    }
-                                }}
-                            />
+                            <CalidadPerfil dataApi={dataApi} />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={6} md={6}>
+                <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Estado de Coincidencia</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <EstadoCoincidencia dataApi={dataApi} />
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-        </Aux>
-
+            <Row>
+            <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Año de Confirmacion</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <AnioConfirmacion dataApi={dataApi}/>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Estado de Investigación</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <EstadoInvestigacion dataApi={dataApi} />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                
+            </Row>
+            <Row>
+            <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Tipo de CAso</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <TipodeCaso dataApi={dataApi}/>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Base de datos</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <BaseDeDatos dataApi={dataApi} />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                
+            </Row>
+            <Row>
+            <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Departamento de Echo Victima</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <DePartamentoEchoVictima dataApi={dataApi}/>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Osamenta Genero</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <OsamentaGenero dataApi={dataApi} />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                
+            </Row>
+            <Row>
+            <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Departamento Exhumación</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <DepartamentoExhumacion dataApi={dataApi}/>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={6} md={6}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Año Exhumación</Card.Title>
+                        </Card.Header>
+                        <Card.Body>
+                            <AnioExhumacion dataApi={dataApi} />
+                        </Card.Body>
+                    </Card>
+                </Col>
+                
+            </Row>
+        </Aux >
     )
 }
 
-export default Graficas;
+export default index;
 
 
 const dataApi = {
@@ -130,11 +171,19 @@ const dataApi = {
                     "osamentaDet": "50",
                     "sexoAdnId": null,
                     "locisAlelosUtiles": 0,
-                    "SexoAdn": null
+                    "SexoAdn": null,
+                    "fechaExhumacion": "2020-01-15T00:00:00.000Z",
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
+                    }
                 },
                 "Victima": {
                     "codigoVictima": "2961-V02",
-                    "nombreVictima": "Carlos Quex"
+                    "nombreVictima": "Carlos Quex",
+                    "DeptoLugarHecho": {
+                        "descripcion": "SOLOLA"
+                    }
                 },
                 "DonanteCoincidencia": [
                     {
@@ -204,7 +253,7 @@ const dataApi = {
                 "posterior": "",
                 "estadoCoincidenciaId": 1,
                 "fechaNotificacionDid": "2020-09-18T00:00:00.000Z",
-                "fechaConfExc": "2020-09-18T00:00:00.000Z",
+                "fechaConfExc": "2016-09-18T00:00:00.000Z",
                 "estadoInvestigacionId": 2,
                 "cromosomaYId": 2,
                 "tipoCasoDidId": null,
@@ -220,11 +269,19 @@ const dataApi = {
                     "osamentaDet": "50",
                     "sexoAdnId": null,
                     "locisAlelosUtiles": 0,
-                    "SexoAdn": null
+                    "SexoAdn": null,
+                    "fechaExhumacion": "2020-01-15T00:00:00.000Z",
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
+                    }
                 },
                 "Victima": {
                     "codigoVictima": "2961-V02",
-                    "nombreVictima": "Carlos Quex"
+                    "nombreVictima": "Carlos Quex",
+                    "DeptoLugarHecho": {
+                        "descripcion": "GUATEMALA"
+                    }
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -274,7 +331,7 @@ const dataApi = {
                 "posterior": "99.99999%",
                 "estadoCoincidenciaId": 2,
                 "fechaNotificacionDid": "2020-09-21T00:00:00.000Z",
-                "fechaConfExc": "2020-09-21T00:00:00.000Z",
+                "fechaConfExc": "2017-09-21T00:00:00.000Z",
                 "estadoInvestigacionId": 2,
                 "cromosomaYId": 2,
                 "tipoCasoDidId": 2,
@@ -290,11 +347,19 @@ const dataApi = {
                     "osamentaDet": "17",
                     "sexoAdnId": null,
                     "locisAlelosUtiles": 10,
-                    "SexoAdn": null
+                    "SexoAdn": null,
+                    "fechaExhumacion": "2020-01-15T00:00:00.000Z",
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "GUATEMALA"
+                    }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG 1899-001-V01",
-                    "nombreVictima": "JENNIFER SANCHEZ"
+                    "nombreVictima": "JENNIFER SANCHEZ",
+                    "DeptoLugarHecho": {
+                        "descripcion": "SOLOLA"
+                    }
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -350,7 +415,7 @@ const dataApi = {
                 "posterior": "99.9999%",
                 "estadoCoincidenciaId": 2,
                 "fechaNotificacionDid": "2020-09-21T00:00:00.000Z",
-                "fechaConfExc": "2020-09-21T00:00:00.000Z",
+                "fechaConfExc": "2018-09-21T00:00:00.000Z",
                 "estadoInvestigacionId": 2,
                 "cromosomaYId": 2,
                 "tipoCasoDidId": 4,
@@ -366,13 +431,14 @@ const dataApi = {
                     "osamentaDet": "7",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 13,
+                    "fechaExhumacion": "2017-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "GUATEMALA"
                     }
-                },
-                "Victima": {
-                    "codigoVictima": "FAFG FD-1985",
-                    "nombreVictima": "Diego Augusto Ralon"
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -428,7 +494,7 @@ const dataApi = {
                 "posterior": "",
                 "estadoCoincidenciaId": 2,
                 "fechaNotificacionDid": "2020-09-22T00:00:00.000Z",
-                "fechaConfExc": "2020-09-22T00:00:00.000Z",
+                "fechaConfExc": "2018-09-22T00:00:00.000Z",
                 "estadoInvestigacionId": 2,
                 "cromosomaYId": 2,
                 "tipoCasoDidId": 2,
@@ -444,11 +510,19 @@ const dataApi = {
                     "osamentaDet": "17",
                     "sexoAdnId": null,
                     "locisAlelosUtiles": 10,
-                    "SexoAdn": null
+                    "SexoAdn": null,
+                    "fechaExhumacion": "2019-01-15T00:00:00.000Z",
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "ALTA VERAPAZ"
+                    }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG 1899-001-V01",
-                    "nombreVictima": "JENNIFER SANCHEZ"
+                    "nombreVictima": "JENNIFER SANCHEZ",
+                    "DeptoLugarHecho": {
+                        "descripcion": "BAJA VERAPAZ"
+                    }
                 },
                 "DonanteCoincidencia": [
                     {
@@ -513,7 +587,7 @@ const dataApi = {
                 "posterior": "",
                 "estadoCoincidenciaId": 2,
                 "fechaNotificacionDid": "2020-07-24T00:00:00.000Z",
-                "fechaConfExc": "2020-08-21T00:00:00.000Z",
+                "fechaConfExc": "2015-08-21T00:00:00.000Z",
                 "estadoInvestigacionId": 1,
                 "cromosomaYId": 2,
                 "tipoCasoDidId": 2,
@@ -529,13 +603,21 @@ const dataApi = {
                     "osamentaDet": "P1",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 12,
+                    "fechaExhumacion": "2020-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
                     }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG 1842-001-V01",
-                    "nombreVictima": "JESUS SARPEC TOJ"
+                    "nombreVictima": "JESUS SARPEC TOJ",
+                    "DeptoLugarHecho": {
+                        "descripcion": "ALTA VERAPAZ"
+                    }
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -607,13 +689,21 @@ const dataApi = {
                     "osamentaDet": "1",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 24,
+                    "fechaExhumacion": "2020-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
                     }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG FD-3200-V01",
-                    "nombreVictima": "ALBERTO TACEN BAR"
+                    "nombreVictima": "ALBERTO TACEN BAR",
+                    "DeptoLugarHecho": {
+                        "descripcion": "QUICHE"
+                    }
                 },
                 "DonanteCoincidencia": [
                     {
@@ -710,13 +800,21 @@ const dataApi = {
                     "osamentaDet": "1",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 24,
+                    "fechaExhumacion": "2014-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
                     }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG 1899-001-V01",
-                    "nombreVictima": "JENNIFER SANCHEZ"
+                    "nombreVictima": "JENNIFER SANCHEZ",
+                    "DeptoLugarHecho": {
+                        "descripcion": "SOLOLA"
+                    }
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -782,13 +880,19 @@ const dataApi = {
                     "osamentaDet": "12",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 0,
+                    "fechaExhumacion": "2010-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
                     }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG-2005-040-V03",
-                    "nombreVictima": "Pedro Paul"
+                    "nombreVictima": "Pedro Paul",
+                    "DeptoLugarHecho": null
                 },
                 "DonanteCoincidencia": [],
                 "BaseInfo": {
@@ -841,7 +945,7 @@ const dataApi = {
                 "posterior": ">99.9999%",
                 "estadoCoincidenciaId": 2,
                 "fechaNotificacionDid": "2020-07-08T00:00:00.000Z",
-                "fechaConfExc": "2020-07-24T00:00:00.000Z",
+                "fechaConfExc": null,
                 "estadoInvestigacionId": 1,
                 "cromosomaYId": 1,
                 "tipoCasoDidId": 3,
@@ -857,13 +961,19 @@ const dataApi = {
                     "osamentaDet": "1",
                     "sexoAdnId": 1,
                     "locisAlelosUtiles": 6,
+                    "fechaExhumacion": "2011-01-15T00:00:00.000Z",
                     "SexoAdn": {
                         "descripcion": "XY"
+                    },
+                    "DeptoExhumacion": {
+                        "departamentoId": 7,
+                        "descripcion": "SOLOLA"
                     }
                 },
                 "Victima": {
                     "codigoVictima": "FAFG 1881-001-V04",
-                    "nombreVictima": "JUVENTINO MOLINA DIAZ"
+                    "nombreVictima": "JUVENTINO MOLINA DIAZ",
+                    "DeptoLugarHecho": null
                 },
                 "DonanteCoincidencia": [
                     {

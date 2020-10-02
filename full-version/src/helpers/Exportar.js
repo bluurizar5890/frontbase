@@ -132,7 +132,7 @@ export const Exportar = ({ id, nombre = "descarga" }) => {
 
             const auxAncho = anchoHojaPx - anchoC;
             x = auxAncho / 2;
-            const base64Image = canvas.toDataURL();
+            const base64Image = canvas.toDataURL("image/png");
             pdf.addImage(base64Image, "JPEG", x, y, anchoC, alturaC);
             agregarEncabezado(paginaActual);
             if (paginaActual < totalPaginas) {

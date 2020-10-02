@@ -133,7 +133,7 @@ const ChartJs = React.lazy(() => import('./Demo/Charts/ChartJs/index'));
 const HighChart = React.lazy(() => import('./Demo/Charts/HighChart/index'));
 const ReChart = React.lazy(() => import('./Demo/Charts/ReChart/index'));
 const PeityChart = React.lazy(() => import('./Demo/Charts/PeityChart/index'));
-const fafg = React.lazy(() => import('./Demo/Charts/fafg/Graficas'));
+const fafg = React.lazy(() => import('./Demo/Charts/fafg/index'));
 
 const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 const VectorMaps = React.lazy(() => import('./Demo/Maps/VectorMap/index'));
