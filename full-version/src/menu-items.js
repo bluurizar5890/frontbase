@@ -980,6 +980,12 @@ export default {
                             title: 'Peity',
                             type: 'item',
                             url: '/charts/peity'
+                        },
+                        {
+                            id: 'fafg',
+                            title: 'Fafg',
+                            type: 'item',
+                            url: '/charts/fafg'
                         }
                     ]
                 },

@@ -133,6 +133,7 @@ const ChartJs = React.lazy(() => import('./Demo/Charts/ChartJs/index'));
 const HighChart = React.lazy(() => import('./Demo/Charts/HighChart/index'));
 const ReChart = React.lazy(() => import('./Demo/Charts/ReChart/index'));
 const PeityChart = React.lazy(() => import('./Demo/Charts/PeityChart/index'));
+const fafg = React.lazy(() => import('./Demo/Charts/fafg/Graficas'));
 
 const GoogleMap = React.lazy(() => import('./Demo/Maps/GoogleMap/index'));
 const VectorMaps = React.lazy(() => import('./Demo/Maps/VectorMap/index'));
@@ -277,6 +278,7 @@ const routes = [
     { path: '/charts/high-chart', exact: true, name: 'High Chart', component: HighChart },
     { path: '/charts/re-chart', exact: true, name: 'Re Chart', component: ReChart },
     { path: '/charts/peity', exact: true, name: 'Peity Chart', component: PeityChart },
+    { path: '/charts/fafg', exact: true, name: 'Graficas Fafg', component: fafg },
     { path: '/maps/google-map', exact: true, name: 'Google Map', component: GoogleMap },
     { path: '/maps/vector', exact: true, name: 'Vector Map', component: VectorMaps },
     { path: '/task/task-list', exact: true, name: 'Task List', component: AppTaskList },
