@@ -34,7 +34,7 @@ class BarBasicChart extends React.Component {
         };
 
         return (
-            <>
+            <div>
                 <Exportar id={"graficasLineas"} nombre="Grafica de prueba" />
                 <Bar id="graficasLineas"
                     data={data}
@@ -47,7 +47,7 @@ class BarBasicChart extends React.Component {
                         }
                     }}
                 />
-            </>
+           </div>
         );
     }
 }

@@ -141,8 +141,10 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LOGIN:
             return {
                 ...state,
-                token: action.payload.token,
-                accesos:action.payload.accesos
+                token: action.payload.token || '',
+                userInfo: action.payload.userInfo || {},
+                menu: action.payload.menu || [],
+                accesos:action.payload.accesos || []
             }
         default:
             return state;

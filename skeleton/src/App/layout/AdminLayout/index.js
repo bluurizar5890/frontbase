@@ -37,6 +37,7 @@ class AdminLayout extends Component {
 
     render() {
 
+        console.log("AdminLayout props",this.props);
         /* full screen exit call */
         document.addEventListener('fullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('webkitfullscreenchange', this.fullScreenExitHandler);
@@ -69,7 +70,7 @@ class AdminLayout extends Component {
                         <div className={mainClass.join(' ')}>
                             <div className="pcoded-content">
                                 <div className="pcoded-inner-content">
-                                    <Breadcrumb />
+                                    <Breadcrumb menu={this.props.menu || []}/>
                                     <div className="main-body">
                                         <div className="page-wrapper">
                                             <Suspense fallback={<Loader/>}>
@@ -97,7 +98,8 @@ const mapStateToProps = state => {
         isFullScreen: state.isFullScreen,
         collapseMenu: state.collapseMenu,
         layout: state.layout,
-        subLayout: state.subLayout
+        subLayout: state.subLayout,
+        menu:state.menu
     }
 };
 

@@ -6,6 +6,7 @@ import navigation from '../../../../menu-items';
 import DEMO from "../../../../store/constant";
 import Aux from "../../../../hoc/_Aux";
 
+
 class Breadcrumb extends Component {
     state = {
         main: [],
@@ -13,6 +14,7 @@ class Breadcrumb extends Component {
     };
 
     componentDidMount() {
+        console.log("Props en Bread",this.props);
         (navigation.items).map((item, index) => {
             if (item.type && item.type === 'group') {
                 this.getCollapse(item, index);
@@ -22,6 +24,7 @@ class Breadcrumb extends Component {
     };
 
     UNSAFE_componentWillReceiveProps = () => {
+        console.log("Props en Bread",this.props);
         (navigation.items).map((item, index) => {
             if (item.type && item.type === 'group') {
                 this.getCollapse(item);
@@ -90,7 +93,7 @@ class Breadcrumb extends Component {
 
         }
 
-        document.title = title + ' | Able Pro Premium React + Redux Admin Template';
+        document.title = title + ' | Front Base';
 
         return (
             <Aux>

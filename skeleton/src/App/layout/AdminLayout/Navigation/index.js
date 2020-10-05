@@ -9,6 +9,8 @@ import Aux from './../../../../hoc/_Aux'
 import * as actionTypes from './../../../../store/actions';
 import navigation from '../../../../menu-items';
 
+
+
 class Navigation extends Component {
 
     resize = () => {
@@ -19,7 +21,11 @@ class Navigation extends Component {
         }
     };
 
+    UNSAFE_componentWillReceiveProps=()=>{
+        console.log("Nuevas props",this.props);
+    }
     componentDidMount() {
+        console.log("Navigation",this.props);
         this.resize();
         window.addEventListener('resize', this.resize)
     }
@@ -103,14 +109,16 @@ class Navigation extends Component {
 
         let navContent = (
             <div className={navBarClass.join(' ')}>
-                <NavContent navigation={navigation.items} />
+                <NavContent navigation={this.props.menu || []} />
+                {/* <NavContent navigation={navigation.items} /> */}
             </div>
         );
         if (this.props.windowWidth < 992) {
             navContent = (
                 <OutsideClick>
                     <div className="navbar-wrapper">
-                        <NavContent navigation={navigation.items} />
+                    <NavContent navigation={this.props.menu || []} />
+                        {/* <NavContent navigation={navigation.items} /> */}
                     </div>
                 </OutsideClick>
             );
@@ -135,7 +143,8 @@ const mapStateToProps = state => {
         rtlLayout: state.rtlLayout,
         navFixedLayout: state.navFixedLayout,
         headerFixedLayout: state.headerFixedLayout,
-        boxLayout: state.boxLayout
+        boxLayout: state.boxLayout,
+        menu:state.menu
     }
 };
 
