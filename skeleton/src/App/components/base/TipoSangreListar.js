@@ -115,7 +115,7 @@ export const TipoSangreListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catTipoSangre.map(({ tipo_sangreId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                            catTipoSangre.map(({ tipo_sangreId, descripcion, Estado: { descripcion: estado } }) => (
                                                 <tr key={tipo_sangreId}>
                                                     <td>{tipo_sangreId}</td>
                                                     <td>{descripcion}</td>

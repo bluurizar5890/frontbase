@@ -82,6 +82,34 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="12">
+                            <Form.Label htmlFor="classes">Classes</Form.Label>
+                            <TextInput
+                                name="classes"
+                                id="classes"
+                                required
+                                value={values.classes}
+                                onChange={handleOnChange}
+                                errorMessage={errorMessage}
+                                placeholder="Classes"
+                                autoComplete="off"
+                                type="text"
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} md="12">
+                            <Form.Label htmlFor="type">Tipo</Form.Label>
+                            <TextInput
+                                name="type"
+                                id="type"
+                                required
+                                value={values.type}
+                                onChange={handleOnChange}
+                                errorMessage={errorMessage}
+                                placeholder="Tipo"
+                                autoComplete="off"
+                                type="text"
+                            />
+                        </Form.Group>
+                        <Form.Group as={Col} md="12">
                             <Form.Label htmlFor="href">Href</Form.Label>
                             <TextInput
                                 name="href"
@@ -123,6 +151,20 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                         <option value={menuId} key={menuId}>{descripcion}</option>
                                         ))
                                     }
+                                </SelectGroup>
+                            </Form.Group>
+                            <Form.Group as={Col} md="12">
+                                <Form.Label htmlFor="visible">Visible</Form.Label>
+                                <SelectGroup
+                                    name="visible"
+                                    id="visible"
+                                    value={values.visible}
+                                    required
+                                    errorMessage={errorMessage}
+                                    onChange={handleOnChange}>
+                                    <option value="">Seleccione</option>
+                                    <option value="1">Si</option>
+                                    <option value="0">No</option>
                                 </SelectGroup>
                             </Form.Group>
                         {

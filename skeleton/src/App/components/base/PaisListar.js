@@ -117,7 +117,7 @@ export const PaisListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            paises.map(({ paisId, descripcion, nacionalidad, cat_estado:{descripcion:estado}  }) => (
+                                            paises.map(({ paisId, descripcion, nacionalidad, Estado:{descripcion:estado}  }) => (
                                                 <tr key={paisId}>
                                                     <td>{paisId}</td>
                                                     <td>{descripcion}</td>

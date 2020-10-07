@@ -71,7 +71,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
         }
     }
     const handleEditar = (id) => {
-        const { rol_menu_accesoId, rolId, menu_accesoId, estadoId, menu_acceso: { menuId } } = rolMenuAcceso.find(item => item.rol_menu_accesoId === id);
+        const { rol_menu_accesoId, rolId, menu_accesoId, estadoId, MenuAcceso: { menuId } } = rolMenuAcceso.find(item => item.rol_menu_accesoId === id);
         setdataInicial({
             rol_menu_accesoId,
             menu_accesoId,
@@ -155,7 +155,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        rolMenuAcceso.map(({ rol_menu_accesoId, menu_acceso: { cat_menu: { descripcion: descMenu }, cat_acceso: { descripcion: desAcceso } }, cat_estado: { descripcion: descEstado } }) => {
+                                                        rolMenuAcceso.map(({ rol_menu_accesoId, MenuAcceso: { Menu: { descripcion: descMenu }, Acceso: { descripcion: desAcceso } }, Estado: { descripcion: descEstado } }) => {
                                                             return (
                                                                 <tr key={rol_menu_accesoId}>
                                                                     <td>{rol_menu_accesoId}</td>

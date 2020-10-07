@@ -116,7 +116,7 @@ export const TipoDocumentoListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                catTipoDocumento.map(({ tipo_documentoId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                                catTipoDocumento.map(({ tipo_documentoId, descripcion, Estado: { descripcion: estado } }) => (
                                                     <tr key={tipo_documentoId}>
                                                         <td>{tipo_documentoId}</td>
                                                         <td>{descripcion}</td>

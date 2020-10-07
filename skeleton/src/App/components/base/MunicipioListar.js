@@ -204,7 +204,7 @@ export const MunicipioListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                municipios.map(({ municipioId, descripcion, cat_departamento: { descripcion: departamento }, cat_estado: { descripcion: estado } }) => (
+                                                municipios.map(({ municipioId, descripcion, Departamento: { descripcion: departamento }, Estado: { descripcion: estado } }) => (
                                                     <tr key={municipioId}>
                                                         <td>{municipioId}</td>
                                                         <td>{descripcion}</td>

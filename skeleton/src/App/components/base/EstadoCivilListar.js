@@ -114,7 +114,7 @@ export const EstadoCivilListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                catEstadoCivil.map(({ estado_civilId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                                catEstadoCivil.map(({ estado_civilId, descripcion, Estado: { descripcion: estado } }) => (
                                                     <tr key={estado_civilId}>
                                                         <td>{estado_civilId}</td>
                                                         <td>{descripcion}</td>

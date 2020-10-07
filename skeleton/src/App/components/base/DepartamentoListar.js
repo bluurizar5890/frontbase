@@ -136,7 +136,7 @@ export const DepartamentoListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                departamentos.map(({ departamentoId, descripcion, cat_pai: { descripcion: pais }, cat_estado: { descripcion: estado } }) => (
+                                                departamentos.map(({ departamentoId, descripcion, Pais: { descripcion: pais }, Estado: { descripcion: estado } }) => (
                                                     <tr key={departamentoId}>
                                                         <td>{departamentoId}</td>
                                                         <td>{descripcion}</td>

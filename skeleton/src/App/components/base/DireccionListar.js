@@ -55,7 +55,7 @@ export const DireccionListar = ({ personaId }) => {
         }
     }
     const handleEditar = (id) => {
-        const { direccion_personaId, municipioId, direccion, punto_referencia, estadoId, cat_municipio: { cat_departamento: { departamentoId } } } = direcciones.find(item => item.direccion_personaId === id);
+        const { direccion_personaId, municipioId, direccion, punto_referencia, estadoId, Municipio:{ Departamento: { departamentoId } } } = direcciones.find(item => item.direccion_personaId === id);
         setdataInicial({
             direccion_personaId,
             municipioId,
@@ -135,7 +135,7 @@ export const DireccionListar = ({ personaId }) => {
                                         </thead>
                                         <tbody>
                                             {
-                                                direcciones.map(({ direccion_personaId, direccion, punto_referencia, cat_municipio: { descripcion: municipio, cat_departamento: { descripcion: departamento } }, cat_estado: { descripcion: estado } }) => (
+                                                direcciones.map(({ direccion_personaId, direccion, punto_referencia, Municipio:{ descripcion: municipio, Departamento: { descripcion: departamento } }, Estado: { descripcion: estado } }) => (
                                                     <tr key={direccion_personaId}>
                                                         <td>{direccion_personaId}</td>
                                                         <td>{departamento}</td>

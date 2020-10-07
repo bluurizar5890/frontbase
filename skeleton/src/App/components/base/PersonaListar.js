@@ -120,7 +120,7 @@ export const PersonaListar = () => {
                                                         apellido2,
                                                         apellido_casada,
                                                         email,
-                                                        fecha_nacimiento, cat_genero: { descripcion: genero }, cat_estado: { descripcion: estado } } = item;
+                                                        fecha_nacimiento, Genero: { descripcion: genero }, Estado: { descripcion: estado } } = item;
                                                     let nombreCompleto = nombre1;
                                                     if (nombre2) {
                                                         nombreCompleto += " " + nombre2;

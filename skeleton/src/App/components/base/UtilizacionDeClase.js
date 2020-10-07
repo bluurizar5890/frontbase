@@ -131,7 +131,7 @@ class UtilizacionDeClase extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                this.state.departamentos.map(({ departamentoId, descripcion, cat_pai: { descripcion: pais }, cat_estado: { descripcion: estado } }) => (
+                                                this.state.departamentos.map(({ departamentoId, descripcion, Pais: { descripcion: pais }, Estado: { descripcion: estado } }) => (
                                                     <tr key={departamentoId}>
                                                         <td>{departamentoId}</td>
                                                         <td>{descripcion}</td>

@@ -62,7 +62,7 @@ export const PersonaView = ({ abrirModal, setAbrirModal, personaId }) => {
                                                     apellido_casada,
                                                     fecha_nacimiento,
                                                     email,
-                                                    cat_estado: { descripcion: estado },
+                                                    Estado: { descripcion: estado },
                                                     cat_genero: { descripcion: genero }
                                                 } = item;
                                                 return (
@@ -122,7 +122,7 @@ export const PersonaView = ({ abrirModal, setAbrirModal, personaId }) => {
                                         </thead>
                                         <tbody>
                                             {
-                                                listIdentificaciones().map(({ identificacion_personaId, numero_identificacion, cat_tipo_documento: { descripcion: tipoIdentificacion }, cat_estado: { descripcion: estado } }) => (
+                                                listIdentificaciones().map(({ identificacion_personaId, numero_identificacion, TipoDocumento: { descripcion: tipoIdentificacion }, Estado: { descripcion: estado } }) => (
                                                     <tr key={`identificacion${identificacion_personaId}`}>
                                                         <td>{identificacion_personaId}</td>
                                                         <td>{tipoIdentificacion}</td>

@@ -115,7 +115,7 @@ export const TipoTelefonoListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catTipoTelefono.map(({ tipo_telefonoId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                            catTipoTelefono.map(({ tipo_telefonoId, descripcion, Estado: { descripcion: estado } }) => (
                                                 <tr key={tipo_telefonoId}>
                                                     <td>{tipo_telefonoId}</td>
                                                     <td>{descripcion}</td>

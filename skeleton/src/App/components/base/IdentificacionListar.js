@@ -131,7 +131,7 @@ export const IdentificacionListar = ({ personaId }) => {
                                         </thead>
                                         <tbody>
                                             {
-                                                identificaciones.map(({ identificacion_personaId, cat_tipo_documento: { descripcion: tipoDoc }, numero_identificacion, cat_estado: { descripcion: estado } }) => (
+                                                identificaciones.map(({ identificacion_personaId, TipoDocumento: { descripcion: tipoDoc }, numero_identificacion, Estado: { descripcion: estado } }) => (
                                                     <tr key={identificacion_personaId}>
                                                         <td>{identificacion_personaId}</td>
                                                         <td>{tipoDoc}</td>

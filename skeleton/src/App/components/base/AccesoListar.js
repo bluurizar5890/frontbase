@@ -116,7 +116,7 @@ export const AccesoListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                catAcceso.map(({ accesoId, descripcion, cat_estado: { descripcion: estado } }) => (
+                                                catAcceso.map(({ accesoId, descripcion, Estado: { descripcion: estado } }) => (
                                                     <tr key={accesoId}>
                                                         <td>{accesoId}</td>
                                                         <td>{descripcion}</td>

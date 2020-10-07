@@ -208,7 +208,7 @@ export const UsuarioListar = () => {
                                         </thead>
                                         <tbody>
                                             {
-                                                usuarios.map(({ usuarioId, user_name, fecha_cambio_password, fecha_crea, persona: { nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email }, cat_estado: { descripcion: estado } }) => {
+                                                usuarios.map(({ usuarioId, user_name, fecha_cambio_password, fecha_crea, Persona: { nombre1, nombre2, nombre_otros, apellido1, apellido2, apellido_casada, email }, Estado: { descripcion: estado } }) => {
                                                     let nombreCompleto = nombre1;
                                                     if (nombre2) {
                                                         nombreCompleto += " " + nombre2;

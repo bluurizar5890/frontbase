@@ -132,7 +132,7 @@ export const TelefonoListar = ({ personaId }) => {
                                         </thead>
                                         <tbody>
                                             {
-                                                telefonos.map(({ telefono_personaId, cat_tipo_telefono: { descripcion: tipoTelefono }, telefono, cat_estado: { descripcion: estado } }) => (
+                                                telefonos.map(({ telefono_personaId, TipoTelefono: { descripcion: tipoTelefono }, telefono, Estado: { descripcion: estado } }) => (
                                                     <tr key={telefono_personaId}>
                                                         <td>{telefono_personaId}</td>
                                                         <td>{tipoTelefono}</td>

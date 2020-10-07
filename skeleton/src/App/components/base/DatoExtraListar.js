@@ -145,9 +145,9 @@ export const DatoExtraListar = ({ personaId }) => {
                                         <tbody>
                                             {
                                                 datoExtra.map((item) => {
-                                                    const { dato_extra_personaId, cat_tipo_sangre, cat_estado_civil, cat_estado: { descripcion: estado } } = item;
-                                                    const { descripcion: tipoSangre } = !!cat_tipo_sangre && cat_tipo_sangre;
-                                                    const { descripcion: estadoCivil } = !!cat_estado_civil && cat_estado_civil;
+                                                    const { dato_extra_personaId, TipoSangre, EstadoCivil, Estado: { descripcion: estado } } = item;
+                                                    const { descripcion: tipoSangre } = !!TipoSangre && TipoSangre;
+                                                    const { descripcion: estadoCivil } = !!EstadoCivil && EstadoCivil;
                                                     return (
                                                         <tr key={dato_extra_personaId}>
                                                             <td>{dato_extra_personaId}</td>

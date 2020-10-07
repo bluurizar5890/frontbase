@@ -24,6 +24,9 @@ export const MenuListar = () => {
         posicion: '',
         descripcion: '',
         href: '',
+        visible: '',
+        classes: '',
+        type: '',
         icono: '',
         menu_padreId: 0,
         estadoId: 1
@@ -53,13 +56,16 @@ export const MenuListar = () => {
     }
     }
     const handleEditar = (id) => {
-        const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId } = catMenu.find(item => item.menuId === id);
+        const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId,visible,classes,type } = catMenu.find(item => item.menuId === id);
         setdataInicial({
             menuId,
             posicion,
             descripcion,
             href,
             icono,
+            visible,
+            classes,
+            type,
             menu_padreId,
             estadoId
         });
@@ -162,9 +168,8 @@ export const MenuListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catMenu.map(({ menuId:id, descripcion, posicion, href, icono, menu_padreId, cat_estado: { descripcion: estado } }) => {
-                                                const item = catMenu.find(item => item.menuId === menu_padreId);
-                                                const { descripcion: descPadre } = !!item && item;
+                                            catMenu.map(({ menuId:id, descripcion, posicion, href, icono, menu_padreId,MenuPadre, Estado: { descripcion: estado } }) => {
+                                                let {descripcion:descPadre=""}=!!MenuPadre && MenuPadre;
                                                 return (
                                                     <tr key={id}>
                                                         <td>{id}</td>

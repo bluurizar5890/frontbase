@@ -128,7 +128,7 @@ export const RolListar = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            catRol.map(({ rolId, nombre, descripcion, cat_estado: { descripcion: estado } }) => (
+                                            catRol.map(({ rolId, nombre, descripcion, Estado: { descripcion: estado } }) => (
                                                 <tr key={rolId}>
                                                     <td>{rolId}</td>
                                                     <td>{nombre}</td>
