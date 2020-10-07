@@ -1,7 +1,7 @@
 import React from 'react'
 import pdfConverter from 'jspdf';
 import { saveAs } from 'file-saver';
-import iconoEmpresa from '../assets/images/fafg/imgFafg.png';
+import iconoEmpresa from '../assets/images/fafg/lgoReportes.png';
 var alturaHojaPx = 0;
 var anchoHojaPx = 0;
 const calcular = (ancho, altura) => {
