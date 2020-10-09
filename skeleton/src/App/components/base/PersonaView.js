@@ -62,7 +62,7 @@ export const PersonaView = ({ abrirModal, setAbrirModal, personaId }) => {
                                                     apellido_casada,
                                                     fecha_nacimiento,
                                                     email,
-                                                    Estado: { descripcion: estado },
+                                                    // Estado: { descripcion: estado },
                                                     cat_genero: { descripcion: genero }
                                                 } = item;
                                                 return (

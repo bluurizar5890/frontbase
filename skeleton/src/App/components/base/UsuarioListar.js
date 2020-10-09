@@ -166,6 +166,7 @@ export const UsuarioListar = () => {
         GetCatRol();
     }, [accesos]);
     return (
+        accesos.length>0 &&
         <Aux>
             <Row className='btn-page'>
                 <Col sm={12}>
@@ -201,7 +202,7 @@ export const UsuarioListar = () => {
                                                 }
                                                 <th>Cambio Contraseña</th>
                                                 {
-                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                     <th></th>
                                                 }
                                             </tr>
@@ -244,7 +245,7 @@ export const UsuarioListar = () => {
                                                                 </td>
                                                             }
                                                             {
-                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                                 <>
                                                                     {
                                                                         accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&

@@ -7,7 +7,7 @@ import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal, GetUsuarios }) => {
-    const [values, handleOnChange, , , setValues] = useForm(dataInicial);
+    const [values, handleOnChange, ,setValues] = useForm(dataInicial);
     const [duracionContrasenia, setDuracionContrasenia] = useState('');
     const NuevoRegistro = async () => {
         let response = await callApi('usuario', {

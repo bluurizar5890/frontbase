@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Form, Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { UpdateAcesosMenu } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso } from '../../../helpers/Notificacion';
 import { NoAutorizado } from '../NoAutorizado';
@@ -8,6 +9,7 @@ const menuId = 18;
 const menuIdRol = 11;
 export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [catRolesAsignados, setRolesAsignados] = useState([]);
 
@@ -67,6 +69,7 @@ export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => 
     }
     const GetRolesAsignados = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            dispatch(UpdateAcesosMenu());
             let response = await callApi(`usuario/rol?usuarioId=${id}&estadoId=1;2`);
             if (response) {
                 setRolesAsignados(response);

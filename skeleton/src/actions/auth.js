@@ -24,11 +24,27 @@ export const loginBackend = (user_name, password) => {
     }
 }
 
+export const UpdateAcesosMenu=()=>{
+    return async(dispatch)=>{
+        const accesos=await GetAccesos();
+        const menu=await GetMenu();
+        dispatch(updatePermisoYMenu(accesos,menu));
+    }
+}
+
 const login = (token,userInfo, accesos,menu) => ({
     type: actionTypes.LOGIN,
     payload: {
         token,
         userInfo,
+        accesos,
+        menu
+    }
+});
+
+const updatePermisoYMenu=(accesos,menu)=>({
+    type: actionTypes.ACTUALIZAR_PERMISOS_MENU,
+    payload: {
         accesos,
         menu
     }

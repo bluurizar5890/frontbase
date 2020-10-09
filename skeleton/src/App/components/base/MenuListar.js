@@ -140,13 +140,13 @@ export const MenuListar = () => {
                                 <Col />
                                 <Col className="text-right">
                                     {
-                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId==1) &&
+                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===1) &&
                                         <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Menu</Button>
                                     }
                                 </Col>
                             </Row>
                             {
-                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId==3) ?
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===3) ?
                                 <Table striped hover responsive bordered id="mytable">
                                     <thead>
                                         <tr>
@@ -158,10 +158,10 @@ export const MenuListar = () => {
                                             <th>Menu Padre</th>
                                             <th>Estado</th>
                                             {
-                                                accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId==3) && <th>Acciones</th>
+                                                accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId===3) && <th>Acciones</th>
                                             }
                                             {
-                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===2 || acceso.menuId === menuId && acceso.accesoId==4) &&
+                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId===2) || (acceso.menuId === menuId && acceso.accesoId===4)) &&
                                                 <th></th>
                                             }
                                         </tr>
@@ -180,13 +180,13 @@ export const MenuListar = () => {
                                                         <td>{descPadre}</td>
                                                         <td>{estado}</td>
                                                         {
-                                                            accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId==3) &&
+                                                            accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId===3) &&
                                                             <td style={{ textAlign: "center" }}>
                                                                 <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(id) }}><i className="feather icon-zap" /></button>
                                                             </td>
                                                         }
                                                         {
-                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===2 || acceso.menuId === menuId && acceso.accesoId==4) &&
+                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId===2) || (acceso.menuId === menuId && acceso.accesoId===4)) &&
                                                             <td style={{ textAlign: "center" }}>
 
                                                                 {
@@ -194,7 +194,7 @@ export const MenuListar = () => {
                                                                     <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(id) }}><i className="feather icon-edit" /></button>
                                                                 }
                                                                 {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId==4) &&
+                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===4) &&
                                                                     <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(id) }}><i className="feather icon-trash-2" /></button>
                                                                 }
                                                             </td>

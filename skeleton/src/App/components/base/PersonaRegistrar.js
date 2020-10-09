@@ -13,7 +13,7 @@ const menuId = 12;
 export const PersonaRegistrar = ({ handleSetIdPersona, personaId }) => {
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
-    const [persona, handleOnChange, , setFecha, setValues] = useForm({
+    const [persona, handleOnChange, , setValues] = useForm({
         nombre1: '',
         nombre2: '',
         nombre_otros: '',
@@ -89,13 +89,13 @@ export const PersonaRegistrar = ({ handleSetIdPersona, personaId }) => {
 
     const handleSetFecha = (fecha) => {
         const fechaFormat = moment(fecha).format('YYYY/MM/DD');
-        setFecha("fecha_nacimiento", fechaFormat);
+        setValues({...persona,fecha_nacimiento:fechaFormat});
         setfNacimiento(fecha);
     }
 
     useEffect(() => {
         GetAccesosByMenuId();
-    }, []);
+    }, [state.accesos]);
 
     useEffect(() => {
         GetInfoPersona(personaId);

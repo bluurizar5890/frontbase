@@ -7,13 +7,15 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { RolMenuAccesoUpSert } from './RolMenuAccesoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
+import { UpdateAcesosMenu } from '../../../actions/auth';
 const menuId = 20;
 const menuIdMenu = 21;
 const menuIdRol = 11;
 export const RolMenuAccesoListar = ({ idrol }) => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catMenu, setCatMenu] = useState([]);
@@ -52,6 +54,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
     }
     const GetRolMenuAcceso = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            
             let response = await callApi(`rolmenuacceso?rolId=${id}&estadoId=1;2`);
             if (response) {
                 limpiarEstiloTabla("#mytable");
@@ -59,6 +62,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                 asignarEstiloTabla("#mytable");
             }
         }
+        dispatch(UpdateAcesosMenu());
     }
     const GetInfoRol = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3)) {
@@ -108,7 +112,8 @@ export const RolMenuAccesoListar = ({ idrol }) => {
     }
     useEffect(() => {
         GetAccesosByMenuId();
-    }, []);
+        GetCatMenu();
+    }, [state?.accesos]);
 
     useEffect(() => {
         GetCatMenu();
@@ -123,7 +128,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
             <Row className='btn-page'>
                 <Col sm={12}>
                     {
-                        accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId == 3) ?
+                        accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3) ?
                             <Card>
                                 <Card.Header>
                                     <Card.Title as="h5">{`${infoRol.nombre}`} Acceso</Card.Title>
@@ -148,7 +153,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                                                         <th>Acceso</th>
                                                         <th>Estado</th>
                                                         {
-                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                             <th></th>
                                                         }
                                                     </tr>
@@ -163,7 +168,7 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                                                                     <td>{desAcceso}</td>
                                                                     <td>{descEstado}</td>
                                                                     {
-                                                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                        accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                                         <td style={{ textAlign: "center" }}>
 
                                                                             {

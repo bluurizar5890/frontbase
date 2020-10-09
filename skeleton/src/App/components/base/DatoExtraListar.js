@@ -137,7 +137,7 @@ export const DatoExtraListar = ({ personaId }) => {
                                                 <th>Estado Civil</th>
                                                 <th>Estado</th>
                                                 {
-                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                     <th></th>
                                                 }
                                             </tr>
@@ -155,7 +155,7 @@ export const DatoExtraListar = ({ personaId }) => {
                                                             <td>{estadoCivil}</td>
                                                             <td>{estado}</td>
                                                             {
-                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&

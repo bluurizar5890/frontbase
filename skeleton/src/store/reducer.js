@@ -146,6 +146,12 @@ const reducer = (state = initialState, action) => {
                 menu: action.payload.menu || [],
                 accesos:action.payload.accesos || []
             }
+            case actionTypes.ACTUALIZAR_PERMISOS_MENU:
+                return {
+                    ...state,
+                    menu: action.payload.menu || [],
+                    accesos:action.payload.accesos || []
+                }
         default:
             return state;
     }

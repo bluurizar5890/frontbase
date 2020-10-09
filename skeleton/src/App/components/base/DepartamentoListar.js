@@ -129,7 +129,7 @@ export const DepartamentoListar = () => {
                                                 <th>Pais</th>
                                                 <th>Estado</th>
                                                 {
-                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                    accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                     <th></th>
                                                 }
                                             </tr>
@@ -143,7 +143,7 @@ export const DepartamentoListar = () => {
                                                         <td>{pais}</td>
                                                         <td>{estado}</td>
                                                         {
-                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2 || acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
                                                             <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&

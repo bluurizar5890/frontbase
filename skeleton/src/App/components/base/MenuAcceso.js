@@ -89,14 +89,14 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
             </Modal.Header>
             <Modal.Body>
                 {
-                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId == 3) ?
+                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
                         <Table striped hover responsive bordered id="mytable">
                             <thead>
                                 <tr>
                                     <th>Codigo acceso</th>
                                     <th>Acceso</th>
                                     {
-                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId == 1) || accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId == 2)) &&
+                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2)) &&
                                         <th>Estado</th>
                                     }
                                 </tr>
@@ -140,7 +140,7 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
                                                         :
                                                         <>
                                                             {
-                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId == 1) &&
+                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Form.Group>
                                                                         <div className="switch switch-alternative d-inline m-r-10">
