@@ -4,7 +4,7 @@ import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-va
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
-export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetCatMenu }) => {
+export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu, GetCatMenu }) => {
     const [values, handleOnChange] = useForm(dataInicial);
     const NuevoRegistro = async () => {
         let response = await callApi('menu', {
@@ -45,14 +45,14 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
     const errorMessage = "Campo obligatorio";
     const textTransform = 'capitalize';
     return (
-        <Modal show={abrirModal} onHide={() => setAbrirModal(false)}>
+        <Modal show={abrirModal} onHide={() => setAbrirModal(false)} size="xl">
             <Modal.Header closeButton>
                 <Modal.Title as="h5">{dataInicial.menuId > 0 ? 'Actualizar Menu' : 'Nuevo Menu'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
                     <Form.Row>
-                        <Form.Group as={Col} md="12">
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="descripcion">Descripción</Form.Label>
                             <TextInput
                                 name="descripcion"
@@ -67,7 +67,7 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="text"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="posicion">Posición</Form.Label>
                             <TextInput
                                 name="posicion"
@@ -81,7 +81,9 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="number"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="classes">Classes</Form.Label>
                             <TextInput
                                 name="classes"
@@ -95,7 +97,7 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="text"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="type">Tipo</Form.Label>
                             <TextInput
                                 name="type"
@@ -109,7 +111,9 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="text"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="href">Href</Form.Label>
                             <TextInput
                                 name="href"
@@ -123,7 +127,7 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="text"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
+                        <Form.Group as={Col} md="6">
                             <Form.Label htmlFor="icono">Icono</Form.Label>
                             <TextInput
                                 name="icono"
@@ -137,39 +141,43 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 type="text"
                             />
                         </Form.Group>
-                        <Form.Group as={Col} md="12">
-                                <Form.Label htmlFor="menu_padreId">Padre</Form.Label>
-                                <SelectGroup
-                                    name="menu_padreId"
-                                    id="menu_padreId"
-                                    value={values.menu_padreId}
-                                    errorMessage={errorMessage}
-                                    onChange={handleOnChange}>
-                                    <option value="0">Seleccione un menu</option>
-                                    {
-                                        catMenu.map(({menuId,descripcion})=>(
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group as={Col} md="6">
+                            <Form.Label htmlFor="menu_padreId">Padre</Form.Label>
+                            <SelectGroup
+                                name="menu_padreId"
+                                id="menu_padreId"
+                                value={values.menu_padreId}
+                                errorMessage={errorMessage}
+                                onChange={handleOnChange}>
+                                <option value="0">Seleccione un menu</option>
+                                {
+                                    catMenu.map(({ menuId, descripcion }) => (
                                         <option value={menuId} key={menuId}>{descripcion}</option>
-                                        ))
-                                    }
-                                </SelectGroup>
-                            </Form.Group>
-                            <Form.Group as={Col} md="12">
-                                <Form.Label htmlFor="visible">Visible</Form.Label>
-                                <SelectGroup
-                                    name="visible"
-                                    id="visible"
-                                    value={values.visible}
-                                    required
-                                    errorMessage={errorMessage}
-                                    onChange={handleOnChange}>
-                                    <option value="">Seleccione</option>
-                                    <option value="1">Si</option>
-                                    <option value="0">No</option>
-                                </SelectGroup>
-                            </Form.Group>
+                                    ))
+                                }
+                            </SelectGroup>
+                        </Form.Group>
+                        <Form.Group as={Col} md="6">
+                            <Form.Label htmlFor="visible">Visible</Form.Label>
+                            <SelectGroup
+                                name="visible"
+                                id="visible"
+                                value={values.visible}
+                                required
+                                errorMessage={errorMessage}
+                                onChange={handleOnChange}>
+                                <option value="">Seleccione</option>
+                                <option value="1">Si</option>
+                                <option value="0">No</option>
+                            </SelectGroup>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
                         {
                             dataInicial.menuId > 0 &&
-                            <Form.Group as={Col} md="12">
+                            <Form.Group as={Col} md="6">
                                 <Form.Label htmlFor="estadoId">Estado</Form.Label>
                                 <SelectGroup
                                     name="estadoId"
@@ -184,6 +192,8 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                                 </SelectGroup>
                             </Form.Group>
                         }
+                    </Form.Row>
+                    <Form.Row>
                         <div className="col-sm-3"></div>
                         <div className="col-sm-3">
                             <button type="button" onClick={() => { setAbrirModal(false) }} className="btn btn-warning"> Cancelar</button>
@@ -194,6 +204,6 @@ export const MenuUpSert = ({ dataInicial, abrirModal, setAbrirModal,catMenu,GetC
                     </Form.Row>
                 </ValidationForm>
             </Modal.Body>
-        </Modal>
+        </Modal >
     )
 }

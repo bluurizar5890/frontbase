@@ -43,7 +43,6 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
     }
     const handleChangePersona = ({ value }) => {
         setValues({ ...values, personaId: value });
-
     }
     const handleUserName = ({ target: { value } }) => {
         let auxUsername = String(value).trim().toUpperCase();

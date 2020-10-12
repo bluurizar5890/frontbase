@@ -2,18 +2,11 @@ import callApi from '../helpers/conectorApi';
 import * as actionTypes from '../store/actions';
 
 
-export const loginBackend = (user_name, password) => {
+export const loginBackend = (infoLogin) => {
     return async(dispatch) => {
-        let values={
-            user_name:'blopez',
-            password:'blopez',
-            accesos:true,
-            menu:true,
-            userInfo:true
-        }
         let data = await callApi('auth', {
             method: 'POST',
-            body: JSON.stringify(values)
+            body: JSON.stringify(infoLogin)
         });
             if(data){
                 const {token,userInfo}=data;

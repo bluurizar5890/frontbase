@@ -136,7 +136,7 @@ export const RolListar = () => {
                                                     <td>{estado}</td>{
                                                          accesos.find(acceso => acceso.menuId === menuIdRolMenuAcceso && acceso.accesoId ===3) &&
                                                          <td style={{ textAlign: "center" }}>
-                                                         <Link className="btn-icon btn btn-info btn-sm" to={`/seguridad/rolmenuacceso/${rolId}`}><i className="feather icon-lock" /></Link>
+                                                         <Link className="btn-icon btn btn-info btn-sm" to={`/seguridad/rolmenuacceso/${btoa(`idrol=${rolId}`)}`}><i className="feather icon-lock" /></Link>
                                                      </td>
                                                     }
                                                    

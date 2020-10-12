@@ -1,5 +1,7 @@
+
+import config from '../config';
 import { alert_exitoso, alert_error, alert_info, alert_warning } from './Notificacion';
-const BASE_URL = "http://127.0.0.1:3000/api/";
+const BASE_URL = config.urlApi;
 const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
     try {
         options.headers = {

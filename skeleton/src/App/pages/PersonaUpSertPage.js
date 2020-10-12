@@ -17,8 +17,9 @@ const PersonaUpSertPage = ({ match }) => {
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
     let { idpersona } = match.params;
-    idpersona = !idpersona ? 0 : idpersona;
-    const [personaId, setPersonaId] = useState(idpersona);
+    idpersona = !idpersona ? "" : idpersona;
+    let codigoPersona=atob(idpersona).split('=')[1];
+    const [personaId, setPersonaId] = useState(codigoPersona);
     const handleSetIdPersona = (id) => {
         setPersonaId(id);
     }

@@ -62,7 +62,6 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                 asignarEstiloTabla("#mytable");
             }
         }
-        dispatch(UpdateAcesosMenu());
     }
     const GetInfoRol = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3)) {
@@ -112,7 +111,6 @@ export const RolMenuAccesoListar = ({ idrol }) => {
     }
     useEffect(() => {
         GetAccesosByMenuId();
-        GetCatMenu();
     }, [state?.accesos]);
 
     useEffect(() => {

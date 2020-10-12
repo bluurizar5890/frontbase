@@ -149,7 +149,7 @@ export const PersonaListar = () => {
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         accesos.find(acceso => acceso.accesoId === 2) &&
-                                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/catalogo/personaupsert/${item.personaId}`}><i className="feather icon-edit" /></Link>
+                                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/catalogo/personaupsert/${btoa(`idpersona=${item.personaId}`)}`}><i className="feather icon-edit" /></Link>
                                                                     }
                                                                     {
                                                                         accesos.find(acceso => acceso.accesoId === 4) &&

@@ -9,5 +9,7 @@ export default {
     rtlLayout: false,
     navFixedLayout: true,
     headerFixedLayout: false,
-    boxLayout: false
+    boxLayout: false,
+    urlApi: 'http://127.0.0.1:3000/api/',
+    dias_alerta_cambio_pass: 10,
 };
