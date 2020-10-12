@@ -7,7 +7,7 @@ import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal, GetUsuarios }) => {
-    const [values, handleOnChange, ,setValues] = useForm(dataInicial);
+    const [values, handleOnChange, , setValues] = useForm(dataInicial);
     const [duracionContrasenia, setDuracionContrasenia] = useState('');
     const NuevoRegistro = async () => {
         let response = await callApi('usuario', {
@@ -48,8 +48,8 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
         let auxUsername = String(value).trim().toUpperCase();
         setValues({ ...values, user_name: auxUsername });
     }
-    const handlePassWord = ({ target: { value } }) => {
-        setValues({ ...values, password: value });
+    const hanldeOnChangePassword = ({ target: { name, value } }) => {
+        setValues({ ...values, [name]: value });
     }
     const handleDuracionContrasenia = ({ target: { value } }) => {
         setDuracionContrasenia(value);
@@ -68,10 +68,12 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete toda la información solicitada por el formulario");
     };
-
+    const confirmarPassWord = (value) => {
+        return value && value === values.password;
+    };
     const errorMessage = "Campo obligatorio";
     return (
-        <Modal show={abrirModal} onHide={() => setAbrirModal(false)} centered={dataInicial.cambioPass}>
+        <Modal show={abrirModal} onHide={() => setAbrirModal(false)}>
             <Modal.Header closeButton>
                 {
                     dataInicial.cambioPass === true &&
@@ -120,23 +122,42 @@ export const UsuarioUpSert = ({ dataInicial, personas, abrirModal, setAbrirModal
                         }
 
                         {
-                            (!dataInicial.usuarioId || dataInicial.cambioPass===true ) &&
-                            <Form.Group as={Col} md="12">
-                                <Form.Label htmlFor="password">{
-                                    dataInicial.cambioPass===true ? 'Nueva Contraseña' :'Contraseña'
-                                }</Form.Label>
-                                <TextInput
-                                    name="password"
-                                    id="password"
-                                    required
-                                    value={values.password}
-                                    onChange={handlePassWord}
-                                    errorMessage={errorMessage}
-                                    placeholder="Contraseña"
-                                    autoComplete="off"
-                                    type="password"
-                                />
-                            </Form.Group>
+                            (!dataInicial.usuarioId || dataInicial.cambioPass === true) &&
+                            <>
+                                <Form.Group as={Col} md="12">
+                                    <Form.Label htmlFor="password">{
+                                        dataInicial.cambioPass === true ? 'Nueva Contraseña' : 'Contraseña'
+                                    }</Form.Label>
+                                    <TextInput
+                                        name="password"
+                                        id="password"
+                                        type="password"
+                                        placeholder="Contraseña"
+                                        required
+                                        pattern="(?=.*[A-Z]).{6,}"
+                                        errorMessage={{ required: errorMessage, pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula" }}
+                                        value={values.password_nuevo}
+                                        onChange={hanldeOnChangePassword}
+                                        autoComplete="off"
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col} md="12">
+                                    <Form.Label htmlFor="user_name">Confirmar Contraseña</Form.Label>
+                                    <TextInput
+                                        name="password_confirmar"
+                                        id="password_confirmar"
+                                        type="password"
+                                        placeholder="Confirmar Nueva Contraseña"
+                                        required
+                                        validator={confirmarPassWord}
+                                        errorMessage={{ required: "Por favor confirme la nueva contraseña", validator: "La contraseña no coincide" }}
+                                        value={values.password_confirmar}
+                                        onChange={hanldeOnChangePassword}
+                                        autoComplete="off"
+                                    />
+                                </Form.Group>
+                            </>
                         }
 
                         {

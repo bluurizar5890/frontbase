@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Aux from '../../../hoc/_Aux';
 import { Col, Form } from 'react-bootstrap';
 import logoDark from './../../../assets/images/auth/auth-logo-dark.png'
 import '../../../assets/scss/style.scss';
-import { alert_warning } from '../../../helpers/Notificacion';
+import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { useForm } from '../../hooks/useForm';
-const ActualizacionContrasenia = () => {
+import callApi from '../../../helpers/conectorApi';
+import validator from 'validator';
+const ActualizacionContrasenia = ({ history }) => {
     const [values, , , setValues] = useForm({
         password_actual: '',
         password_nuevo: '',
@@ -17,7 +19,18 @@ const ActualizacionContrasenia = () => {
     }
     const handleOnSubmit = async (e) => {
         e.preventDefault();
+        let response = await callApi('usuario/actualizarpassword', {
+            method: 'PUT',
+            body: JSON.stringify(values)
+        });
+        if(response){
+            alert_exitoso(response);
+            history.replace("/sample-page");
+        }
     }
+   const confirmarPassWord = (value) => {
+        return value && value === values.password_nuevo;
+    };
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
     };
@@ -47,32 +60,37 @@ const ActualizacionContrasenia = () => {
                                                     type="password"
                                                 />
                                             </Form.Group>
+
+                                            
                                             <Form.Group as={Col} md="12">
-                                                <TextInput
-                                                    name="password_nuevo"
-                                                    id="password_nuevo"
-                                                    required
-                                                    value={values.password_nuevo}
-                                                    onChange={hanldeOnChangePassword}
-                                                    errorMessage="Por favor ingrese su nueva contraseña"
-                                                    placeholder="Nueva Contraseña"
-                                                    autoComplete="off"
-                                                    type="password"
-                                                />
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="12">
-                                                <TextInput
-                                                    name="password_confirmar"
-                                                    id="password_confirmar"
-                                                    required
-                                                    value={values.password_confirmar}
-                                                    onChange={hanldeOnChangePassword}
-                                                    errorMessage="Por favor confirme la nueva contraseña"
-                                                    placeholder="Confirmar Nueva Contraseña"
-                                                    autoComplete="off"
-                                                    type="password"
-                                                />
-                                            </Form.Group>
+                                            <TextInput
+                                                name="password_nuevo"
+                                                id="password_nuevo"
+                                                type="password"
+                                                placeholder="Nueva Contraseña"
+                                                required
+                                                pattern="(?=.*[A-Z]).{6,}"
+                                                errorMessage={{required:"Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula"}}
+                                                value={values.password_nuevo}
+                                                onChange={hanldeOnChangePassword}
+                                                autoComplete="off"
+                                            />
+                                        </Form.Group>
+                                  
+                                        <Form.Group as={Col} md="12">
+                                            <TextInput
+                                                name="password_confirmar"
+                                                id="password_confirmar"
+                                                type="password"
+                                                placeholder="Confirmar Nueva Contraseña"
+                                                required
+                                                validator={confirmarPassWord}
+                                                errorMessage={{required:"Por favor confirme la nueva contraseña", validator: "La contraseña no coincide"}}
+                                                value={values.password_confirmar}
+                                                onChange={hanldeOnChangePassword}
+                                                autoComplete="off"
+                                            />
+                                        </Form.Group>
                                         </Form.Row>
                                         <button className="btn btn-block btn-primary mb-4" type="submit">Actualizar</button>
                                     </ValidationForm>

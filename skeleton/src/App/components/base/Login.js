@@ -10,12 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from '../../hooks/useForm';
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
+import config from '../../../config';
 
 const Login = ({ history }) => {
     const dispatch = useDispatch();
     const [values, , , setValues] = useForm({
-        user_name: '',
-        password: '',
+        user_name: 'BLOPEZ',
+        password: 'blopez',
         recordarme: false
     });
     const state = useSelector(state => state);
@@ -28,8 +29,6 @@ const Login = ({ history }) => {
     const handleOnSubmit = async (e) => {
         e.preventDefault();
         dispatch(loginBackend(values));
-        validarLogin();
-
     }
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
@@ -40,8 +39,16 @@ const Login = ({ history }) => {
     const validarLogin = () => {
         if (token !== undefined) {
             const {userInfo}=state;
-            console.log({userInfo});
-             history.replace("/sample-page");
+            const {forzar_cambio_password,diasUpdatePass}=!!userInfo && userInfo;
+            if(forzar_cambio_password){
+                history.replace("/auth/change-password");   
+            }else{
+                if(diasUpdatePass<=config.dias_alerta_cambio_pass){
+                    alert_warning(`La contraseña actual vence en ${diasUpdatePass} ${diasUpdatePass===1?' día':' días'}`);
+                }
+                history.replace("/sample-page");
+            }
+             
         }
     }
 
