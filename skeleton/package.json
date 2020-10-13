@@ -44,6 +44,7 @@
     "highcharts-react-official": "^2.2.2",
     "jodit": "^3.2.46",
     "jodit-react": "^1.0.26",
+    "js-cookie": "^2.2.1",
     "jszip": "^3.2.2",
     "moment": "^2.29.0",
     "nib-core": "^1.0.4",

@@ -1,11 +1,16 @@
 
 import config from '../config';
+import Cookies from 'js-cookie'
 import { alert_exitoso, alert_error, alert_info, alert_warning } from './Notificacion';
 const BASE_URL = config.urlApi;
 const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
     try {
+        let token = Cookies.get("auth");
+        if(token){
+        token=atob(token);
+        }
         options.headers = {
-            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzdWFyaW9JZCI6MX0sImlhdCI6MTU5ODY0NTkwOH0.D3CbE9CdG_kjliv8F3jjSf4dnNy0BvpqPntYhbfHVXI`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             Accept: 'application/json',
         };
@@ -14,42 +19,47 @@ const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
         }
         const url = BASE_URL + endpoint;
         const response = await fetch(url, options);
-        const result = await response.json();
-
-        if (manejarRespuesta === 0) {
-            if (result) {
-                const { error, status, body } = result;
-                if (error === true) {
-                    if (body === "Validation error") {
-                        alert_error("Ocurrió un error de validación");
-                        return false;
-                    } else {
-                        alert_error("Ocurrió un error al realizar la petición");
-                        return false;
-                    }
-                } else {
-                    if (body) {
-                        const { code, data } = body;
-                        if (code === 0) {
-                            alert_warning(data);
+        console.log(response.status);
+        if (response.status === 401) {
+            alert_error("El token enviado no es válido");
+            return false;
+        } else {
+            const result = await response.json();
+            if (manejarRespuesta === 0) {
+                if (result) {
+                    const { error, status, body } = result;
+                    if (error === true) {
+                        if (body === "Validation error") {
+                            alert_error("Ocurrió un error de validación");
                             return false;
-                        } else if (code === 1) {
-                            return data;
                         } else {
-                            alert_error(data);
+                            alert_error("Ocurrió un error al realizar la petición");
                             return false;
                         }
                     } else {
-                        alert_error("El servicio no retorno información");
-                        return false;
+                        if (body) {
+                            const { code, data } = body;
+                            if (code === 0) {
+                                alert_warning(data);
+                                return false;
+                            } else if (code === 1) {
+                                return data;
+                            } else {
+                                alert_error(data);
+                                return false;
+                            }
+                        } else {
+                            alert_error("El servicio no retorno información");
+                            return false;
+                        }
                     }
+                } else {
+                    alert_error("Ocurrió un error al realizar la acción");
+                    return false;
                 }
             } else {
-                alert_error("Ocurrió un error al realizar la acción");
-                return false;
+                return result;
             }
-        } else {
-            return result;
         }
     } catch (mensajeError) {
         alert_error("Ocurrió un error en el conector, por favor comuniquese con Soporte");

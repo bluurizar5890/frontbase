@@ -8,7 +8,11 @@ import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { useForm } from '../../hooks/useForm';
 import callApi from '../../../helpers/conectorApi';
 import validator from 'validator';
+import { useDispatch } from 'react-redux';
+import { updatePassWord } from '../../../actions/auth';
 const ActualizacionContrasenia = ({ history }) => {
+    const dispatch = useDispatch();
+
     const [values, , , setValues] = useForm({
         password_actual: '',
         password_nuevo: '',
@@ -25,6 +29,7 @@ const ActualizacionContrasenia = ({ history }) => {
         });
         if(response){
             alert_exitoso(response);
+            dispatch(updatePassWord());
             history.replace("/sample-page");
         }
     }

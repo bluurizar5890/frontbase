@@ -144,14 +144,31 @@ const reducer = (state = initialState, action) => {
                 token: action.payload.token || '',
                 userInfo: action.payload.userInfo || {},
                 menu: action.payload.menu || [],
-                accesos:action.payload.accesos || []
+                accesos: action.payload.accesos || [],
+                logged: action.payload.logged,
+                forzar_cambio_password: action.payload.userInfo.forzar_cambio_password
             }
-            case actionTypes.ACTUALIZAR_PERMISOS_MENU:
-                return {
-                    ...state,
-                    menu: action.payload.menu || [],
-                    accesos:action.payload.accesos || []
-                }
+        case actionTypes.ACTUALIZAR_PERMISOS_MENU:
+            return {
+                ...state,
+                menu: action.payload.menu || [],
+                accesos: action.payload.accesos || []
+            }
+        case actionTypes.CAMBIO_PASSWORD:
+            return {
+                ...state,
+                forzar_cambio_password: false
+            }
+        case actionTypes.LOGOUT:
+            return {
+                ...state,
+                token: '',
+                userInfo: {},
+                menu: [],
+                accesos: [],
+                logged: false,
+                forzar_cambio_password: false
+            }
         default:
             return state;
     }

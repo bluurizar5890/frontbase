@@ -11,6 +11,7 @@ import reducer from './store/reducer';
 import config from './config';
 
 import './assets/scss/style.scss';
+import { AppRouter } from './routers/AppRouter';
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 
@@ -22,9 +23,12 @@ const store = createStore(reducer,
 
 const app = (
     <Provider store={store}>
-        <BrowserRouter basename={config.basename}>
-            <App />
-        </BrowserRouter>
+        <AppRouter/>
+        {/* <Provider store={store}>
+            <BrowserRouter basename={config.basename}>
+                <App />
+            </BrowserRouter>
+        </Provider> */}
     </Provider>
 );
 
@@ -34,3 +38,12 @@ ReactDOM.render(app, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+// const app = (
+//     <Provider store={store}>
+//         <BrowserRouter basename={config.basename}>
+//             <App />
+//         </BrowserRouter>
+//     </Provider>
+// );
+

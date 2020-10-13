@@ -7,12 +7,18 @@ import DEMO from "../../../../../store/constant";
 
 import Avatar1 from '../../../../../assets/images/user/avatar-1.jpg';
 import Avatar2 from '../../../../../assets/images/user/avatar-2.jpg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-
+import { logout } from '../../../../../actions/auth';
+import Cookies from 'js-cookie';
 const NavRight = ({ rtlLayout }) => {
+    const dispatch = useDispatch();
     const { userInfo } = useSelector(state => state);
-    console.log({ userInfo });
+    
+    const handleLogout=()=>{
+        Cookies.remove("auth");
+        dispatch(logout());
+    }
     return (
         <Aux>
             <ul className="navbar-nav ml-auto">
@@ -92,7 +98,8 @@ const NavRight = ({ rtlLayout }) => {
                             <div className="pro-head">
                                 <img src={Avatar2} className="img-radius" alt="User Profile" />
                                 <span>{userInfo?.nombre ?? 'Por favor inicie sesión'}</span>
-                                <Link to={"/auth/login"} className="dud-logout" title="Salir"> <i className="feather icon-log-out" /></Link>
+                                <a className="dud-logout" title="Salir" onClick={handleLogout}><i className="feather icon-log-out" /></a>
+                                {/* <Link to={"/auth/login"} className="dud-logout" title="Salir"> <i className="feather icon-log-out" /></Link> */}
                             </div>
                             <ul className="pro-body">
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-settings" /> Settings</a></li>

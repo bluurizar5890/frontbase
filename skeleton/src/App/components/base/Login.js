@@ -41,7 +41,7 @@ const Login = ({ history }) => {
             const {userInfo}=state;
             const {forzar_cambio_password,diasUpdatePass}=!!userInfo && userInfo;
             if(forzar_cambio_password){
-                history.replace("/auth/change-password");   
+                history.replace("/usuario/change-password");   
             }else{
                 if(diasUpdatePass<=config.dias_alerta_cambio_pass){
                     alert_warning(`La contraseña actual vence en ${diasUpdatePass} ${diasUpdatePass===1?' día':' días'}`);
@@ -52,9 +52,9 @@ const Login = ({ history }) => {
         }
     }
 
-    useEffect(() => {
-        validarLogin();
-    }, [token])
+    // useEffect(() => {
+    //     validarLogin();
+    // }, [token])
     return (
         <Aux>
             <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
@@ -107,7 +107,7 @@ const Login = ({ history }) => {
                                 </div>
                                 <button className="btn btn-block btn-primary mb-0" type="submit">Ingresar</button>
                                 <div className="text-center">
-                                    <p className="mb-2 text-muted"><NavLink to="/auth/reset-password-2" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
+                                    <p className="mb-2 text-muted"><NavLink to="/admin/change-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
                                 </div>
                             </div>
                         </div>
