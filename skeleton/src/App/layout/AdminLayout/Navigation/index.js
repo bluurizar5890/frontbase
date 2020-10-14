@@ -22,10 +22,8 @@ class Navigation extends Component {
     };
 
     UNSAFE_componentWillReceiveProps=()=>{
-        console.log("Nuevas props",this.props);
     }
     componentDidMount() {
-        console.log("Navigation",this.props);
         this.resize();
         window.addEventListener('resize', this.resize)
     }

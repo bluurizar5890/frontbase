@@ -19,7 +19,6 @@ const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
         }
         const url = BASE_URL + endpoint;
         const response = await fetch(url, options);
-        console.log(response.status);
         if (response.status === 401) {
             alert_error("El token enviado no es válido");
             return false;

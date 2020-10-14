@@ -9,7 +9,6 @@ export const PersonaView = ({ abrirModal, setAbrirModal, personaId }) => {
         let response = await callApi(`persona?id=${id}`);
         setInfoPersona(response);
     }
-    console.log("Info persona en get",infoPersona);
     const listIdentificaciones=()=>{
         let {identificacion_personas}=infoPersona;
         if(identificacion_personas){

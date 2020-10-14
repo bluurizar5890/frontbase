@@ -40,7 +40,6 @@ export const UsuarioListar = () => {
         }
     }
 
-    console.log({accesos});
     const [dataInicial, setdataInicial] = useState(initData);
     const handleOpenModal = () => {
         setAbrirModal(true);

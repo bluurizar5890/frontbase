@@ -24,12 +24,12 @@ const store = createStore(reducer,
 const app = (
     <Provider store={store}>
         <AppRouter/>
-        {/* <Provider store={store}>
-            <BrowserRouter basename={config.basename}>
-                <App />
-            </BrowserRouter>
-        </Provider> */}
     </Provider>
+    // <Provider store={store}>
+    //     <BrowserRouter basename={config.basename}>
+    //         <App />
+    //     </BrowserRouter>
+    // </Provider>
 );
 
 ReactDOM.render(app, document.getElementById('root'));

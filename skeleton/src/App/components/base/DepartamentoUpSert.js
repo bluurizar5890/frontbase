@@ -5,7 +5,6 @@ import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 export const DepartamentoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catPaises, GetDepartamentos }) => {
-    console.log(dataInicial);
     const [values, handleOnChange] = useForm(dataInicial);
     const NuevoRegistro = async () => {
         let response = await callApi('departamento', {

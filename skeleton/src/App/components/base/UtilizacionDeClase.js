@@ -20,7 +20,6 @@ const initData = {
 require( 'datatables.net-responsive-bs' );
 
 function atable() {
-    console.log("Llamadas");
     let tableZero = '#data-table-zero';
     $.fn.dataTable.ext.errMode = 'throw';
 
@@ -52,7 +51,6 @@ class UtilizacionDeClase extends React.Component {
     GetDepartamentos = async () => {
         let response = await callApi('departamento?estadoId=1;2');
         this.setState({...this.state, departamentos:response});
-        console.log("preuba");
     }
     handleEditar = (id) => {
         const { departamentoId, paisId, descripcion, estadoId } =this.state.departamentos.find(item => item.departamentoId === id);
