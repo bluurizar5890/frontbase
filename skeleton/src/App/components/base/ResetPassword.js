@@ -3,12 +3,22 @@ import Aux from '../../../hoc/_Aux'
 import logoDark from './../../../assets/images/auth/auth-logo-dark.png'
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { Col, Form } from 'react-bootstrap';
-import { alert_warning } from '../../../helpers/Notificacion';
+import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
+import callApi from '../../../helpers/conectorApi';
 export const ResetPassword = () => {
+    const [email, setEmail] = useState('');
     const handleOnSubmit = async (e) => {
         e.preventDefault();
+        let response = await callApi('resetpassword', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+
+        if (response) {
+            alert_exitoso(response);
+            setEmail('');
+        }
     }
-    const [email, setEmail] = useState('');
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
     };
@@ -29,7 +39,7 @@ export const ResetPassword = () => {
                                                     name="email"
                                                     id="email"
                                                     required
-                                                    errorMessage="Por favor ingrese el correo electrónico registrado"
+                                                    errorMessage={{required:"Por favor ingrese el correo electrónico registrado", type: "El correo electrónico no es válido"}}
                                                     value={email}
                                                     onChange={({ target: { value } }) => { setEmail(value) }}
                                                     placeholder="Correo electrónico registrado"

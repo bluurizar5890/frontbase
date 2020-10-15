@@ -13,12 +13,13 @@ import { loginBackend } from '../actions/auth'
 import Login from '../App/components/base/Login';
 import Cookies from 'js-cookie'
 import { ResetPassword } from '../App/components/base/ResetPassword'
+import { UpdatePassword } from '../App/components/base/UpdatePassword'
 const AdminLayout = Loadable({
     loader: () => import('../App/layout/AdminLayout'),
     loading: Loader
 });
 
-export const AppRouter = () => {
+export const AppRouter = (props) => {
     const dispatch = useDispatch();
     const state = useSelector(state => state);
     const [cambioPass, setCambioPass] = useState(false);
@@ -47,7 +48,7 @@ export const AppRouter = () => {
         prueba();
     }, [state]);
 
-    console.log({ isAuthenticated, cambioPass, state });
+    console.log(props);
 
     return (
         <Router basename={config.basename}>
@@ -64,9 +65,11 @@ export const AppRouter = () => {
                             isAuthenticated={isAuthenticated}
                             component={ResetPassword}
                         />
-                        {
-
-                        }
+                         <PublicRoute
+                            path="/auth/update-password"
+                            isAuthenticated={isAuthenticated}
+                            component={UpdatePassword}
+                        />
                         {
                             isAuthenticated === true &&
                             <>

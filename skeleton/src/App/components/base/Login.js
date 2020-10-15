@@ -85,7 +85,9 @@ const Login = () => {
                                 </div>
                                 <button className="btn btn-block btn-primary mb-0" type="submit">Ingresar</button>
                                 <div className="text-center">
-                                    <p className="mb-2 text-muted"><NavLink to="/auth/reset-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
+                                
+                                <p className="mb-2 text-muted"><NavLink to="/auth/update-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
+                                    {/* <p className="mb-2 text-muted"><NavLink to="/auth/reset-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p> */}
                                 </div>
                             </div>
                         </div>
