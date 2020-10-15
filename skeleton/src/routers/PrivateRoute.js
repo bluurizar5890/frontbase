@@ -1,39 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
-const Actualizarcontrasenia=React.lazy(() => import('../App/components/base/ActualizacionContrasenia'));
+import { Redirect, Route, Switch, useLocation, withRouter } from 'react-router-dom';
+const Actualizarcontrasenia = React.lazy(() => import('../App/components/base/ActualizacionContrasenia'));
 const PrivateRoute = (props) => {
 
     // let location = useLocation();
-    const{
-        isAuthenticated,
+    const {
         component,
         updatePass
-    }=props;
-    console.log("Props",props);
-    // localStorage.setItem('lastPath',location.pathname);
+    } = props;
     return (
         <Switch>
             {
-                isAuthenticated === true ?
-                    <>
-                    {
-                        updatePass===false ?
-                        <Route
-                            path="/"
-                            component={component}
-                        />
-                        :<Redirect to="/admin/change-password" />
-                    }
-                    </>
-                    : (<Redirect to="/auth/login" />)
+                updatePass === false ?
+                    <Route
+                        path="/"
+                        component={component}
+                    />
+                    : <Redirect to="/admin/change-password" />
             }
         </Switch>
     )
 }
 
-// PrivateRoute.propTypes = {
-
-// }
-
-export default PrivateRoute;
+export default withRouter(PrivateRoute);

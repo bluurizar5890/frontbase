@@ -17,6 +17,7 @@ const NavRight = ({ rtlLayout }) => {
     
     const handleLogout=()=>{
         Cookies.remove("auth");
+        localStorage.clear();
         dispatch(logout());
     }
     return (

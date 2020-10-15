@@ -5,37 +5,48 @@ import Cookies from 'js-cookie'
 var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
 
 export const loginBackend = (infoLogin) => {
-    return async(dispatch) => {
-        let data = await callApi('auth', {
-            method: 'POST',
-            body: JSON.stringify(infoLogin)
-        });
-            if(data){
-                const {token,userInfo}=data;
-                Cookies.set("auth",btoa(token),{ expires: inFifteenMinutes});
-                const accesos=await GetAccesos();
-                const menu=await GetMenu();
-                dispatch(login(token,userInfo ,accesos,menu));
+    return async (dispatch) => {
+        if (infoLogin.logged === true) {
+            let token = Cookies.get("auth");
+            if(token){
+            token=atob(token);
             }
+            const dataUsuario=await InformacionUsuario();
+            const {userInfo, accesos, menu}=!!dataUsuario && dataUsuario
+            dispatch(login(token, userInfo, accesos, menu));
+        } else {
+            let data = await callApi('auth', {
+                method: 'POST',
+                body: JSON.stringify(infoLogin)
+            });
+            if (data) {
+                const { token } = data;
+                Cookies.set("auth", btoa(token), { expires: inFifteenMinutes });
+                const dataUsuario=await InformacionUsuario();
+                const {userInfo, accesos, menu}=!!dataUsuario && dataUsuario
+                dispatch(login(token, userInfo, accesos, menu));
+            }
+        }
+
     }
 }
 
-export const UpdateAcesosMenu=()=>{
-    return async(dispatch)=>{
-        const accesos=await GetAccesos();
-        const menu=await GetMenu();
-        dispatch(updatePermisoYMenu(accesos,menu));
+export const UpdateAcesosMenu = () => {
+    return async (dispatch) => {
+        const accesos = await GetAccesos();
+        const menu = await GetMenu();
+        dispatch(updatePermisoYMenu(accesos, menu));
     }
 }
 
-const login = (token,userInfo, accesos,menu) => ({
+const login = (token, userInfo, accesos, menu) => ({
     type: actionTypes.LOGIN,
     payload: {
         token,
         userInfo,
         accesos,
         menu,
-        logged:true
+        logged: true
     }
 });
 
@@ -48,7 +59,7 @@ export const logout = () => ({
 });
 
 
-const updatePermisoYMenu=(accesos,menu)=>({
+const updatePermisoYMenu = (accesos, menu) => ({
     type: actionTypes.ACTUALIZAR_PERMISOS_MENU,
     payload: {
         accesos,
@@ -56,20 +67,29 @@ const updatePermisoYMenu=(accesos,menu)=>({
     }
 });
 
-const GetAccesos=async()=>{
-    let accesos=await callApi('rolmenuacceso/accesos');
-    if(accesos){
+const GetAccesos = async () => {
+    let accesos = await callApi('rolmenuacceso/accesos');
+    if (accesos) {
         return accesos;
-    }else{
+    } else {
         return [];
     }
 }
 
-const GetMenu=async()=>{
-    let menu=await callApi('menu/mimenu');
-    if(menu){
+const GetMenu = async () => {
+    let menu = await callApi('menu/mimenu');
+    if (menu) {
         return menu;
-    }else{
+    } else {
         return [];
+    }
+}
+
+const InformacionUsuario=async()=>{
+    let response = await callApi('usuario/info');
+    if (response) {
+        return response;
+    } else {
+        return {};
     }
 }

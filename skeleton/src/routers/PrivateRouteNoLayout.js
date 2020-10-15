@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import routes from '../route'
 
-const PrivateRouteNoLayout = ({
-    isAuthenticated
-}) => {
+const PrivateRouteNoLayout = () => {
     return (
         <Switch>
             {
@@ -17,9 +15,7 @@ const PrivateRouteNoLayout = ({
                             exact={route.exact}
                             name={route.name}
                             render={props => (
-                                (isAuthenticated) ?
-                                    (<route.component {...props} />)
-                                    : (<Redirect to="/auth/login" />)
+                                (<route.component {...props} />)
                             )} />
                     ) : (null);
                 })
@@ -27,10 +23,5 @@ const PrivateRouteNoLayout = ({
         </Switch>
     )
 }
-
-// PrivateRouteNoLayout.propTypes = {
-//     isAuthenticated: PropTypes.bool.isRequired,
-//     component: PropTypes.func.isRequired
-// }
 
 export default PrivateRouteNoLayout;

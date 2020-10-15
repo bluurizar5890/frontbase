@@ -12,16 +12,13 @@ import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
 import config from '../../../config';
 
-const Login = ({ history }) => {
+const Login = () => {
     const dispatch = useDispatch();
     const [values, , , setValues] = useForm({
         user_name: 'BLOPEZ',
         password: 'blopez',
         recordarme: false
     });
-    const state = useSelector(state => state);
-    const { token } = state;
-
     const handleUserName = ({ target: { value } }) => {
         let auxUsername = String(value).trim().toUpperCase();
         setValues({ ...values, user_name: auxUsername });
@@ -36,25 +33,6 @@ const Login = ({ history }) => {
     const hanldeOnChangePassword = ({ target: { value } }) => {
         setValues({ ...values, password: value });
     }
-    const validarLogin = () => {
-        if (token !== undefined) {
-            const {userInfo}=state;
-            const {forzar_cambio_password,diasUpdatePass}=!!userInfo && userInfo;
-            if(forzar_cambio_password){
-                history.replace("/usuario/change-password");   
-            }else{
-                if(diasUpdatePass<=config.dias_alerta_cambio_pass){
-                    alert_warning(`La contraseña actual vence en ${diasUpdatePass} ${diasUpdatePass===1?' día':' días'}`);
-                }
-                history.replace("/sample-page");
-            }
-             
-        }
-    }
-
-    // useEffect(() => {
-    //     validarLogin();
-    // }, [token])
     return (
         <Aux>
             <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
@@ -107,7 +85,7 @@ const Login = ({ history }) => {
                                 </div>
                                 <button className="btn btn-block btn-primary mb-0" type="submit">Ingresar</button>
                                 <div className="text-center">
-                                    <p className="mb-2 text-muted"><NavLink to="/admin/change-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
+                                    <p className="mb-2 text-muted"><NavLink to="/auth/reset-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
                                 </div>
                             </div>
                         </div>

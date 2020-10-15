@@ -146,7 +146,7 @@ const reducer = (state = initialState, action) => {
                 menu: action.payload.menu || [],
                 accesos: action.payload.accesos || [],
                 logged: action.payload.logged,
-                forzar_cambio_password: action.payload.userInfo.forzar_cambio_password
+                forzar_cambio_password: action.payload.userInfo?.forzar_cambio_password || false
             }
         case actionTypes.ACTUALIZAR_PERMISOS_MENU:
             return {

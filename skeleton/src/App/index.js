@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
 import '../../node_modules/font-awesome/scss/font-awesome.scss';
@@ -13,22 +13,21 @@ const AdminLayout = Loadable({
     loading: Loader
 });
 
-class App extends Component {
-    render() {
-        const menu = routes.map((route, index) => {
-            return (route.component) ? (
-                <Route
-                    key={index}
-                    path={route.path}
-                    exact={route.exact}
-                    name={route.name}
-                    render={props => (
-                        <route.component {...props} />
-                    )} />
-            ) : (null);
-        });
-        return (
-            <Aux>
+const App = () => {
+    const menu = routes.map((route, index) => {
+        return (route.component) ? (
+            <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                name={route.name}
+                render={props => (
+                    <route.component {...props} />
+                )} />
+        ) : (null);
+    });
+    return (
+        <Aux>
                 <ScrollToTop>
                     <Suspense fallback={<Loader />}>
                         <Switch>
@@ -38,8 +37,44 @@ class App extends Component {
                     </Suspense>
                 </ScrollToTop>
             </Aux>
-        );
-    }
+    )
 }
 
-export default App;
+// class App extends Component {
+//     render() {
+//         console.log("Props en app", this.props);
+//         const user = JSON.parse(localStorage.getItem("userInfo"));
+//         const menu = routes.map((route, index) => {
+//             return (route.component) ? (
+//                 <Route
+//                     key={index}
+//                     path={route.path}
+//                     exact={route.exact}
+//                     name={route.name}
+//                     render={props => (
+//                         <route.component {...props} />
+//                     )} />
+//             ) : (null);
+//         });
+//         return (
+//             <Aux>
+//                 <ScrollToTop>
+//                     <Suspense fallback={<Loader />}>
+//                         <Switch>
+//                             {/* {menu}
+//                             <Route path="/" component={AdminLayout} /> */}
+//                             {menu}
+//                             {!(user == null) ?
+//                                 (<Route path="/" component={AdminLayout} />)
+//                                 :
+//                                 (<Redirect to="/auth/login" />)
+//                             }
+//                         </Switch>
+//                     </Suspense>
+//                 </ScrollToTop>
+//             </Aux>
+//         );
+//     }
+// }
+
+export default withRouter(App);

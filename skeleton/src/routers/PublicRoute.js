@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import routes from '../route'
 
 const PublicRoute = ({
@@ -26,4 +26,4 @@ const PublicRoute = ({
 //     component: PropTypes.func.isRequired
 // }
 
-export default PublicRoute;
+export default withRouter(PublicRoute);
