@@ -1,5 +1,5 @@
 export default {
-    defaultPath: '/sample-page',
+    defaultPath: '/auth/login',
     basename: '/app', // only at build time to set, like ///able-pro/react/default
     layout: 'vertical', // vertical, horizontal
     subLayout: '', // horizontal-2

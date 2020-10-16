@@ -1,6 +1,6 @@
 import React, { Component, Suspense } from 'react';
-import {Route, Switch, Redirect} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Fullscreen from "react-full-screen";
 import windowSize from 'react-window-size';
 
@@ -16,17 +16,31 @@ import * as actionTypes from "../../../store/actions";
 //import '../../../app.scss';
 
 class AdminLayout extends Component {
-
+    constructor(props) {
+        super(props);
+        console.log("Props en constructor", props);
+    }
+    state = {
+        logged: false,
+        cargado: false
+    };
     fullScreenExitHandler = () => {
         if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
             this.props.onFullScreenExit();
         }
     };
-
+    componentDidMount() {
+        this.setState({ ...this.state, logged: this.props.logged });
+        console.log("componentDidMount", this.props.logged);
+    }
     UNSAFE_componentWillMount() {
+        console.log("UNSAFE_componentWillMount", this.props.logged);
         if (this.props.windowWidth > 992 && this.props.windowWidth <= 1024 && this.props.layout !== 'horizontal') {
             this.props.onUNSAFE_componentWillMount();
         }
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log("componentWillReceiveProps", nextProps);
     }
 
     mobileOutClickHandler() {
@@ -36,6 +50,7 @@ class AdminLayout extends Component {
     }
 
     render() {
+        console.log(this.props);
 
         /* full screen exit call */
         document.addEventListener('fullscreenchange', this.fullScreenExitHandler);
@@ -61,31 +76,45 @@ class AdminLayout extends Component {
             mainClass = [...mainClass, 'container'];
         }
         return (
+
             <Aux>
-                <Fullscreen enabled={this.props.isFullScreen}>
-                    <Navigation />
-                    <NavBar/>
-                    <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
-                        <div className={mainClass.join(' ')}>
-                            <div className="pcoded-content">
-                                <div className="pcoded-inner-content">
-                                    <Breadcrumb menu={this.props.menu || []}/>
-                                    <div className="main-body">
-                                        <div className="page-wrapper">
-                                            <Suspense fallback={<Loader/>}>
-                                                <Switch>
-                                                    {menu}
-                                                    <Redirect from="/" to={this.props.defaultPath} />
-                                                </Switch>
-                                            </Suspense>
+                {
+                    this.props.logged !=false &&
+
+                    <Fullscreen enabled={this.props.isFullScreen}>
+                        <Navigation />
+                        <NavBar />
+                        <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
+                            <div className={mainClass.join(' ')}>
+                                <div className="pcoded-content">
+                                    <div className="pcoded-inner-content">
+                                        <Breadcrumb menu={this.props.menu || []} />
+                                        <div className="main-body">
+                                            <div className="page-wrapper">
+                                                <Suspense fallback={<Loader />}>
+                                                    <Switch>
+                                                        {
+                                                            this.props.logged === true ?
+                                                                <>
+                                                                    {menu}
+                                                                </>
+                                                                : <>
+                                                                    <Redirect from="/" to={this.props.defaultPath} />
+                                                                </>
+                                                        }
+                                                        {/* {menu}
+                                                     <Redirect from="/" to={this.props.defaultPath} /> */}
+                                                    </Switch>
+                                                </Suspense>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <Configuration />
-                </Fullscreen>
+                        <Configuration />
+                    </Fullscreen>
+                }
             </Aux>
         );
     }
@@ -98,15 +127,16 @@ const mapStateToProps = state => {
         collapseMenu: state.collapseMenu,
         layout: state.layout,
         subLayout: state.subLayout,
-        menu:state.menu
+        menu: state.menu,
+        logged: state.logged
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFullScreenExit: () => dispatch({type: actionTypes.FULL_SCREEN_EXIT}),
-        onUNSAFE_componentWillMount: () => dispatch({type: actionTypes.COLLAPSE_MENU})
+        onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
+        onUNSAFE_componentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU })
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (windowSize(AdminLayout));
+export default connect(mapStateToProps, mapDispatchToProps)(windowSize(AdminLayout));

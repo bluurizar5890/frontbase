@@ -6,9 +6,12 @@ import { Col, Form } from 'react-bootstrap';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 import callApi from '../../../helpers/conectorApi';
-export const UpdatePassword = ({history}) => {
+import { Link } from 'react-router-dom';
+export const UpdatePassword = ({ match, history }) => {
+    let { id } = match.params;
+
     const [values, , , setValues] = useForm({
-        id:"MXwy",
+        id: id,
         password: '',
         password_confirmar: ''
     });
@@ -21,7 +24,7 @@ export const UpdatePassword = ({history}) => {
             method: 'PUT',
             body: JSON.stringify(values)
         });
-        if(response){
+        if (response) {
             alert_exitoso(response);
             history.replace("/auth/login");
         }
@@ -32,6 +35,9 @@ export const UpdatePassword = ({history}) => {
     const confirmarPassWord = (value) => {
         return value && value === values.password;
     };
+    const handleCancelar = () => {
+        history.replace("/auth/login");
+    }
     return (
         <Aux>
             <div className="auth-wrapper">
@@ -44,37 +50,42 @@ export const UpdatePassword = ({history}) => {
                                     <h4 className="mb-3 f-w-400">Actualizar Contraseña</h4>
                                     <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
                                         <Form.Row>
-                                        <Form.Group as={Col} md="12">
-                                            <TextInput
-                                                name="password"
-                                                id="password"
-                                                type="password"
-                                                placeholder="Nueva Contraseña"
-                                                required
-                                                pattern="(?=.*[A-Z]).{6,}"
-                                                errorMessage={{required:"Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula"}}
-                                                value={values.password}
-                                                onChange={hanldeOnChangePassword}
-                                                autoComplete="off"
-                                            />
-                                        </Form.Group>
-                                  
-                                        <Form.Group as={Col} md="12">
-                                            <TextInput
-                                                name="password_confirmar"
-                                                id="password_confirmar"
-                                                type="password"
-                                                placeholder="Confirmar Nueva Contraseña"
-                                                required
-                                                validator={confirmarPassWord}
-                                                errorMessage={{required:"Por favor confirme la nueva contraseña", validator: "La contraseña no coincide"}}
-                                                value={values.password_confirmar}
-                                                onChange={hanldeOnChangePassword}
-                                                autoComplete="off"
-                                            />
-                                        </Form.Group>
+                                            <Form.Group as={Col} md="12">
+                                                <TextInput
+                                                    name="password"
+                                                    id="password"
+                                                    type="password"
+                                                    placeholder="Nueva Contraseña"
+                                                    required
+                                                    pattern="(?=.*[A-Z]).{6,}"
+                                                    errorMessage={{ required: "Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula" }}
+                                                    value={values.password}
+                                                    onChange={hanldeOnChangePassword}
+                                                    autoComplete="off"
+                                                />
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} md="12">
+                                                <TextInput
+                                                    name="password_confirmar"
+                                                    id="password_confirmar"
+                                                    type="password"
+                                                    placeholder="Confirmar Nueva Contraseña"
+                                                    required
+                                                    validator={confirmarPassWord}
+                                                    errorMessage={{ required: "Por favor confirme la nueva contraseña", validator: "La contraseña no coincide" }}
+                                                    value={values.password_confirmar}
+                                                    onChange={hanldeOnChangePassword}
+                                                    autoComplete="off"
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-danger mb-4" onClick={handleCancelar}>Cancelar</button>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-primary mb-4">Actualizar</button>
+                                            </Form.Group>
                                         </Form.Row>
-                                        <button className="btn btn-block btn-primary mb-4">Actualizar</button>
                                     </ValidationForm>
                                 </div>
                             </div>

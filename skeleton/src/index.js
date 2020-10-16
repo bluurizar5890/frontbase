@@ -12,6 +12,7 @@ import config from './config';
 
 import './assets/scss/style.scss';
 import { AppRouter } from './routers/AppRouter';
+import Rutas from './routers/App';
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 
@@ -23,8 +24,11 @@ const store = createStore(reducer,
 
 const app = (
     <Provider store={store}>
-        <AppRouter/>
+        <Rutas/>
     </Provider>
+    // <Provider store={store}>
+    //     <AppRouter/>
+    // </Provider>
     // <Provider store={store}>
     //     <BrowserRouter basename={config.basename}>
     //         <App />

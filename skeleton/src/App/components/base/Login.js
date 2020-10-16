@@ -12,7 +12,7 @@ import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
 import config from '../../../config';
 
-const Login = () => {
+const Login = ({history}) => {
     const dispatch = useDispatch();
     const [values, , , setValues] = useForm({
         user_name: 'BLOPEZ',
@@ -26,6 +26,7 @@ const Login = () => {
     const handleOnSubmit = async (e) => {
         e.preventDefault();
         dispatch(loginBackend(values));
+        history.replace("/sample-page");
     }
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
@@ -86,8 +87,8 @@ const Login = () => {
                                 <button className="btn btn-block btn-primary mb-0" type="submit">Ingresar</button>
                                 <div className="text-center">
                                 
-                                <p className="mb-2 text-muted"><NavLink to="/auth/update-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
-                                    {/* <p className="mb-2 text-muted"><NavLink to="/auth/reset-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p> */}
+                                {/* <p className="mb-2 text-muted"><NavLink to="/auth/update-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p> */}
+                                    <p className="mb-2 text-muted"><NavLink to="/auth/reset-password" className="f-w-400">¿Has olvidado la contraseña?</NavLink></p>
                                 </div>
                             </div>
                         </div>

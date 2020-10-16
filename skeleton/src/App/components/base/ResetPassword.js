@@ -5,7 +5,8 @@ import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { Col, Form } from 'react-bootstrap';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import callApi from '../../../helpers/conectorApi';
-export const ResetPassword = () => {
+import { Link } from 'react-router-dom';
+export const ResetPassword = ({ history }) => {
     const [email, setEmail] = useState('');
     const handleOnSubmit = async (e) => {
         e.preventDefault();
@@ -17,7 +18,11 @@ export const ResetPassword = () => {
         if (response) {
             alert_exitoso(response);
             setEmail('');
+            history.replace("/auth/login");
         }
+    }
+    const handleCancelar = () => {
+        history.replace("/auth/login");
     }
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
@@ -39,7 +44,7 @@ export const ResetPassword = () => {
                                                     name="email"
                                                     id="email"
                                                     required
-                                                    errorMessage={{required:"Por favor ingrese el correo electrónico registrado", type: "El correo electrónico no es válido"}}
+                                                    errorMessage={{ required: "Por favor ingrese el correo electrónico registrado", type: "El correo electrónico no es válido" }}
                                                     value={email}
                                                     onChange={({ target: { value } }) => { setEmail(value) }}
                                                     placeholder="Correo electrónico registrado"
@@ -47,8 +52,13 @@ export const ResetPassword = () => {
                                                     type="email"
                                                 />
                                             </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-danger mb-4" onClick={handleCancelar}>Cancelar</button>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-primary mb-4">Restablecer</button>
+                                            </Form.Group>
                                         </Form.Row>
-                                        <button className="btn btn-block btn-primary mb-4">Restablecer</button>
                                     </ValidationForm>
                                 </div>
                             </div>
@@ -56,6 +66,6 @@ export const ResetPassword = () => {
                     </div>
                 </div>
             </div>
-        </Aux>
+        </Aux >
     )
 }

@@ -6,6 +6,7 @@ const initialState = {
     isTrigger: [], //for active default menu, set blank for horizontal
     ...config,
     isFullScreen: false, // static can't change
+    logged:false
 };
 
 const reducer = (state = initialState, action) => {
@@ -145,7 +146,7 @@ const reducer = (state = initialState, action) => {
                 userInfo: action.payload.userInfo || {},
                 menu: action.payload.menu || [],
                 accesos: action.payload.accesos || [],
-                logged: action.payload.logged,
+                logged: action.payload.logged || false,
                 forzar_cambio_password: action.payload.userInfo?.forzar_cambio_password || false
             }
         case actionTypes.ACTUALIZAR_PERMISOS_MENU:

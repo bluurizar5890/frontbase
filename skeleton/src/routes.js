@@ -23,7 +23,6 @@ const personaupsert = React.lazy(() => import('./App/pages/PersonaUpSertPage'));
 const usuario = React.lazy(() => import('./App/pages/UsuarioPage'));
 
 const routes = [
-    { path: '/auth/login', exact: true, name: 'Login', component: login },
     { path: '/catalogo/pais', exact: true, name: 'Pais', component: pais },
     { path: '/catalogo/departamento', exact: true, name: 'Departamento', component: departamento },
     { path: '/catalogo/municipio', exact: true, name: 'Municipio', component: municipio },
