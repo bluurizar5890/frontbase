@@ -12,7 +12,7 @@ import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
 import config from '../../../config';
 
-const Login = ({ history }) => {
+const Login = ({ history,location }) => {
     const dispatch = useDispatch();
     const { logged } = useSelector(state => state);
     console.log("Loged", logged);
@@ -35,6 +35,7 @@ const Login = ({ history }) => {
     const hanldeOnChangePassword = ({ target: { value } }) => {
         setValues({ ...values, password: value });
     }
+    console.log("En Login",location.pathname);
     const validarLogin=()=> {
         if(logged===true){
             history.replace("/seguridad/usuario");

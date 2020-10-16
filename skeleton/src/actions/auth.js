@@ -6,14 +6,14 @@ var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
 
 export const loginBackend = (infoLogin) => {
     return async (dispatch) => {
-        if (infoLogin.logged === true) {
+        if (infoLogin===undefined) {
             let token = Cookies.get("auth");
             if(token){
             token=atob(token);
-            }
             const dataUsuario=await InformacionUsuario();
             const {userInfo, accesos, menu}=!!dataUsuario && dataUsuario
             dispatch(login(token, userInfo, accesos, menu));
+            }
         } else {
             let data = await callApi('auth', {
                 method: 'POST',

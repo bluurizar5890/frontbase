@@ -21,6 +21,7 @@ const rolmenuacceso=React.lazy(() => import('./App/pages/RolMenuAccesoPage'));
 const persona = React.lazy(() => import('./App/pages/PersonaPage'));
 const personaupsert = React.lazy(() => import('./App/pages/PersonaUpSertPage'));
 const usuario = React.lazy(() => import('./App/pages/UsuarioPage'));
+const peticion = React.lazy(() => import('./App/pages/BitacoraPeticionesPage'));
 
 const routes = [
     { path: '/catalogo/pais', exact: true, name: 'Pais', component: pais },
@@ -39,6 +40,7 @@ const routes = [
     { path: '/catalogo/personaupsert/:idpersona', exact: true, name: 'personaUpSert', component: personaupsert },
     { path: '/catalogo/personaupsert', exact: true, name: 'personaUpSert', component: personaupsert },
     { path: '/seguridad/usuario', exact: true, name: 'Usuario', component: usuario },
+    { path: '/seguridad/bitacora/peticion', exact: true, name: 'peticion', component: peticion },
 ];
 
 export default routes;

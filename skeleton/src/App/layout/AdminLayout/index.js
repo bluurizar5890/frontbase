@@ -12,10 +12,12 @@ import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
+import { loginBackend } from '../../../actions/auth';
 
 //import '../../../app.scss';
 
 class AdminLayout extends Component {
+    
     state = {
         logged: false,
         cargado: false
@@ -25,8 +27,10 @@ class AdminLayout extends Component {
             this.props.onFullScreenExit();
         }
     };
+    componentDidMount(){
+        this.props.validarLogin();
+    }
     UNSAFE_componentWillMount() {
-        console.log("UNSAFE_componentWillMount", this.props.logged);
         if (this.props.windowWidth > 992 && this.props.windowWidth <= 1024 && this.props.layout !== 'horizontal') {
             this.props.onUNSAFE_componentWillMount();
         }
@@ -38,9 +42,7 @@ class AdminLayout extends Component {
     }
 
     render() {
-        console.log(this.props);
-
-        /* full screen exit call */
+        console.log(this.props.location.pathname);
         document.addEventListener('fullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('webkitfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('mozfullscreenchange', this.fullScreenExitHandler);
@@ -64,11 +66,9 @@ class AdminLayout extends Component {
             mainClass = [...mainClass, 'container'];
         }
         return (
-
             <Aux>
                 {
                     this.props.logged !=false ?
-
                     <Fullscreen enabled={this.props.isFullScreen}>
                         <Navigation />
                         <NavBar />
@@ -85,7 +85,7 @@ class AdminLayout extends Component {
                                                             this.props.logged === true ?
                                                                 <>
                                                                     {menu}
-                                                                    <Redirect from="/" to="/seguridad/usuario" />
+                                                                    {/* <Redirect from="/" to="/seguridad/usuario" /> */}
                                                                 </>
                                                                 : <>
                                                                     <Redirect from="/" to={this.props.defaultPath} />
@@ -124,7 +124,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
-        onUNSAFE_componentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU })
+        onUNSAFE_componentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
+        validarLogin:()=>dispatch(loginBackend())
     }
 };
 

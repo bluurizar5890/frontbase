@@ -14,7 +14,7 @@ class Breadcrumb extends Component {
     };
 
     componentDidMount() {
-        (navigation.items).map((item, index) => {
+        (this.props.menu).map((item, index) => {
             if (item.type && item.type === 'group') {
                 this.getCollapse(item, index);
             }
@@ -23,7 +23,7 @@ class Breadcrumb extends Component {
     };
 
     UNSAFE_componentWillReceiveProps = () => {
-        (navigation.items).map((item, index) => {
+        (this.props.menu).map((item, index) => {
             if (item.type && item.type === 'group') {
                 this.getCollapse(item);
             }
