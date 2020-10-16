@@ -16,10 +16,6 @@ import * as actionTypes from "../../../store/actions";
 //import '../../../app.scss';
 
 class AdminLayout extends Component {
-    constructor(props) {
-        super(props);
-        console.log("Props en constructor", props);
-    }
     state = {
         logged: false,
         cargado: false
@@ -29,20 +25,12 @@ class AdminLayout extends Component {
             this.props.onFullScreenExit();
         }
     };
-    componentDidMount() {
-        this.setState({ ...this.state, logged: this.props.logged });
-        console.log("componentDidMount", this.props.logged);
-    }
     UNSAFE_componentWillMount() {
         console.log("UNSAFE_componentWillMount", this.props.logged);
         if (this.props.windowWidth > 992 && this.props.windowWidth <= 1024 && this.props.layout !== 'horizontal') {
             this.props.onUNSAFE_componentWillMount();
         }
     }
-    componentWillReceiveProps(nextProps) {
-        console.log("componentWillReceiveProps", nextProps);
-    }
-
     mobileOutClickHandler() {
         if (this.props.windowWidth < 992 && this.props.collapseMenu) {
             this.props.onUNSAFE_componentWillMount();
@@ -79,7 +67,7 @@ class AdminLayout extends Component {
 
             <Aux>
                 {
-                    this.props.logged !=false &&
+                    this.props.logged !=false ?
 
                     <Fullscreen enabled={this.props.isFullScreen}>
                         <Navigation />
@@ -97,6 +85,7 @@ class AdminLayout extends Component {
                                                             this.props.logged === true ?
                                                                 <>
                                                                     {menu}
+                                                                    <Redirect from="/" to="/seguridad/usuario" />
                                                                 </>
                                                                 : <>
                                                                     <Redirect from="/" to={this.props.defaultPath} />
@@ -113,7 +102,7 @@ class AdminLayout extends Component {
                             </div>
                         </div>
                         <Configuration />
-                    </Fullscreen>
+                    </Fullscreen>:(<Redirect from="/" to={this.props.defaultPath} />)
                 }
             </Aux>
         );
@@ -127,8 +116,8 @@ const mapStateToProps = state => {
         collapseMenu: state.collapseMenu,
         layout: state.layout,
         subLayout: state.subLayout,
-        menu: state.menu,
-        logged: state.logged
+        logged: state.logged,
+        menu: state.menu
     }
 };
 
