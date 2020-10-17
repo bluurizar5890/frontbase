@@ -14,10 +14,13 @@ import { useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
 import { useForm } from '../../hooks/useForm';
 import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
+import { BitacoraPeticionDetalle } from './BitacoraPeticionDetalle';
 const menuId = 26;
 const menuIdUsuario = 17;
 export const BitacoraPeticionListar = () => {
     const state = useSelector(state => state);
+    const [abrirModal, setAbrirModal] = useState(false);
+    const [dataInicial, setDataInicial] = useState({});
     const [accesos, setAccesos] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
     const [peticiones, setPeticiones] = useState([]);
@@ -41,21 +44,30 @@ export const BitacoraPeticionListar = () => {
             setAccesos(misAccesos);
         }
     }
-
     const GetUsuarios = async () => {
+        let listUsuario = [];
         if (accesos.find(acceso => acceso.menuId === menuIdUsuario && acceso.accesoId === 3)) {
+            listUsuario.push({
+                value: "",
+                label: "Todos",
+            })
             let response = await callApi('usuario?estadoId=1&include=0');
             if (response) {
-                let listUsuario = [];
                 response.map(({ usuarioId, user_name }) => {
                     listUsuario.push({
                         value: usuarioId,
                         label: user_name,
                     })
                 });
-                setUsuarios(listUsuario);
+              
             }
+        }else{
+            listUsuario.push({
+                value: "-1",
+                label: "No Autorizado",
+            })
         }
+        setUsuarios(listUsuario);
     }
 
     const Peticiones = async () => {
@@ -90,6 +102,13 @@ export const BitacoraPeticionListar = () => {
         setFechaInicial(fecha);
     }
 
+    const handleDetalle=(id,tipo)=>{
+        setDataInicial({
+            id,
+            tipo
+        })
+        setAbrirModal(true);
+    }
     const onchangeFechaFinal = (fecha) => {
         const fechaFormat = moment(fecha).format('YYYY/MM/DD');
         setValues({ ...values, fechaFinal: fechaFormat });
@@ -246,6 +265,8 @@ export const BitacoraPeticionListar = () => {
                                                 <th>Method</th>
                                                 <th>Codigo Estado Http</th>
                                                 <th>Resultado</th>
+                                                <th>Request</th>
+                                                <th>Response</th>
                                                 <th>Usuario</th>
                                                 <th>Ip Cliente</th>
                                                 <th>Fecha</th>
@@ -270,6 +291,8 @@ export const BitacoraPeticionListar = () => {
                                                                     :
                                                                     <td className="text-center"><label className="badge badge-danger">Erronea</label></td>
                                                             }
+                                                              <td className="text-center"> <button className="btn-icon btn btn-primary btn-sm" onClick={()=>{handleDetalle(bitacora_peticionId,'request')}}><i className="feather icon-eye" /></button></td>
+                                                              <td className="text-center"> <button className="btn-icon btn btn-info btn-sm" onClick={()=>{handleDetalle(bitacora_peticionId,'response')}}><i className="feather icon-eye" /></button></td>
                                                             <td>{nombreUsuario}</td>
                                                             <td>{ip_origen}</td>
                                                             <td>{fecha_crea}</td>
@@ -281,6 +304,11 @@ export const BitacoraPeticionListar = () => {
                                         </tbody>
                                     </Table>
                                     : <NoAutorizado />
+                            }
+
+{
+                                abrirModal === true &&
+                                <BitacoraPeticionDetalle abrirModal={abrirModal} setAbrirModal={setAbrirModal} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>
