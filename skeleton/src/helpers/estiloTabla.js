@@ -2,12 +2,13 @@ import $ from 'jquery';
 $.DataTable = require('datatables.net-bs');
 require('datatables.net-responsive-bs');
 
-export const asignarEstiloTabla = (selector) => {
+export const asignarEstiloTabla = (selector,filas=10) => {
     $(selector).DataTable({
-        "searching": true,
-        "bLengthChange": false,
-        "bAutoWidth": false,
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+        searching: true,
+        bLengthChange: false,
+        bAutoWidth: false,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+        displayLength: filas,
         language: {
             processing: "Cargando información",
             search: "Filtrar por:",
