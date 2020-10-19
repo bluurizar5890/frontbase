@@ -7,34 +7,27 @@ import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-va
 import Swal from 'sweetalert2';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-import { MunicipioUpSert } from './MunicipioUpSert';
 import { useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
 import { useForm } from '../../hooks/useForm';
 import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
 import { BitacoraPeticionDetalle } from './BitacoraPeticionDetalle';
-const menuId = 26;
+const menuId = 27;
 const menuIdUsuario = 17;
-export const BitacoraPeticionListar = () => {
+export const BitacoraCambiosListar = () => {
     const state = useSelector(state => state);
-    const [abrirModal, setAbrirModal] = useState(false);
-    const [dataInicial, setDataInicial] = useState({});
     const [accesos, setAccesos] = useState([]);
-    const [usuarios, setUsuarios] = useState([]);
-    const [peticiones, setPeticiones] = useState([]);
+    const [tablas, setTablas] = useState([]);
+    const [peticiones, setCambios] = useState([]);
     const [fechaInicial, setFechaInicial] = useState('');
     const [fechaFinal, setFechaFinal] = useState('');
-    const [values, handleOnChange, , setValues] = useForm({
-        baseUrl: '',
-        method: "",
-        status: "",
-        error: '',
+    const [usuarios, setUsuarios] = useState([]);
+    const [values,,,setValues] = useForm({
+        tabla: '',
         usuarioId: '',
         fechaInicial: '',
-        fechaFinal: '',
-        ip_origen: ''
+        fechaFinal: ''
     });
 
     const GetAccesosByMenuId = () => {
@@ -59,9 +52,9 @@ export const BitacoraPeticionListar = () => {
                         label: user_name,
                     })
                 });
-              
+
             }
-        }else{
+        } else {
             listUsuario.push({
                 value: "-1",
                 label: "No Autorizado",
@@ -69,16 +62,43 @@ export const BitacoraPeticionListar = () => {
         }
         setUsuarios(listUsuario);
     }
+    const GetTablas = async () => {
+        let lista = [];
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            lista.push({
+                value: "",
+                label: "Todas",
+            })
+            let response = await callApi('bitacora/cambios/tablas');
+            if (response) {
+                response.map((item) => {
+                    let [nombre] = Object.keys(item);
+                    let valueAux=item[`${nombre}`];
+                    lista.push({
+                        value:  valueAux,
+                        label: valueAux
+                    });
+                });
 
-    const Peticiones = async () => {
-        if (accesos.find(acceso => acceso.menuId === menuIdUsuario && acceso.accesoId === 3)) {
-            let response = await callApi('bitacora/peticiones', {
+            }
+        } else {
+            lista.push({
+                value: "-1",
+                label: "No Autorizado",
+            })
+        }
+        setTablas(lista);
+    }
+
+    const Cambios = async () => {
+        if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            let response = await callApi('bitacora/cambios', {
                 method: 'POST',
                 body: JSON.stringify(values)
             });
             if (response) {
                 limpiarEstiloTabla("#mytable");
-                setPeticiones(response);
+                setCambios(response);
                 asignarEstiloTabla("#mytable", 25);
             }
         }
@@ -87,27 +107,18 @@ export const BitacoraPeticionListar = () => {
     const handleChangeUsuario = ({ value }) => {
         setValues({ ...values, usuarioId: value });
     }
-    const onchangeBaseUrl = ({ target: { value } }) => {
-        setValues({ ...values, baseUrl: value.toLowerCase() });
+    const handleChangeTabla = ({ value }) => {
+        setValues({ ...values, tabla: value });
     }
-
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        Peticiones();
+        Cambios();
     }
 
     const onchangeFechaIncial = (fecha) => {
         const fechaFormat = moment(fecha).format('YYYY/MM/DD');
         setValues({ ...values, fechaInicial: fechaFormat });
         setFechaInicial(fecha);
-    }
-
-    const handleDetalle=(id,tipo)=>{
-        setDataInicial({
-            id,
-            tipo
-        })
-        setAbrirModal(true);
     }
     const onchangeFechaFinal = (fecha) => {
         const fechaFormat = moment(fecha).format('YYYY/MM/DD');
@@ -119,6 +130,7 @@ export const BitacoraPeticionListar = () => {
     }, []);
 
     useEffect(() => {
+        GetTablas();
         GetUsuarios();
     }, [accesos])
 
@@ -128,67 +140,27 @@ export const BitacoraPeticionListar = () => {
                 <Col sm={12}>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Listado de Peticiones</Card.Title>
+                            <Card.Title as="h5">Listado de Cambios</Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Row className="align-items-center m-l-0">
                                 <Col>
                                     <ValidationForm onSubmit={handleOnSubmit} >
                                         <Form.Row>
-                                            <Form.Group as={Col} md="3">
-                                                <Form.Label htmlFor="baseUrl">Base Url</Form.Label>
-                                                <TextInput
-                                                    name="baseUrl"
-                                                    placeholder="Base Url"
-                                                    autoComplete="off"
-                                                    type="text"
-                                                    value={values.baseUrl}
-                                                    onChange={onchangeBaseUrl}
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Label htmlFor="tabla">Tabla</Form.Label>
+                                                <Select
+                                                    id="tabla"
+                                                    name="tabla"
+                                                    className="basic-single"
+                                                    classNamePrefix="select"
+                                                    required
+                                                    placeholder="Tabla"
+                                                    onChange={handleChangeTabla}
+                                                    options={tablas}
                                                 />
                                             </Form.Group>
-                                            <Form.Group as={Col} md="3">
-                                                <Form.Label htmlFor="method">Metodo</Form.Label>
-                                                <SelectGroup
-                                                    name="method"
-                                                    id="method"
-                                                    value={values.method}
-                                                    onChange={handleOnChange}
-                                                >
-                                                    <option value="">Todos</option>
-                                                    <option value="POST">POST</option>
-                                                    <option value="GET">GET</option>
-                                                    <option value="PUT">PUT</option>
-                                                    <option value="PATCH">PATCH</option>
-                                                    <option value="DELETE">DELETE</option>
-                                                </SelectGroup>
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="3">
-                                                <Form.Label htmlFor="status">Código Estado Http</Form.Label>
-                                                <TextInput
-                                                    name="status"
-                                                    id="status"
-                                                    placeholder="Código de estado"
-                                                    autoComplete="off"
-                                                    type="number"
-                                                    value={values.status}
-                                                    onChange={handleOnChange}
-                                                />
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="3">
-                                                <Form.Label htmlFor="status">Ip Cliente</Form.Label>
-                                                <TextInput
-                                                    name="ip_origen"
-                                                    id="ip_origen"
-                                                    placeholder="Ip Cliente"
-                                                    autoComplete="off"
-                                                    type="text"
-                                                    value={values.ip_origen}
-                                                    onChange={handleOnChange}
-                                                />
-                                            </Form.Group>
-                                        </Form.Row>
-                                        <Form.Row>
-                                            <Form.Group as={Col} md="3">
+                                            <Form.Group as={Col} md="6">
                                                 <Form.Label htmlFor="usuarioId">Usuario</Form.Label>
                                                 <Select
                                                     id="usuarioId"
@@ -201,6 +173,8 @@ export const BitacoraPeticionListar = () => {
                                                     options={usuarios}
                                                 />
                                             </Form.Group>
+                                        </Form.Row>
+                                        <Form.Row>
                                             <Form.Group as={Col} md="3">
                                                 <Form.Label htmlFor="fechaInicial">Fecha Inicial</Form.Label>
                                                 <div className="form-group">
@@ -234,19 +208,6 @@ export const BitacoraPeticionListar = () => {
                                                 </div>
                                             </Form.Group>
                                             <Form.Group as={Col} md="2">
-                                                <Form.Label htmlFor="error">Estado</Form.Label>
-                                                <SelectGroup
-                                                    name="error"
-                                                    id="error"
-                                                    value={values.error}
-                                                    onChange={handleOnChange}
-                                                >
-                                                    <option value="">Todos</option>
-                                                    <option value="0">Satisfactoria</option>
-                                                    <option value="1">Erronea</option>
-                                                </SelectGroup>
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="1">
                                                 <Form.Label htmlFor="status">&nbsp;&nbsp;</Form.Label>
                                                 <button className="btn btn-block btn-primary mb-0" type="submit">Buscar<i className="feather icon-search" /></button>
                                             </Form.Group>
@@ -261,42 +222,34 @@ export const BitacoraPeticionListar = () => {
                                         <thead>
                                             <tr>
                                                 <th>Codigo</th>
-                                                <th>Base Url</th>
-                                                <th>Method</th>
-                                                <th>Codigo Estado Http</th>
-                                                <th>Resultado</th>
-                                                <th>Request</th>
-                                                <th>Response</th>
+                                                <th>Tabla</th>
+                                                <th>Campo</th>
+                                                <th>Id Modificado</th>
+                                                <th>Tipo de Dato</th>
+                                                <th>Valor Anterior</th>
+                                                <th>Valor Nuevo</th>
                                                 <th>Usuario</th>
-                                                <th>Ip Cliente</th>
                                                 <th>Fecha</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
-                                                peticiones.map(({ bitacora_peticionId, baseUrl, method, status, error, Usuario, ip_origen, fecha_crea }) => {
+                                                peticiones.map(({ bitacora_cambiosId, tabla, campo, modificadoId, tipo_dato, valor_anterior, valor_nuevo, Usuario, fecha_crea }) => {
                                                     let nombreUsuario = "N/A";
                                                     if (Usuario) {
                                                         nombreUsuario = Usuario?.user_name ?? "N/A";
                                                     }
                                                     return (
-                                                        <tr key={bitacora_peticionId}>
-                                                            <td>{bitacora_peticionId}</td>
-                                                            <td>{baseUrl}</td>
-                                                            <td>{method}</td>
-                                                            <td>{status}</td>
-                                                            {
-                                                                !error ?
-                                                                    <td className="text-center"><label className="badge badge-success">Satisfactoria</label></td>
-                                                                    :
-                                                                    <td className="text-center"><label className="badge badge-danger">Erronea</label></td>
-                                                            }
-                                                              <td className="text-center"> <button className="btn-icon btn btn-primary btn-sm" onClick={()=>{handleDetalle(bitacora_peticionId,'request')}}><i className="feather icon-eye" /></button></td>
-                                                              <td className="text-center"> <button className="btn-icon btn btn-info btn-sm" onClick={()=>{handleDetalle(bitacora_peticionId,'response')}}><i className="feather icon-eye" /></button></td>
+                                                        <tr key={bitacora_cambiosId}>
+                                                            <td>{bitacora_cambiosId}</td>
+                                                            <td>{tabla}</td>
+                                                            <td>{campo}</td>
+                                                            <td>{modificadoId}</td>
+                                                            <td>{tipo_dato}</td>
+                                                            <td>{valor_anterior}</td>
+                                                            <td>{valor_nuevo}</td>
                                                             <td>{nombreUsuario}</td>
-                                                            <td>{ip_origen}</td>
                                                             <td>{fecha_crea}</td>
-
                                                         </tr>
                                                     )
                                                 })
@@ -304,11 +257,6 @@ export const BitacoraPeticionListar = () => {
                                         </tbody>
                                     </Table>
                                     : <NoAutorizado />
-                            }
-
-{
-                                abrirModal === true &&
-                                <BitacoraPeticionDetalle abrirModal={abrirModal} setAbrirModal={setAbrirModal} dataInicial={dataInicial} />
                             }
                         </Card.Body>
                     </Card>

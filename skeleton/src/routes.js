@@ -22,6 +22,8 @@ const persona = React.lazy(() => import('./App/pages/PersonaPage'));
 const personaupsert = React.lazy(() => import('./App/pages/PersonaUpSertPage'));
 const usuario = React.lazy(() => import('./App/pages/UsuarioPage'));
 const peticion = React.lazy(() => import('./App/pages/BitacoraPeticionesPage'));
+const cambios = React.lazy(() => import('./App/pages/BitacoraCambiosPage'));
+const infoUser = React.lazy(() => import('./App/pages/InformacionUsuario'));
 
 const routes = [
     { path: '/catalogo/pais', exact: true, name: 'Pais', component: pais },
@@ -41,6 +43,8 @@ const routes = [
     { path: '/catalogo/personaupsert', exact: true, name: 'personaUpSert', component: personaupsert },
     { path: '/seguridad/usuario', exact: true, name: 'Usuario', component: usuario },
     { path: '/seguridad/bitacora/peticion', exact: true, name: 'peticion', component: peticion },
+    { path: '/seguridad/bitacora-cambios', exact: true, name: 'cambios', component: cambios },
+    { path: '/infouser', exact: true, name: 'infouser', component: infoUser },
 ];
 
 export default routes;

@@ -627,7 +627,7 @@ class TicketList extends React.Component {
                                             <p>to</p>
                                             <p/>
                                             <p>Thanks...</p>
-                                            <Prism code={basicCode} language="html" />
+                                            <Prism code={basicCode} language="json" />
                                         </div>
                                     </Col>
                                 </Row>

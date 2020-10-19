@@ -103,8 +103,8 @@ const NavRight = ({ rtlLayout }) => {
                                 {/* <Link to={"/auth/login"} className="dud-logout" title="Salir"> <i className="feather icon-log-out" /></Link> */}
                             </div>
                             <ul className="pro-body">
+                                <li><Link to="/infouser" className="dropdown-item"><i className="feather icon-user" /> Mi Perfil</Link></li>
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-settings" /> Settings</a></li>
-                                <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-user" /> Profile</a></li>
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-mail" /> My Messages</a></li>
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-lock" /> Lock Screen</a></li>
                             </ul>
