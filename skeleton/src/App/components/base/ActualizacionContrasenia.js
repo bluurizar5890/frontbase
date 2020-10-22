@@ -10,7 +10,7 @@ import callApi from '../../../helpers/conectorApi';
 import validator from 'validator';
 import { useDispatch } from 'react-redux';
 import { updatePassWord } from '../../../actions/auth';
-const ActualizacionContrasenia = ({ history }) => {
+const ActualizacionContrasenia = ({ history,inModal=false,setAbrirModal }) => {
     const dispatch = useDispatch();
 
     const [values, , , setValues] = useForm({
@@ -30,7 +30,11 @@ const ActualizacionContrasenia = ({ history }) => {
         if(response){
             alert_exitoso(response);
             dispatch(updatePassWord());
+            if(inModal===true){
+                setAbrirModal(false);
+            }else{
             history.replace("/sample-page");
+            }
         }
     }
    const confirmarPassWord = (value) => {
@@ -41,10 +45,10 @@ const ActualizacionContrasenia = ({ history }) => {
     };
     return (
         <Aux>
-            <div className="auth-wrapper">
-                <div className="blur-bg-images" />
-                <div className="auth-content">
-                    <div className="card">
+            <div className={inModal===true?"":"auth-wrapper"}>
+                <div className={inModal===true?"":"blur-bg-images"} />
+                <div className={inModal===true?"":"auth-content"}>
+                    <div className={inModal===true?"":"card"}>
                         <div className="row align-items-center">
                             <div className="col-md-12">
                                 <div className="card-body">
