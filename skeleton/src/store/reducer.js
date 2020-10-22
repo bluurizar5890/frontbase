@@ -170,6 +170,15 @@ const reducer = (state = initialState, action) => {
                 logged: false,
                 forzar_cambio_password: false
             }
+            case actionTypes.UPDATE_USER_INFO:
+                return {
+                    ...state,
+                    userInfo: action.payload.userInfo || {},
+                    menu: action.payload.menu || [],
+                    accesos: action.payload.accesos || [],
+                    logged: action.payload.logged || false,
+                    forzar_cambio_password: action.payload.userInfo?.forzar_cambio_password || false
+                }
         default:
             return state;
     }

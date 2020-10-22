@@ -3,17 +3,23 @@ import config from '../config';
 import Cookies from 'js-cookie'
 import { alert_exitoso, alert_error, alert_info, alert_warning } from './Notificacion';
 const BASE_URL = config.urlApi;
-const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
+const callApi = async (endpoint, options = {}, isFormData = false, manejarRespuesta = 0) => {
     try {
         let token = Cookies.get("auth");
-        if(token){
-        token=atob(token);
+        if (token) {
+            token = atob(token);
         }
-        options.headers = {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        };
+        if (isFormData === true) {
+            options.headers = {
+                'Authorization': `Bearer ${token}`
+            };
+        } else {
+            options.headers = {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            };
+        }
         if (endpoint === "/auth") {
             delete options.headers.Authorization;
         }
@@ -61,6 +67,7 @@ const callApi = async (endpoint, options = {}, manejarRespuesta = 0) => {
             }
         }
     } catch (mensajeError) {
+        console.log({ mensajeError })
         alert_error("Ocurrió un error en el conector, por favor comuniquese con Soporte");
         return false;
     }

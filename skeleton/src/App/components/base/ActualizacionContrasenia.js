@@ -10,7 +10,7 @@ import callApi from '../../../helpers/conectorApi';
 import validator from 'validator';
 import { useDispatch } from 'react-redux';
 import { updatePassWord } from '../../../actions/auth';
-const ActualizacionContrasenia = ({ history,inModal=false,setAbrirModal }) => {
+const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) => {
     const dispatch = useDispatch();
 
     const [values, , , setValues] = useForm({
@@ -27,28 +27,35 @@ const ActualizacionContrasenia = ({ history,inModal=false,setAbrirModal }) => {
             method: 'PUT',
             body: JSON.stringify(values)
         });
-        if(response){
+        if (response) {
             alert_exitoso(response);
             dispatch(updatePassWord());
-            if(inModal===true){
+            if (isModal === true) {
                 setAbrirModal(false);
-            }else{
-            history.replace("/sample-page");
+            } else {
+                history.replace("/sample-page");
             }
         }
     }
-   const confirmarPassWord = (value) => {
+    const confirmarPassWord = (value) => {
         return value && value === values.password_nuevo;
     };
     const handleErrorSubmit = (e, formData, errorInputs) => {
         alert_warning("Por favor complete la información solicitada");
     };
+    const handleCancelar = () => {
+        if (isModal === true) {
+            setAbrirModal(false);
+        } else {
+            history.replace("/auth/login");
+        }
+    }
     return (
         <Aux>
-            <div className={inModal===true?"":"auth-wrapper"}>
-                <div className={inModal===true?"":"blur-bg-images"} />
-                <div className={inModal===true?"":"auth-content"}>
-                    <div className={inModal===true?"":"card"}>
+            <div className={isModal === true ? "" : "auth-wrapper"}>
+                <div className={isModal === true ? "" : "blur-bg-images"} />
+                <div className={isModal === true ? "" : "auth-content"}>
+                    <div className={isModal === true ? "" : "card"}>
                         <div className="row align-items-center">
                             <div className="col-md-12">
                                 <div className="card-body">
@@ -70,38 +77,43 @@ const ActualizacionContrasenia = ({ history,inModal=false,setAbrirModal }) => {
                                                 />
                                             </Form.Group>
 
-                                            
+
                                             <Form.Group as={Col} md="12">
-                                            <TextInput
-                                                name="password_nuevo"
-                                                id="password_nuevo"
-                                                type="password"
-                                                placeholder="Nueva Contraseña"
-                                                required
-                                                pattern="(?=.*[A-Z]).{6,}"
-                                                errorMessage={{required:"Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula"}}
-                                                value={values.password_nuevo}
-                                                onChange={hanldeOnChangePassword}
-                                                autoComplete="off"
-                                            />
-                                        </Form.Group>
-                                  
-                                        <Form.Group as={Col} md="12">
-                                            <TextInput
-                                                name="password_confirmar"
-                                                id="password_confirmar"
-                                                type="password"
-                                                placeholder="Confirmar Nueva Contraseña"
-                                                required
-                                                validator={confirmarPassWord}
-                                                errorMessage={{required:"Por favor confirme la nueva contraseña", validator: "La contraseña no coincide"}}
-                                                value={values.password_confirmar}
-                                                onChange={hanldeOnChangePassword}
-                                                autoComplete="off"
-                                            />
-                                        </Form.Group>
+                                                <TextInput
+                                                    name="password_nuevo"
+                                                    id="password_nuevo"
+                                                    type="password"
+                                                    placeholder="Nueva Contraseña"
+                                                    required
+                                                    pattern="(?=.*[A-Z]).{6,}"
+                                                    errorMessage={{ required: "Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula" }}
+                                                    value={values.password_nuevo}
+                                                    onChange={hanldeOnChangePassword}
+                                                    autoComplete="off"
+                                                />
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} md="12">
+                                                <TextInput
+                                                    name="password_confirmar"
+                                                    id="password_confirmar"
+                                                    type="password"
+                                                    placeholder="Confirmar Nueva Contraseña"
+                                                    required
+                                                    validator={confirmarPassWord}
+                                                    errorMessage={{ required: "Por favor confirme la nueva contraseña", validator: "La contraseña no coincide" }}
+                                                    value={values.password_confirmar}
+                                                    onChange={hanldeOnChangePassword}
+                                                    autoComplete="off"
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-danger mb-4" onClick={handleCancelar}>Cancelar</button>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <button className="btn btn-block btn-primary mb-4" type="submit">Actualizar</button>
+                                            </Form.Group>
                                         </Form.Row>
-                                        <button className="btn btn-block btn-primary mb-4" type="submit">Actualizar</button>
                                     </ValidationForm>
                                 </div>
                             </div>

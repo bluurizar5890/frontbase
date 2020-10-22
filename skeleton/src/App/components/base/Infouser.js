@@ -3,13 +3,19 @@ import React, { useState } from 'react'
 import { Card, Col, Modal, Row } from 'react-bootstrap'
 import moment from 'moment';
 import Aux from '../../../hoc/_Aux'
-import avatar4 from '../../../assets/images/user/avatar-4.jpg';
+import avatarMen from '../../../assets/images/user/userMen.jpg';
+import avatarWoman from '../../../assets/images/user/userWoman.jpg';
 import { useSelector } from 'react-redux';
 import ActualizacionContrasenia from './ActualizacionContrasenia';
+import { UploadImagen } from './UploadImagen';
 export const Infouser = () => {
     const { userInfo } = useSelector(state => state);
     const [abrirModal, setAbrirModal] = useState(false);
-    const bufferBase64 = new Buffer(userInfo.imagen.foto.data,"binary").toString("base64");
+    const [abrirModalUpload, setAbrirModalUpload] = useState(false);
+    let bufferBase64;
+    if (userInfo.imagen) {
+        bufferBase64 = new Buffer(userInfo.imagen.foto.data, "binary").toString("base64");
+    }
     console.log("Información de usuario", userInfo);
     return (
         <Aux>
@@ -25,12 +31,20 @@ export const Infouser = () => {
                                 <Col sm={4} className="bg-c-blue user-profile-side">
                                     <Card.Body className="text-center text-white">
                                         <div className="m-b-25">
-                                            {/* <img src={avatar4} className="img-radius" alt="User-Profile" /> */}
-                                            <img src={"data:image/jpeg;base64," + bufferBase64} className="img-radius" alt="User-Profile" />
+                                            {
+                                                userInfo.imagen != null ?
+                                                    <img src={"data:image/jpeg;base64," + bufferBase64} className="img-radius" alt="Imagen de usuario" />
+                                                    :
+                                                    userInfo.generoId === 2 ?
+                                                        <img src={avatarWoman} className="img-radius" alt="User-Profile" />
+                                                        :
+                                                        <img src={avatarMen} className="img-radius" alt="User-Profile" />
+                                            }
                                         </div>
                                         <h6 className="f-w-600 text-white">{userInfo.user_name}</h6>
-                                        {/* <p>Web Designer</p> */}
                                         <a href="#" className="text-white" onClick={() => { setAbrirModal(!abrirModal) }}>Cambiar Contraseña<i className="feather icon-edit m-t-10 f-16" /></a>
+                                        <br></br>
+                                        <a href="#" className="text-white" onClick={() => { setAbrirModalUpload(!abrirModalUpload) }}>Cambiar Imagen<i className="feather icon-image m-t-10 f-16" /></a>
                                     </Card.Body>
                                 </Col>
                                 <Col sm={8}>
@@ -90,7 +104,18 @@ export const Infouser = () => {
                         {/* <Modal.Title as="h5">Información</Modal.Title> */}
                     </Modal.Header>
                     <Modal.Body>
-                        <ActualizacionContrasenia inModal={true} setAbrirModal={setAbrirModal} />
+                        <ActualizacionContrasenia isModal={true} setAbrirModal={setAbrirModal} />
+                    </Modal.Body>
+                </Modal>
+            }
+             {
+                abrirModalUpload &&
+                <Modal show={abrirModalUpload} onHide={() => setAbrirModalUpload(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title as="h5">Cargar Imagen</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <UploadImagen setAbrirModal={setAbrirModalUpload}/>
                     </Modal.Body>
                 </Modal>
             }

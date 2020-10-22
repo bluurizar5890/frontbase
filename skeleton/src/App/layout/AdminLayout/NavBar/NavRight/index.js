@@ -7,15 +7,21 @@ import DEMO from "../../../../../store/constant";
 
 import Avatar1 from '../../../../../assets/images/user/avatar-1.jpg';
 import Avatar2 from '../../../../../assets/images/user/avatar-2.jpg';
+import avatarMen from '../../../../../assets/images/user/userMen.jpg';
+import avatarWoman from '../../../../../assets/images/user/userWoman.jpg';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../../../../../actions/auth';
 import Cookies from 'js-cookie';
 const NavRight = ({ rtlLayout }) => {
+
     const dispatch = useDispatch();
     const { userInfo } = useSelector(state => state);
-    
-    const handleLogout=()=>{
+    let bufferBase64;
+    if (userInfo.imagen) {
+        bufferBase64 = new Buffer(userInfo.imagen.foto.data, "binary").toString("base64");
+    }
+    const handleLogout = () => {
         Cookies.remove("auth");
         localStorage.clear();
         dispatch(logout());
@@ -97,7 +103,16 @@ const NavRight = ({ rtlLayout }) => {
                         </Dropdown.Toggle>
                         <Dropdown.Menu alignRight className="profile-notification">
                             <div className="pro-head">
-                                <img src={Avatar2} className="img-radius" alt="User Profile" />
+                                {/* <img src={Avatar2} className="img-radius" alt="User Profile" /> */}
+                                {
+                                    userInfo.imagen != null ?
+                                        <img src={"data:image/jpeg;base64," + bufferBase64} className="img-radius" alt="Imagen de usuario" />
+                                        :
+                                        userInfo.generoId === 2 ?
+                                            <img src={avatarWoman} className="img-radius" alt="User-Profile" />
+                                            :
+                                            <img src={avatarMen} className="img-radius" alt="User-Profile" />
+                                }
                                 <span>{userInfo?.nombre ?? 'Por favor inicie sesión'}</span>
                                 <a className="dud-logout" title="Salir" onClick={handleLogout}><i className="feather icon-log-out" /></a>
                                 {/* <Link to={"/auth/login"} className="dud-logout" title="Salir"> <i className="feather icon-log-out" /></Link> */}

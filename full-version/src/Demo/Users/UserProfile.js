@@ -81,9 +81,6 @@ class UserProfile extends React.Component {
                                                     <div className="position-relative d-inline-block">
                                                         <img className="img-radius img-fluid wid-100" src={avatar5} alt="User"/>
                                                     </div>
-                                                    <div className="overlay">
-                                                        <span>change</span>
-                                                    </div>
                                                 </div>
                                                 <div className="certificated-badge">
                                                     <i className="fas fa-certificate text-c-blue bg-icon"/>

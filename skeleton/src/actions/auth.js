@@ -38,7 +38,23 @@ export const UpdateAcesosMenu = () => {
         dispatch(updatePermisoYMenu(accesos, menu));
     }
 }
+export const UpdateUserInfo=()=>{
+    return async (dispatch) => {
+        const dataUsuario=await InformacionUsuario();
+        const {userInfo, accesos, menu}=!!dataUsuario && dataUsuario
+        dispatch(updateInfo(userInfo, accesos, menu));
+    }
+}
 
+const updateInfo=(userInfo, accesos, menu)=>({
+    type: actionTypes.UPDATE_USER_INFO,
+    payload: {
+        userInfo,
+        accesos,
+        menu,
+        logged: true
+    }
+});
 const login = (token, userInfo, accesos, menu) => ({
     type: actionTypes.LOGIN,
     payload: {
