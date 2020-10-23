@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Redirect, Route, Switch, useLocation, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 const Actualizarcontrasenia = React.lazy(() => import('../App/components/base/ActualizacionContrasenia'));
 const PrivateRoute = (props) => {
 

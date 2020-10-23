@@ -20,7 +20,6 @@ const Rutas = () => {
                 <Route exact path="/admin/change-password" component={Actualizarcontrasenia}/>
                 <Route exact path="/auth/update-password/:id" component={UpdatePassword}/>
                 <Route path="/" component={AdminLayout} />
-                
             </Switch>
         </BrowserRouter>
     )

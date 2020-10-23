@@ -10,3 +10,10 @@
   background: $primary-color;
   border-color: $primary-color;
 }
+.navbar-wrapper {
+  .navbar-content{
+    &.next-scroll{
+      height: 100vh;
+    }
+  }
+}

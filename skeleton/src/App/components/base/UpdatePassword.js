@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Aux from '../../../hoc/_Aux'
 import logoDark from './../../../assets/images/auth/auth-logo-dark.png'
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
@@ -6,7 +6,6 @@ import { Col, Form } from 'react-bootstrap';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 import callApi from '../../../helpers/conectorApi';
-import { Link } from 'react-router-dom';
 export const UpdatePassword = ({ match, history }) => {
     let { id } = match.params;
 

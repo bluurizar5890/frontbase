@@ -16,7 +16,6 @@ export const Infouser = () => {
     if (userInfo.imagen) {
         bufferBase64 = new Buffer(userInfo.imagen.foto.data, "binary").toString("base64");
     }
-    console.log("Información de usuario", userInfo);
     return (
         <Aux>
             <Row>

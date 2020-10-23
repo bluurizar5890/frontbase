@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Form, Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso } from '../../../helpers/Notificacion';
 import { NoAutorizado } from '../NoAutorizado';
 const menuId = 19;
 export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso }) => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [catAccesosAsignados, setCatAccesosAsignado] = useState([]);
 
@@ -26,6 +28,7 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
 
         if (response) {
             alert_exitoso("Acceso asignado exitosamente");
+            dispatch(UpdateUserInfo());
             GetAccesosAsignado(idMenu);
         }
     }
@@ -37,6 +40,7 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
 
         if (response) {
             alert_exitoso(response);
+            dispatch(UpdateUserInfo());
             GetAccesosAsignado(idMenu);
         }
     }

@@ -11,7 +11,6 @@ import Aux from '../../../hoc/_Aux';
 import { Link } from 'react-router-dom';
 import callApi from '../../../helpers/conectorApi';
 import moment from 'moment';
-import { PersonaView } from './PersonaView';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { useSelector } from 'react-redux';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
@@ -21,9 +20,7 @@ const menuId = 12;
 export const PersonaListar = () => {
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
-    const [abrirModal, setAbrirModal] = useState(false);
     const [personas, setPersonas] = useState([]);
-    const [personaId, setPersonaId] = useState(0);
 
     const GetAccesosByMenuId = () => {
         if (state?.accesos) {
@@ -165,10 +162,6 @@ export const PersonaListar = () => {
                                     : <NoAutorizado />
                             }
                         </Card.Body>
-                        {
-                            abrirModal &&
-                            <PersonaView abrirModal={abrirModal} setAbrirModal={setAbrirModal} personaId={personaId} />
-                        }
                     </Card>
                 </Col>
             </Row>

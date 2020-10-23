@@ -6,11 +6,13 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { AccesoUpSert } from './AccesoUpSert';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
+import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 1;
 export const AccesoListar = () => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
 
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
@@ -67,6 +69,7 @@ export const AccesoListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
+                    dispatch(UpdateUserInfo());
                     let listActual = catAcceso.filter(item => item.accesoId !== id);
                     setCatAcceso(listActual);
                 }

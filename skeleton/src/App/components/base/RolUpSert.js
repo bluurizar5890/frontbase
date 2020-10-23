@@ -1,11 +1,14 @@
 import React from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
+import { useDispatch } from 'react-redux';
+import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 export const RolUpSert = ({ dataInicial, abrirModal, setAbrirModal,GetCatRol }) => {
     const [values, handleOnChange] = useForm(dataInicial);
+    const dispatch = useDispatch();
     const NuevoRegistro = async () => {
         let response = await callApi('rol', {
             method: 'POST',
@@ -26,6 +29,7 @@ export const RolUpSert = ({ dataInicial, abrirModal, setAbrirModal,GetCatRol }) 
 
         if (response) {
             alert_exitoso(response);
+            dispatch(UpdateUserInfo());
             GetCatRol();
         }
         setAbrirModal(false);

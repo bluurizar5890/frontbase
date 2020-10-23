@@ -7,7 +7,7 @@ import NavContent from './NavContent';
 import OutsideClick from './OutsideClick';
 import Aux from './../../../../hoc/_Aux'
 import * as actionTypes from './../../../../store/actions';
-import navigation from '../../../../menu-items';
+// import navigation from '../../../../menu-items';
 
 
 
@@ -36,6 +36,7 @@ class Navigation extends Component {
         if (this.props.navFixedLayout && this.props.headerFixedLayout === false) {
             const el = document.querySelector('.pcoded-navbar.menupos-fixed');
             const scrollPosition = window.pageYOffset;
+            if (el != null) {
             if (scrollPosition > 60) {
                 el.style.position = 'fixed';
                 el.style.transition = 'none';
@@ -44,6 +45,7 @@ class Navigation extends Component {
                 el.style.position = 'absolute';
                 el.style.marginTop = '60px';
             }
+        }
         } else {
             document.querySelector('.pcoded-navbar').removeAttribute('style');
         }

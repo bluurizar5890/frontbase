@@ -1,10 +1,13 @@
 import React from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
+import { useDispatch } from 'react-redux';
+import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 export const AccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal,GetAccesos }) => {
+    const dispatch = useDispatch();
     const [values, handleOnChange] = useForm(dataInicial);
     const NuevoRegistro = async () => {
         let response = await callApi('acceso', {
@@ -26,6 +29,7 @@ export const AccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal,GetAccesos
 
         if (response) {
             alert_exitoso(response);
+            dispatch(UpdateUserInfo());
             GetAccesos();
         }
         setAbrirModal(false);

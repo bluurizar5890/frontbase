@@ -8,12 +8,14 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MenuUpSert } from './MenuUpSert';
 import { MenuAcceso } from './MenuAcceso';
 import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
+import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 21;
 const menuIdAcceso = 1;
 export const MenuListar = () => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [abrirModalacceso, setAbrirModalAcceso] = useState(false);
@@ -102,6 +104,7 @@ export const MenuListar = () => {
                 });
                 if (response) {
                     alert_exitoso(response);
+                    dispatch(UpdateUserInfo());
                     let listActual = catMenu.filter(item => item.menuId !== id);
                     setCatMenu(listActual);
                 }

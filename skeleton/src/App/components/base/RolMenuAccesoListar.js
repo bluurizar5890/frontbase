@@ -7,15 +7,13 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { RolMenuAccesoUpSert } from './RolMenuAccesoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
-import { UpdateAcesosMenu } from '../../../actions/auth';
 const menuId = 20;
 const menuIdMenu = 21;
 const menuIdRol = 11;
 export const RolMenuAccesoListar = ({ idrol }) => {
     const state = useSelector(state => state);
-    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catMenu, setCatMenu] = useState([]);

@@ -1,8 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'
-import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
-import routes from '../route'
-
+import { Redirect, Route, withRouter } from 'react-router-dom'
 const PublicRoute = ({
     isAuthenticated,
     component: Component,

@@ -1,12 +1,14 @@
 import React,{useEffect, useState} from 'react'
 import { Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm,  SelectGroup } from 'react-bootstrap4-form-validation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 const menuIdMenuAcceso=19;
 export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu,GetRolMenuAcceso,rolMenuAcceso }) => {
+    const dispatch = useDispatch();
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
     const [values, handleOnChange] = useForm(dataInicial);
@@ -29,6 +31,7 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
 
         if (response) {
             alert_exitoso("Permiso registrado exitosamente");
+            dispatch(UpdateUserInfo());
             GetRolMenuAcceso(dataInicial.rolId);
             setAbrirModal(false);
         }
@@ -41,6 +44,7 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
 
         if (response) {
             alert_exitoso(response);
+            dispatch(UpdateUserInfo());
             GetRolMenuAcceso(dataInicial.rolId);
         }
         setAbrirModal(false);

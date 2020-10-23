@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+// import { BrowserRouter } from 'react-router-dom';
 
-import App from './App/index';
+// import App from './App/index';
 import * as serviceWorker from './serviceWorker';
 import reducer from './store/reducer';
-import config from './config';
 
 import './assets/scss/style.scss';
-import { AppRouter } from './routers/AppRouter';
+// import { AppRouter } from './routers/AppRouter';
 import Rutas from './routers/App';
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 

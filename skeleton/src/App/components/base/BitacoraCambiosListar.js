@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Select from 'react-select';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
-import { Form, Row, Col, Card, Button, Table } from 'react-bootstrap';
-import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
-import Swal from 'sweetalert2';
+import { Form, Row, Col, Card, Table } from 'react-bootstrap';
+import { ValidationForm } from 'react-bootstrap4-form-validation';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
 import { useForm } from '../../hooks/useForm';
 import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
-import { BitacoraPeticionDetalle } from './BitacoraPeticionDetalle';
 const menuId = 27;
 const menuIdUsuario = 17;
 export const BitacoraCambiosListar = () => {

@@ -2,7 +2,7 @@ import callApi from '../helpers/conectorApi';
 import * as actionTypes from '../store/actions';
 import Cookies from 'js-cookie'
 
-var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
+let inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
 
 export const loginBackend = (infoLogin) => {
     return async (dispatch) => {
@@ -21,7 +21,11 @@ export const loginBackend = (infoLogin) => {
             });
             if (data) {
                 const { token } = data;
-                Cookies.set("auth", btoa(token), { expires: inFifteenMinutes });
+                if(infoLogin.recordarme===true){
+                    Cookies.set("auth", btoa(token), { expires: 7 });
+                }else{
+                Cookies.set("auth", btoa(token));
+                }
                 const dataUsuario=await InformacionUsuario();
                 const {userInfo, accesos, menu}=!!dataUsuario && dataUsuario
                 dispatch(login(token, userInfo, accesos, menu));

@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from '../../hooks/useForm';
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
-import config from '../../../config';
 
 const Login = ({ history,location }) => {
     const dispatch = useDispatch();
@@ -35,15 +34,21 @@ const Login = ({ history,location }) => {
     const hanldeOnChangePassword = ({ target: { value } }) => {
         setValues({ ...values, password: value });
     }
-    console.log("En Login",location.pathname);
     const validarLogin=()=> {
         if(logged===true){
             history.replace("/seguridad/usuario");
         }
     }
+    const validarSesion=()=>{
+        dispatch(loginBackend());
+    }
     useEffect(() => {
        validarLogin();
-    }, [logged])
+    }, [logged]);
+
+    useEffect(() => {
+        validarSesion();
+     }, [])
     return (
         <Aux>
             <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>

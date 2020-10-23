@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import windowSize from 'react-window-size';
 
 import NavSearch from './NavSearch';
@@ -12,7 +12,12 @@ class NavLeft extends Component {
         return (
             <Aux>
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item"><NavSearch/></li>
+                    <li className="nav-item">
+                        {
+                            false &&
+                            <NavSearch />
+                        }
+                    </li>
                 </ul>
             </Aux>
         );
@@ -28,7 +33,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFullScreen: () => dispatch({type: actionTypes.FULL_SCREEN}),
+        onFullScreen: () => dispatch({ type: actionTypes.FULL_SCREEN }),
     }
 };
 

@@ -5,7 +5,6 @@ window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
 
-const login = React.lazy(() => import('./App/pages/LoginPage'));
 const OtherSamplePage = React.lazy(() => import('./Demo/Other/SamplePage'));
 const pais=React.lazy(() => import('./App/pages/PaisPage'));
 const departamento=React.lazy(() => import('./App/pages/DepartamentoPage'));

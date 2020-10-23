@@ -7,12 +7,14 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { RolUpSert } from './RolUpSert';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NoAutorizado } from '../NoAutorizado';
+import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 11;
 const menuIdRolMenuAcceso = 20;
 export const RolListar = () => {
     const state = useSelector(state => state);
+    const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catRol, setCatRol] = useState([]);
@@ -67,11 +69,12 @@ export const RolListar = () => {
         }).then(async (willDelete) => {
             if (willDelete.value) {
                 let method = 'DELETE';
-                let response = await callApi(`tipodocumento/${id}`, {
+                let response = await callApi(`rol/${id}`, {
                     method
                 });
                 if (response) {
                     alert_exitoso(response);
+                    dispatch(UpdateUserInfo());
                     let listActual = catRol.filter(item => item.rolId !== id);
                     setCatRol(listActual);
                 }

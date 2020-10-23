@@ -1,7 +1,7 @@
 
 import config from '../config';
 import Cookies from 'js-cookie'
-import { alert_exitoso, alert_error, alert_info, alert_warning } from './Notificacion';
+import { alert_error, alert_warning } from './Notificacion';
 const BASE_URL = config.urlApi;
 const callApi = async (endpoint, options = {}, isFormData = false, manejarRespuesta = 0) => {
     try {

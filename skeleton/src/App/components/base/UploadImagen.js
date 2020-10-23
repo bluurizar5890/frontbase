@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Col, Form } from 'react-bootstrap';
 import { DropzoneComponent } from 'react-dropzone-component';
 import { useDispatch } from 'react-redux';
 import { UpdateUserInfo } from '../../../actions/auth';

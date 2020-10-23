@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Aux from '../../../hoc/_Aux';
 import { Col, Form } from 'react-bootstrap';
 import logoDark from './../../../assets/images/auth/auth-logo-dark.png'
@@ -7,7 +7,6 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { useForm } from '../../hooks/useForm';
 import callApi from '../../../helpers/conectorApi';
-import validator from 'validator';
 import { useDispatch } from 'react-redux';
 import { updatePassWord } from '../../../actions/auth';
 const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) => {
