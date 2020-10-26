@@ -17,6 +17,7 @@ const Rutas = () => {
     return (
         <BrowserRouter basename={config.basename}>
             <Switch>
+                <Route exact path="/" component={Login}/>
                 <Route exact path="/auth/login" component={Login}/>
                 <Route exact path="/auth/reset-password" component={ResetPasswordPage}/>
                 <Route exact path="/admin/change-password" component={ActualizarContraseniaPage}/>
