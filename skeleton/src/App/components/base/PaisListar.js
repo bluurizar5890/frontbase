@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { PaisUpSert } from './PaisUpSert';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 8;
 export const PaisListar = () => {
     const state = useSelector(state => state);

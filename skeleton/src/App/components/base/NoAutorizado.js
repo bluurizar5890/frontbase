@@ -1,6 +1,6 @@
 import React from 'react'
 import { Row, Col, Alert } from 'react-bootstrap';
-import Aux from '../../hoc/_Aux';
+import Aux from '../../../hoc/_Aux';
 export const NoAutorizado = () => {
     return (
         <Aux>

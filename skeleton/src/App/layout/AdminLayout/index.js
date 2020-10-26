@@ -13,11 +13,12 @@ import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
 import { loginBackend } from '../../../actions/auth';
+import { NotFound } from '../../components/base/NotFound';
 
 //import '../../../app.scss';
 
 class AdminLayout extends Component {
-    
+
     state = {
         logged: false,
         cargado: false
@@ -27,7 +28,7 @@ class AdminLayout extends Component {
             this.props.onFullScreenExit();
         }
     };
-    componentDidMount(){
+    componentDidMount() {
         this.props.validarLogin();
     }
     UNSAFE_componentWillMount() {
@@ -67,43 +68,34 @@ class AdminLayout extends Component {
         }
         return (
             <Aux>
-                {
-                    this.props.logged !=false ?
-                    <Fullscreen enabled={this.props.isFullScreen}>
-                        <Navigation />
-                        <NavBar />
-                        <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
-                            <div className={mainClass.join(' ')}>
-                                <div className="pcoded-content">
-                                    <div className="pcoded-inner-content">
-                                        <Breadcrumb menu={this.props.menu || []} />
-                                        <div className="main-body">
-                                            <div className="page-wrapper">
-                                                <Suspense fallback={<Loader />}>
-                                                    <Switch>
-                                                        {
-                                                            this.props.logged === true ?
-                                                                <>
-                                                                    {menu}
-                                                                    {/* <Redirect from="/" to="/seguridad/usuario" /> */}
-                                                                </>
-                                                                : <>
-                                                                    <Redirect from="/" to={this.props.defaultPath} />
-                                                                </>
-                                                        }
-                                                        {/* {menu}
-                                                     <Redirect from="/" to={this.props.defaultPath} /> */}
-                                                    </Switch>
-                                                </Suspense>
-                                            </div>
+                <Fullscreen enabled={this.props.isFullScreen}>
+                    <Navigation />
+                    <NavBar />
+                    <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
+                        <div className={mainClass.join(' ')}>
+                            <div className="pcoded-content">
+                                <div className="pcoded-inner-content">
+                                    <Breadcrumb menu={this.props.menu || []} />
+                                    <div className="main-body">
+                                        <div className="page-wrapper">
+                                            <Suspense fallback={<Loader />}>
+                                                {
+                                                    (this.props.logged === true && !this.props.forzar_cambio_password) ?
+                                                        <Switch>
+                                                            {menu}
+                                                        </Switch>
+                                                        : (this.props.logged === true && this.props.forzar_cambio_password === true) &&
+                                                        <Redirect from="/" to="/admin/change-password" />
+                                                }
+                                            </Suspense>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <Configuration />
-                    </Fullscreen>:(<Redirect from="/" to={this.props.defaultPath} />)
-                }
+                    </div>
+                    <Configuration />
+                </Fullscreen>
             </Aux>
         );
     }
@@ -117,6 +109,7 @@ const mapStateToProps = state => {
         layout: state.layout,
         subLayout: state.subLayout,
         logged: state.logged,
+        forzar_cambio_password: state.forzar_cambio_password,
         menu: state.menu
     }
 };
@@ -125,7 +118,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onFullScreenExit: () => dispatch({ type: actionTypes.FULL_SCREEN_EXIT }),
         onUNSAFE_componentWillMount: () => dispatch({ type: actionTypes.COLLAPSE_MENU }),
-        validarLogin:()=>dispatch(loginBackend())
+        validarLogin: () => dispatch(loginBackend())
     }
 };
 

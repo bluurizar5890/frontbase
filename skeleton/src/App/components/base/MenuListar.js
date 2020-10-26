@@ -9,7 +9,7 @@ import { MenuUpSert } from './MenuUpSert';
 import { MenuAcceso } from './MenuAcceso';
 import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { useDispatch, useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 21;
 const menuIdAcceso = 1;

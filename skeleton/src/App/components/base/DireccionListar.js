@@ -7,7 +7,7 @@ import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DireccionUpSert } from './DireccionUpSert';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 15;
 const menuIdDepartamento = 9;
 export const DireccionListar = ({ personaId }) => {

@@ -3,10 +3,12 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Loadable from 'react-loadable';
 import Loader from '../App/layout/Loader'
 import Login from '../App/components/base/Login';
-import { ResetPassword } from '../App/components/base/ResetPassword'
-import { UpdatePassword } from '../App/components/base/UpdatePassword'
-import Actualizarcontrasenia from '../App/components/base/ActualizacionContrasenia'
 import config from '../config';
+import NoEncontradoPage from '../App/pages/NoEncontradoPage';
+import ActualizarContraseniaPage from '../App/pages/ActualizarContraseniaPage';
+import ResetPasswordPage from '../App/pages/ResetPasswordPage';
+import UpdatePasswordPage from '../App/pages/UpdatePasswordPage';
+
 const AdminLayout = Loadable({
     loader: () => import('../App/layout/AdminLayout'),
     loading: Loader
@@ -16,10 +18,11 @@ const Rutas = () => {
         <BrowserRouter basename={config.basename}>
             <Switch>
                 <Route exact path="/auth/login" component={Login}/>
-                <Route exact path="/auth/reset-password" component={ResetPassword}/>
-                <Route exact path="/admin/change-password" component={Actualizarcontrasenia}/>
-                <Route exact path="/auth/update-password/:id" component={UpdatePassword}/>
-                <Route path="/" component={AdminLayout} />
+                <Route exact path="/auth/reset-password" component={ResetPasswordPage}/>
+                <Route exact path="/admin/change-password" component={ActualizarContraseniaPage}/>
+                <Route exact path="/auth/update-password/:id" component={UpdatePasswordPage}/>
+                <Route path="/base" component={AdminLayout} />
+                <Route component={NoEncontradoPage}/>
             </Switch>
         </BrowserRouter>
     )

@@ -8,7 +8,7 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { RolUpSert } from './RolUpSert';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 11;
 const menuIdRolMenuAcceso = 20;
@@ -139,7 +139,7 @@ export const RolListar = () => {
                                                     <td>{estado}</td>{
                                                          accesos.find(acceso => acceso.menuId === menuIdRolMenuAcceso && acceso.accesoId ===3) &&
                                                          <td style={{ textAlign: "center" }}>
-                                                         <Link className="btn-icon btn btn-info btn-sm" to={`/seguridad/rolmenuacceso/${btoa(`idrol=${rolId}`)}`}><i className="feather icon-lock" /></Link>
+                                                         <Link className="btn-icon btn btn-info btn-sm" to={`/base/seguridad/rolmenuacceso/${btoa(`idrol=${rolId}`)}`}><i className="feather icon-lock" /></Link>
                                                      </td>
                                                     }
                                                    

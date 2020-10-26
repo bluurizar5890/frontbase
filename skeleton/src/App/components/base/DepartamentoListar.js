@@ -8,11 +8,13 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DepartamentoUpSert } from './DepartamentoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
+import Loading from './Loading';
 const menuId = 9;
 const menuIdPais = 8;
 export const DepartamentoListar = () => {
     const state = useSelector(state => state);
+    const [loading, setLoading] = useState(true)
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [catPaises, setCatPais] = useState([]);
@@ -30,6 +32,7 @@ export const DepartamentoListar = () => {
             const misAccesos = accesos.filter(item => (item.menuId === menuId || item.menuId === menuIdPais));
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
     const [dataInicial, setdataInicial] = useState(initData);
@@ -43,18 +46,20 @@ export const DepartamentoListar = () => {
             if (response) {
                 setCatPais(response);
             }
-        }else{
-            setCatPais([{paisId:'',descripcion:'No esta autorizado'}]);
+        } else {
+            setCatPais([{ paisId: '', descripcion: 'No esta autorizado' }]);
         }
     }
     const GetDepartamentos = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            setLoading(true);
             let response = await callApi('departamento?estadoId=1;2');
             if (response) {
                 limpiarEstiloTabla("#mytable");
                 setDepartamentos(response);
                 asignarEstiloTabla("#mytable");
             }
+            setLoading(false);
         }
     }
     const handleEditar = (id) => {
@@ -100,72 +105,81 @@ export const DepartamentoListar = () => {
         GetDepartamentos();
         GetPaises();
     }, [accesos]);
-    
+
     return (
         <Aux>
+
             <Row className='btn-page'>
                 <Col sm={12}>
                     <Card>
+
                         <Card.Header>
                             <Card.Title as="h5">Departamentos</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <Row className="align-items-center m-l-0">
-                                <Col />
-                                <Col className="text-right">
-                                    {
-                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar departamento</Button>
-                                    }
-                                </Col>
-                            </Row>
                             {
-                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
-                                    <Table striped hover responsive bordered id="mytable">
-                                        <thead>
-                                            <tr>
-                                                <th>Codigo</th>
-                                                <th>Departamento</th>
-                                                <th>Pais</th>
-                                                <th>Estado</th>
+                                loading === true ?
+                                    <Loading />
+                                    : <>
+                                        <Row className="align-items-center m-l-0">
+                                            <Col />
+                                            <Col className="text-right">
                                                 {
-                                                    accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
-                                                    <th></th>
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
+                                                    <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar departamento</Button>
                                                 }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                departamentos.map(({ departamentoId, descripcion, Pais: { descripcion: pais }, Estado: { descripcion: estado } }) => (
-                                                    <tr key={departamentoId}>
-                                                        <td>{departamentoId}</td>
-                                                        <td>{descripcion}</td>
-                                                        <td>{pais}</td>
-                                                        <td>{estado}</td>
+                                            </Col>
+                                        </Row>
+                                        {
+                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                                <Table striped hover responsive bordered id="mytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Codigo</th>
+                                                            <th>Departamento</th>
+                                                            <th>Pais</th>
+                                                            <th>Estado</th>
+                                                            {
+                                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                <th></th>
+                                                            }
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         {
-                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
-                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(departamentoId) }}><i className="feather icon-edit" /></button>
-                                                                }
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
-                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(departamentoId) }}><i className="feather icon-trash-2" /></button>
-                                                                }
-                                                            </td>
+                                                            departamentos.map(({ departamentoId, descripcion, Pais: { descripcion: pais }, Estado: { descripcion: estado } }) => (
+                                                                <tr key={departamentoId}>
+                                                                    <td>{departamentoId}</td>
+                                                                    <td>{descripcion}</td>
+                                                                    <td>{pais}</td>
+                                                                    <td>{estado}</td>
+                                                                    {
+                                                                        accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(departamentoId) }}><i className="feather icon-edit" /></button>
+                                                                            }
+                                                                            {
+                                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(departamentoId) }}><i className="feather icon-trash-2" /></button>
+                                                                            }
+                                                                        </td>
+                                                                    }
+                                                                </tr>
+                                                            ))
                                                         }
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    : <NoAutorizado />
+                                                    </tbody>
+                                                </Table>
+                                                : <NoAutorizado />
+                                        }
+                                    </>
                             }
                             {
                                 abrirModal === true &&
                                 <DepartamentoUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catPaises={catPaises} GetDepartamentos={GetDepartamentos} dataInicial={dataInicial} />
                             }
+
                         </Card.Body>
                     </Card>
                 </Col>

@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DatoExtraUpSert } from './DatoExtraUpSert';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 16;
 const menuIdEstadoCivil = 4;
 const menuIdTipoSangre = 6;

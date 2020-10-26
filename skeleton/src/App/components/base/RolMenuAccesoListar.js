@@ -8,7 +8,7 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { RolMenuAccesoUpSert } from './RolMenuAccesoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 20;
 const menuIdMenu = 21;
 const menuIdRol = 11;

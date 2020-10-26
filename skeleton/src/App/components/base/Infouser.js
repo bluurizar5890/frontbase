@@ -6,7 +6,7 @@ import Aux from '../../../hoc/_Aux'
 import avatarMen from '../../../assets/images/user/userMen.jpg';
 import avatarWoman from '../../../assets/images/user/userWoman.jpg';
 import { useSelector } from 'react-redux';
-import ActualizacionContrasenia from './ActualizacionContrasenia';
+import {ActualizacionContrasenia} from './ActualizacionContrasenia';
 import { UploadImagen } from './UploadImagen';
 export const Infouser = () => {
     const { userInfo } = useSelector(state => state);

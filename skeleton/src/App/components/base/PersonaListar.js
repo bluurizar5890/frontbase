@@ -14,7 +14,7 @@ import moment from 'moment';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { useSelector } from 'react-redux';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 
 const menuId = 12;
 export const PersonaListar = () => {
@@ -85,7 +85,7 @@ export const PersonaListar = () => {
                                 <Col className="text-right">
                                     {
                                         accesos.find(acceso => acceso.accesoId === 1) &&
-                                        <Link variant="success" className="btn-sm btn-round has-ripple" to="/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
+                                        <Link variant="success" className="btn-sm btn-round has-ripple" to="/base/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
                                     }
                                 </Col>
                             </Row>
@@ -146,7 +146,7 @@ export const PersonaListar = () => {
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         accesos.find(acceso => acceso.accesoId === 2) &&
-                                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/catalogo/personaupsert/${btoa(`idpersona=${item.personaId}`)}`}><i className="feather icon-edit" /></Link>
+                                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/base/catalogo/personaupsert/${btoa(`idpersona=${item.personaId}`)}`}><i className="feather icon-edit" /></Link>
                                                                     }
                                                                     {
                                                                         accesos.find(acceso => acceso.accesoId === 4) &&

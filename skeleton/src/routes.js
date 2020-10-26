@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-
 window.jQuery = $;
 window.$ = $;
 global.jQuery = $;
@@ -23,27 +22,28 @@ const usuario = React.lazy(() => import('./App/pages/UsuarioPage'));
 const peticion = React.lazy(() => import('./App/pages/BitacoraPeticionesPage'));
 const cambios = React.lazy(() => import('./App/pages/BitacoraCambiosPage'));
 const infoUser = React.lazy(() => import('./App/pages/InformacionUsuario'));
-
+const noEncontrado = React.lazy(() => import('./App/pages/NoEncontradoPage'));
 const routes = [
-    { path: '/catalogo/pais', exact: true, name: 'Pais', component: pais },
-    { path: '/catalogo/departamento', exact: true, name: 'Departamento', component: departamento },
-    { path: '/catalogo/municipio', exact: true, name: 'Municipio', component: municipio },
-    { path: '/catalogo/tipodocumento', exact: true, name: 'TipoDocumento', component: tipodocumento },
-    { path: '/catalogo/tiposangre', exact: true, name: 'TipoSangre', component: tiposangre },
-    { path: '/catalogo/tipotelefono', exact: true, name: 'TipoTelefono', component: tipotelefono },
-    { path: '/catalogo/estadocivil', exact: true, name: 'EstadoCivil', component: estadocivil },
-    { path: '/seguridad/acceso', exact: true, name: 'Acceso', component: acceso },
-    { path: '/seguridad/menu', exact: true, name: 'Menu', component: menu },
-    { path: '/seguridad/rol', exact: true, name: 'Rol', component: rol },
-    { path: '/seguridad/rolmenuacceso/:idrol', exact: true, name: 'RolMenuAcceso', component: rolmenuacceso },
-    { path: '/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },
-    { path: '/catalogo/persona', exact: true, name: 'persona', component: persona },
-    { path: '/catalogo/personaupsert/:idpersona', exact: true, name: 'personaUpSert', component: personaupsert },
-    { path: '/catalogo/personaupsert', exact: true, name: 'personaUpSert', component: personaupsert },
-    { path: '/seguridad/usuario', exact: true, name: 'Usuario', component: usuario },
-    { path: '/seguridad/bitacora/peticion', exact: true, name: 'peticion', component: peticion },
-    { path: '/seguridad/bitacora-cambios', exact: true, name: 'cambios', component: cambios },
-    { path: '/infouser', exact: true, name: 'infouser', component: infoUser },
+    { path: '/base/catalogo/pais', exact: true, name: 'Pais', component: pais },
+    { path: '/base/catalogo/departamento', exact: true, name: 'Departamento', component: departamento },
+    { path: '/base/catalogo/municipio', exact: true, name: 'Municipio', component: municipio },
+    { path: '/base/catalogo/tipodocumento', exact: true, name: 'TipoDocumento', component: tipodocumento },
+    { path: '/base/catalogo/tiposangre', exact: true, name: 'TipoSangre', component: tiposangre },
+    { path: '/base/catalogo/tipotelefono', exact: true, name: 'TipoTelefono', component: tipotelefono },
+    { path: '/base/catalogo/estadocivil', exact: true, name: 'EstadoCivil', component: estadocivil },
+    { path: '/base/seguridad/acceso', exact: true, name: 'Acceso', component: acceso },
+    { path: '/base/seguridad/menu', exact: true, name: 'Menu', component: menu },
+    { path: '/base/seguridad/rol', exact: true, name: 'Rol', component: rol },
+    { path: '/base/seguridad/rolmenuacceso/:idrol', exact: true, name: 'RolMenuAcceso', component: rolmenuacceso },
+    { path: '/base/sample-page', exact: true, name: 'Sample Page', component: OtherSamplePage },
+    { path: '/base/catalogo/persona', exact: true, name: 'persona', component: persona },
+    { path: '/base/catalogo/personaupsert/:idpersona', exact: true, name: 'personaUpSert', component: personaupsert },
+    { path: '/base/catalogo/personaupsert', exact: true, name: 'personaUpSert', component: personaupsert },
+    { path: '/base/seguridad/usuario', exact: true, name: 'Usuario', component: usuario },
+    { path: '/base/seguridad/bitacora/peticion', exact: true, name: 'peticion', component: peticion },
+    { path: '/base/seguridad/bitacora/cambios', exact: true, name: 'cambios', component: cambios },
+    { path: '/base/infouser', exact: true, name: 'infouser', component: infoUser },
+    { name: 'noEncontrado', component: noEncontrado }
 ];
 
 export default routes;

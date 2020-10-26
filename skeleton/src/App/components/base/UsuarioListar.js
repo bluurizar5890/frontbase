@@ -9,7 +9,7 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { UsuarioUpSert } from './UsuarioUpSert';
 import { UsuarioRol } from './UsuarioRol';
 import { useSelector } from 'react-redux';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 17;
 const menuIdRol = 11;
 const menuIdPersona = 12;

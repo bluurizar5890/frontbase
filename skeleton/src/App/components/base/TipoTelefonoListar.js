@@ -6,7 +6,7 @@ import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { TipoTelefonoUpSert } from './TipoTelefonoUpSert';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 import { useSelector } from 'react-redux';
 const menuId = 7;
 export const TipoTelefonoListar = () => {

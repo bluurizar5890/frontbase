@@ -10,21 +10,22 @@ import Avatar2 from '../../../../../assets/images/user/avatar-2.jpg';
 import avatarMen from '../../../../../assets/images/user/userMen.jpg';
 import avatarWoman from '../../../../../assets/images/user/userWoman.jpg';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { logout } from '../../../../../actions/auth';
 import Cookies from 'js-cookie';
-const NavRight = ({ rtlLayout }) => {
+const NavRight = ({ rtlLayout,history }) => {
 
     const dispatch = useDispatch();
     const { userInfo } = useSelector(state => state);
     let bufferBase64;
-    if (userInfo.imagen) {
+    if (userInfo?.imagen) {
         bufferBase64 = new Buffer(userInfo.imagen.foto.data, "binary").toString("base64");
     }
     const handleLogout = () => {
         Cookies.remove("auth");
         localStorage.clear();
         dispatch(logout());
+        history.replace("/auth/login");
     }
     return (
         <Aux>
@@ -110,10 +111,10 @@ const NavRight = ({ rtlLayout }) => {
                             <div className="pro-head">
                                 {/* <img src={Avatar2} className="img-radius" alt="User Profile" /> */}
                                 {
-                                    userInfo.imagen != null ?
+                                    userInfo?.imagen != null ?
                                         <img src={"data:image/jpeg;base64," + bufferBase64} className="img-radius" alt="Imagen de usuario" />
                                         :
-                                        userInfo.generoId === 2 ?
+                                        userInfo?.generoId === 2 ?
                                             <img src={avatarWoman} className="img-radius" alt="User-Profile" />
                                             :
                                             <img src={avatarMen} className="img-radius" alt="User-Profile" />
@@ -123,7 +124,7 @@ const NavRight = ({ rtlLayout }) => {
                                 {/* <Link to={"/auth/login"} className="dud-logout" title="Salir"> <i className="feather icon-log-out" /></Link> */}
                             </div>
                             <ul className="pro-body">
-                                <li><Link to="/infouser" className="dropdown-item"><i className="feather icon-user" /> Mi Perfil</Link></li>
+                                <li><Link to="/base/infouser" className="dropdown-item"><i className="feather icon-user" /> Mi Perfil</Link></li>
                                 {/* <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-settings" /> Settings</a></li>
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-mail" /> My Messages</a></li>
                                 <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-lock" /> Lock Screen</a></li> */}
@@ -137,4 +138,4 @@ const NavRight = ({ rtlLayout }) => {
     )
 }
 
-export default NavRight
+export default withRouter(NavRight)

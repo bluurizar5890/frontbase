@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from '../../hooks/useForm';
 import { ValidationForm, TextInput } from 'react-bootstrap4-form-validation';
 import { alert_warning } from '../../../helpers/Notificacion';
+import config from '../../../config';
 
 const Login = ({ history,location }) => {
     const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const Login = ({ history,location }) => {
     }
     const validarLogin=()=> {
         if(logged===true){
-            history.replace("/seguridad/usuario");
+            history.replace(config.defaultPath);
         }
     }
     const validarSesion=()=>{

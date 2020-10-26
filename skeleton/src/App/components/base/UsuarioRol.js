@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso } from '../../../helpers/Notificacion';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 const menuId = 18;
 const menuIdRol = 11;
 export const UsuarioRol = ({ usuarioId, abrirModal, setAbrirModal, catRol }) => {

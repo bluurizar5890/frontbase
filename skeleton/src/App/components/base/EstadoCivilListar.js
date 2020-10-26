@@ -6,7 +6,7 @@ import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { EstadoCivilUpSert } from './EstadoCivilUpSert';
-import { NoAutorizado } from '../NoAutorizado';
+import { NoAutorizado } from './NoAutorizado';
 import { useSelector } from 'react-redux';
 const menuId = 4;
 export const EstadoCivilListar = () => {

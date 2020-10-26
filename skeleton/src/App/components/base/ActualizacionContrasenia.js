@@ -1,5 +1,4 @@
 import React from 'react';
-import Aux from '../../../hoc/_Aux';
 import { Col, Form } from 'react-bootstrap';
 import logoDark from './../../../assets/images/auth/auth-logo-dark.png'
 import '../../../assets/scss/style.scss';
@@ -9,7 +8,8 @@ import { useForm } from '../../hooks/useForm';
 import callApi from '../../../helpers/conectorApi';
 import { useDispatch } from 'react-redux';
 import { updatePassWord } from '../../../actions/auth';
-const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) => {
+import config from '../../../config';
+export const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) => {
     const dispatch = useDispatch();
 
     const [values, , , setValues] = useForm({
@@ -32,7 +32,7 @@ const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) =
             if (isModal === true) {
                 setAbrirModal(false);
             } else {
-                history.replace("/sample-page");
+                history.replace(config.defaultPath);
             }
         }
     }
@@ -50,78 +50,67 @@ const ActualizacionContrasenia = ({ history, isModal = false, setAbrirModal }) =
         }
     }
     return (
-        <Aux>
-            <div className={isModal === true ? "" : "auth-wrapper"}>
-                <div className={isModal === true ? "" : "blur-bg-images"} />
-                <div className={isModal === true ? "" : "auth-content"}>
-                    <div className={isModal === true ? "" : "card"}>
-                        <div className="row align-items-center">
-                            <div className="col-md-12">
-                                <div className="card-body">
-                                    <img src={logoDark} alt="" className="img-fluid mb-4" />
-                                    <h4 className="mb-4 f-w-400">Actualizar Contraseña</h4>
-                                    <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
-                                        <Form.Row>
-                                            <Form.Group as={Col} md="12">
-                                                <TextInput
-                                                    name="password_actual"
-                                                    id="password_actual"
-                                                    required
-                                                    errorMessage="Por favor ingrese su contraseña actual"
-                                                    value={values.password_actual}
-                                                    onChange={hanldeOnChangePassword}
-                                                    placeholder="Contraseña Actual"
-                                                    autoComplete="off"
-                                                    type="password"
-                                                />
-                                            </Form.Group>
+        <div className="row align-items-center">
+            <div className="col-md-12">
+                <div className="card-body">
+                    <img src={logoDark} alt="" className="img-fluid mb-4" />
+                    <h4 className="mb-4 f-w-400">Actualizar Contraseña</h4>
+                    <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
+                        <Form.Row>
+                            <Form.Group as={Col} md="12">
+                                <TextInput
+                                    name="password_actual"
+                                    id="password_actual"
+                                    required
+                                    errorMessage="Por favor ingrese su contraseña actual"
+                                    value={values.password_actual}
+                                    onChange={hanldeOnChangePassword}
+                                    placeholder="Contraseña Actual"
+                                    autoComplete="off"
+                                    type="password"
+                                />
+                            </Form.Group>
 
 
-                                            <Form.Group as={Col} md="12">
-                                                <TextInput
-                                                    name="password_nuevo"
-                                                    id="password_nuevo"
-                                                    type="password"
-                                                    placeholder="Nueva Contraseña"
-                                                    required
-                                                    pattern="(?=.*[A-Z]).{6,}"
-                                                    errorMessage={{ required: "Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula" }}
-                                                    value={values.password_nuevo}
-                                                    onChange={hanldeOnChangePassword}
-                                                    autoComplete="off"
-                                                />
-                                            </Form.Group>
+                            <Form.Group as={Col} md="12">
+                                <TextInput
+                                    name="password_nuevo"
+                                    id="password_nuevo"
+                                    type="password"
+                                    placeholder="Nueva Contraseña"
+                                    required
+                                    pattern="(?=.*[A-Z]).{6,}"
+                                    errorMessage={{ required: "Ingrese la nueva contraseña", pattern: "La contraseña debe de tener al menos 6 caracteres y contener al menos una letra mayúscula" }}
+                                    value={values.password_nuevo}
+                                    onChange={hanldeOnChangePassword}
+                                    autoComplete="off"
+                                />
+                            </Form.Group>
 
-                                            <Form.Group as={Col} md="12">
-                                                <TextInput
-                                                    name="password_confirmar"
-                                                    id="password_confirmar"
-                                                    type="password"
-                                                    placeholder="Confirmar Nueva Contraseña"
-                                                    required
-                                                    validator={confirmarPassWord}
-                                                    errorMessage={{ required: "Por favor confirme la nueva contraseña", validator: "La contraseña no coincide" }}
-                                                    value={values.password_confirmar}
-                                                    onChange={hanldeOnChangePassword}
-                                                    autoComplete="off"
-                                                />
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="6">
-                                                <button className="btn btn-block btn-danger mb-4" onClick={handleCancelar}>Cancelar</button>
-                                            </Form.Group>
-                                            <Form.Group as={Col} md="6">
-                                                <button className="btn btn-block btn-primary mb-4" type="submit">Actualizar</button>
-                                            </Form.Group>
-                                        </Form.Row>
-                                    </ValidationForm>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <Form.Group as={Col} md="12">
+                                <TextInput
+                                    name="password_confirmar"
+                                    id="password_confirmar"
+                                    type="password"
+                                    placeholder="Confirmar Nueva Contraseña"
+                                    required
+                                    validator={confirmarPassWord}
+                                    errorMessage={{ required: "Por favor confirme la nueva contraseña", validator: "La contraseña no coincide" }}
+                                    value={values.password_confirmar}
+                                    onChange={hanldeOnChangePassword}
+                                    autoComplete="off"
+                                />
+                            </Form.Group>
+                            <Form.Group as={Col} md="6">
+                                <button className="btn btn-block btn-danger mb-4" onClick={handleCancelar}>Cancelar</button>
+                            </Form.Group>
+                            <Form.Group as={Col} md="6">
+                                <button className="btn btn-block btn-primary mb-4" type="submit">Actualizar</button>
+                            </Form.Group>
+                        </Form.Row>
+                    </ValidationForm>
                 </div>
             </div>
-        </Aux>
+        </div>
     )
 }
-
-export default ActualizacionContrasenia;
