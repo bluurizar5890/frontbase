@@ -2,10 +2,10 @@
 import React, { useState } from 'react'
 import { Card, Col, Modal, Row } from 'react-bootstrap'
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import Aux from '../../../hoc/_Aux'
 import avatarMen from '../../../assets/images/user/userMen.jpg';
 import avatarWoman from '../../../assets/images/user/userWoman.jpg';
-import { useSelector } from 'react-redux';
 import {ActualizacionContrasenia} from './ActualizacionContrasenia';
 import { UploadImagen } from './UploadImagen';
 export const Infouser = () => {

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Select from 'react-select';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
+import { useSelector } from 'react-redux';
 import { Form, Row, Col, Card, Table } from 'react-bootstrap';
 import { ValidationForm } from 'react-bootstrap4-form-validation';
-import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import { useSelector } from 'react-redux';
+import callApi from '../../../helpers/conectorApi';
 import { useForm } from '../../hooks/useForm';
 import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
 import { NoAutorizado } from './NoAutorizado';
@@ -149,83 +149,84 @@ export const BitacoraCambiosListar = () => {
                             <Card.Title as="h5">Listado de Cambios</Card.Title>
                         </Card.Header>
                         <Card.Body>
+
+                            <Row className="align-items-center m-l-0">
+                                <Col>
+                                    <ValidationForm onSubmit={handleOnSubmit} >
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Label htmlFor="tabla">Tabla</Form.Label>
+                                                <Select
+                                                    id="tabla"
+                                                    name="tabla"
+                                                    className="basic-single"
+                                                    classNamePrefix="select"
+                                                    required
+                                                    placeholder="Tabla"
+                                                    onChange={handleChangeTabla}
+                                                    options={tablas}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Label htmlFor="usuarioId">Usuario</Form.Label>
+                                                <Select
+                                                    id="usuarioId"
+                                                    name="usuarioId"
+                                                    className="basic-single"
+                                                    classNamePrefix="select"
+                                                    required
+                                                    placeholder="Usuario"
+                                                    onChange={handleChangeUsuario}
+                                                    options={usuarios}
+                                                />
+                                            </Form.Group>
+                                        </Form.Row>
+                                        <Form.Row>
+                                            <Form.Group as={Col} md="3">
+                                                <Form.Label htmlFor="fechaInicial">Fecha Inicial</Form.Label>
+                                                <div className="form-group">
+                                                    <DatePicker
+                                                        id="fechaInicial"
+                                                        name="fechaInicial"
+                                                        dateFormat="dd/MM/yyyy"
+                                                        selected={fechaInicial}
+                                                        onChange={onchangeFechaIncial}
+                                                        className="form-control"
+                                                        placeholderText="dd/MM/yyyy"
+                                                        autoComplete="off"
+                                                        maxDate={new Date()}
+                                                    />
+                                                </div>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="3">
+                                                <Form.Label htmlFor="fechaFinal">Fecha Final</Form.Label>
+                                                <div className="form-group">
+                                                    <DatePicker
+                                                        id="fechaFinal"
+                                                        name="fechaFinal"
+                                                        dateFormat="dd/MM/yyyy"
+                                                        selected={fechaFinal}
+                                                        onChange={onchangeFechaFinal}
+                                                        className="form-control"
+                                                        placeholderText="dd/MM/yyyy"
+                                                        autoComplete="off"
+                                                        maxDate={new Date()}
+                                                    />
+                                                </div>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="2">
+                                                <Form.Label htmlFor="status">&nbsp;&nbsp;</Form.Label>
+                                                <button className="btn btn-block btn-primary mb-0" type="submit">Buscar<i className="feather icon-search" /></button>
+                                            </Form.Group>
+                                        </Form.Row>
+                                    </ValidationForm>
+                                </Col>
+                            </Row>
+                            <hr></hr>
                             {
                                 loading === true ?
                                     <Loading />
                                     : <>
-                                        <Row className="align-items-center m-l-0">
-                                            <Col>
-                                                <ValidationForm onSubmit={handleOnSubmit} >
-                                                    <Form.Row>
-                                                        <Form.Group as={Col} md="6">
-                                                            <Form.Label htmlFor="tabla">Tabla</Form.Label>
-                                                            <Select
-                                                                id="tabla"
-                                                                name="tabla"
-                                                                className="basic-single"
-                                                                classNamePrefix="select"
-                                                                required
-                                                                placeholder="Tabla"
-                                                                onChange={handleChangeTabla}
-                                                                options={tablas}
-                                                            />
-                                                        </Form.Group>
-                                                        <Form.Group as={Col} md="6">
-                                                            <Form.Label htmlFor="usuarioId">Usuario</Form.Label>
-                                                            <Select
-                                                                id="usuarioId"
-                                                                name="usuarioId"
-                                                                className="basic-single"
-                                                                classNamePrefix="select"
-                                                                required
-                                                                placeholder="Usuario"
-                                                                onChange={handleChangeUsuario}
-                                                                options={usuarios}
-                                                            />
-                                                        </Form.Group>
-                                                    </Form.Row>
-                                                    <Form.Row>
-                                                        <Form.Group as={Col} md="3">
-                                                            <Form.Label htmlFor="fechaInicial">Fecha Inicial</Form.Label>
-                                                            <div className="form-group">
-                                                                <DatePicker
-                                                                    id="fechaInicial"
-                                                                    name="fechaInicial"
-                                                                    dateFormat="dd/MM/yyyy"
-                                                                    selected={fechaInicial}
-                                                                    onChange={onchangeFechaIncial}
-                                                                    className="form-control"
-                                                                    placeholderText="dd/MM/yyyy"
-                                                                    autoComplete="off"
-                                                                    maxDate={new Date()}
-                                                                />
-                                                            </div>
-                                                        </Form.Group>
-                                                        <Form.Group as={Col} md="3">
-                                                            <Form.Label htmlFor="fechaFinal">Fecha Final</Form.Label>
-                                                            <div className="form-group">
-                                                                <DatePicker
-                                                                    id="fechaFinal"
-                                                                    name="fechaFinal"
-                                                                    dateFormat="dd/MM/yyyy"
-                                                                    selected={fechaFinal}
-                                                                    onChange={onchangeFechaFinal}
-                                                                    className="form-control"
-                                                                    placeholderText="dd/MM/yyyy"
-                                                                    autoComplete="off"
-                                                                    maxDate={new Date()}
-                                                                />
-                                                            </div>
-                                                        </Form.Group>
-                                                        <Form.Group as={Col} md="2">
-                                                            <Form.Label htmlFor="status">&nbsp;&nbsp;</Form.Label>
-                                                            <button className="btn btn-block btn-primary mb-0" type="submit">Buscar<i className="feather icon-search" /></button>
-                                                        </Form.Group>
-                                                    </Form.Row>
-                                                </ValidationForm>
-                                            </Col>
-                                        </Row>
-                                        <hr></hr>
                                         {
                                             accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
                                                 <Table striped hover responsive bordered id="mytable">

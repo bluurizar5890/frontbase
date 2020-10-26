@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Row, Col, Card, Button, Table } from 'react-bootstrap';
-import { ValidationForm, TextInput, SelectGroup } from 'react-bootstrap4-form-validation';
+import { ValidationForm, SelectGroup } from 'react-bootstrap4-form-validation';
+import withReactContent from 'sweetalert2-react-content';
+import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
-import withReactContent from 'sweetalert2-react-content';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MunicipioUpSert } from './MunicipioUpSert';
-import { useSelector } from 'react-redux';
 import { NoAutorizado } from './NoAutorizado';
+import Loading from './Loading';
 const menuId = 10;
 const menuIdDepartamento = 9;
 const menuIdPais = 8;
 export const MunicipioListar = () => {
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
+    const [loading, setLoading] = useState(true)
     const [abrirModal, setAbrirModal] = useState(false);
     const [catPaises, setCatPais] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
@@ -33,6 +35,7 @@ export const MunicipioListar = () => {
             const misAccesos = accesos.filter(item => (item.menuId === menuId || item.menuId === menuIdDepartamento || item.menuId === menuIdPais));
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
 
@@ -43,6 +46,7 @@ export const MunicipioListar = () => {
     }
     const GetPaises = async () => {
         if (accesos.find(acceso => acceso.menuId === menuIdPais && acceso.accesoId === 3)) {
+            setLoading(true);
             let response = await callApi('pais?include=0?estadoId=1');
             if (response) {
                 setCatPais(response);
@@ -50,10 +54,12 @@ export const MunicipioListar = () => {
         } else {
             setCatPais([{ paisId: '', descripcion: 'No esta autorizado' }]);
         }
+        setLoading(false);
     }
     const GetDepartamentos = async (id) => {
         if (id > 0) {
             if (accesos.find(acceso => acceso.menuId === menuIdDepartamento && acceso.accesoId === 3)) {
+                setLoading(true);
                 let response = await callApi(`departamento?paisId=${id}&estadoId=1&include=0`);
                 if (response) {
                     setDepartamentos(response);
@@ -62,16 +68,19 @@ export const MunicipioListar = () => {
                 setDepartamentos([{ departamentoId: '', descripcion: 'No esta autorizado' }]);
             }
         }
+        setLoading(false);
     }
     const GetMunicipios = async (id) => {
         if (id > 0) {
             if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+                setLoading(true);
                 let response = await callApi(`municipio?departamentoId=${id}&estadoId=1;2`);
                 if (response) {
                     setMunicipios(response);
                 }
             }
         }
+        setLoading(false);
     }
 
     const handleChangePais = ({ target: { value } }) => {
@@ -188,47 +197,53 @@ export const MunicipioListar = () => {
                             </Row>
                             <hr></hr>
                             {
-                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
-                                    <Table striped hover responsive bordered id="mytable">
-                                        <thead>
-                                            <tr>
-                                                <th>Codigo</th>
-                                                <th>Municipio</th>
-                                                <th>Departamento</th>
-                                                <th>Estado</th>
-                                                {
-                                                    accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
-                                                    <th></th>
-                                                }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                municipios.map(({ municipioId, descripcion, Departamento: { descripcion: departamento }, Estado: { descripcion: estado } }) => (
-                                                    <tr key={municipioId}>
-                                                        <td>{municipioId}</td>
-                                                        <td>{descripcion}</td>
-                                                        <td>{departamento}</td>
-                                                        <td>{estado}</td>
+                                loading === true ?
+                                    <Loading />
+                                    : <>
+                                        {
+                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                                <Table striped hover responsive bordered id="mytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Codigo</th>
+                                                            <th>Municipio</th>
+                                                            <th>Departamento</th>
+                                                            <th>Estado</th>
+                                                            {
+                                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                <th></th>
+                                                            }
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         {
-                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
-                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(municipioId) }}><i className="feather icon-edit" /></button>
-                                                                }
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
-                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(municipioId) }}><i className="feather icon-trash-2" /></button>
-                                                                }
-                                                            </td>
+                                                            municipios.map(({ municipioId, descripcion, Departamento: { descripcion: departamento }, Estado: { descripcion: estado } }) => (
+                                                                <tr key={municipioId}>
+                                                                    <td>{municipioId}</td>
+                                                                    <td>{descripcion}</td>
+                                                                    <td>{departamento}</td>
+                                                                    <td>{estado}</td>
+                                                                    {
+                                                                        accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(municipioId) }}><i className="feather icon-edit" /></button>
+                                                                            }
+                                                                            {
+                                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(municipioId) }}><i className="feather icon-trash-2" /></button>
+                                                                            }
+                                                                        </td>
+                                                                    }
+                                                                </tr>
+                                                            ))
                                                         }
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    : <NoAutorizado />
+                                                    </tbody>
+                                                </Table>
+                                                : <NoAutorizado />
+                                        }
+                                    </>
                             }
                             {
                                 abrirModal === true &&

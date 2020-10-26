@@ -67,7 +67,7 @@ const callApi = async (endpoint, options = {}, isFormData = false, manejarRespue
             }
         }
     } catch (mensajeError) {
-        console.log({ mensajeError })
+        // console.log({ mensajeError })
         alert_error("Ocurrió un error en el conector, por favor comuniquese con Soporte");
         return false;
     }

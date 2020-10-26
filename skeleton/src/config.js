@@ -1,5 +1,5 @@
 export default {
-    defaultPath: '/base/sample-page',
+    defaultPath: '/base/home',
     basename: '/app', // only at build time to set, like ///able-pro/react/default
     layout: 'vertical', // vertical, horizontal
     subLayout: '', // horizontal-2
@@ -10,6 +10,6 @@ export default {
     navFixedLayout: true,
     headerFixedLayout: false,
     boxLayout: false,
-    urlApi: 'http://127.0.0.1:3000/api/',
+    urlApi:"http://apibase.misapps.tk/api/",//urlApi: 'http://127.0.0.1:3000/api/',
     dias_alerta_cambio_pass: 10,
 };

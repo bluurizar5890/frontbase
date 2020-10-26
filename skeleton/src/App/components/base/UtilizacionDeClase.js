@@ -10,14 +10,14 @@ import $ from 'jquery';
 
 const accesos = [1, 2, 3, 4];
 const initData = {
-        departamentoId: '',
-        paisId: '',
-        descripcion: '',
-        estadoId: 1
-    };
+    departamentoId: '',
+    paisId: '',
+    descripcion: '',
+    estadoId: 1
+};
 
-    $.DataTable = require( 'datatables.net-bs' );
-require( 'datatables.net-responsive-bs' );
+$.DataTable = require('datatables.net-bs');
+require('datatables.net-responsive-bs');
 
 function atable() {
     let tableZero = '#data-table-zero';
@@ -27,12 +27,12 @@ function atable() {
 }
 
 class UtilizacionDeClase extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.GetDepartamentos();
         this.GetPaises();
     }
-    state={
+    state = {
         abrirModal: false,
         catPaises: [],
         departamentos: [],
@@ -41,26 +41,26 @@ class UtilizacionDeClase extends React.Component {
 
     GetPaises = async () => {
         let response = await callApi('pais?include=0?estadoId=1');
-        this.setState({...this.state, catPaises:response});
+        this.setState({ ...this.state, catPaises: response });
     }
 
     handleOpenModal = () => {
-        this.setState({...this.state, abrirModal:!this.state.abrirModal});
+        this.setState({ ...this.state, abrirModal: !this.state.abrirModal });
     }
-   
+
     GetDepartamentos = async () => {
         let response = await callApi('departamento?estadoId=1;2');
-        this.setState({...this.state, departamentos:response});
+        this.setState({ ...this.state, departamentos: response });
     }
     handleEditar = (id) => {
-        const { departamentoId, paisId, descripcion, estadoId } =this.state.departamentos.find(item => item.departamentoId === id);
+        const { departamentoId, paisId, descripcion, estadoId } = this.state.departamentos.find(item => item.departamentoId === id);
         const nuevaInfo = {
             departamentoId,
             paisId,
             descripcion,
             estadoId
         };
-        this.setState({...this.state, initData:nuevaInfo, abrirModal:true});
+        this.setState({ ...this.state, initData: nuevaInfo, abrirModal: true });
     }
     handleDelete = (id) => {
         const MySwal = withReactContent(Swal);
@@ -86,11 +86,11 @@ class UtilizacionDeClase extends React.Component {
         });
     }
 
-    componentDidMount(){
-     
+    componentDidMount() {
+
     }
 
-    
+
 
 
     render() {

@@ -6,19 +6,20 @@ import {
     Table
 } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import Aux from '../../../hoc/_Aux';
-import { Link } from 'react-router-dom';
-import callApi from '../../../helpers/conectorApi';
 import moment from 'moment';
-import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
+import withReactContent from 'sweetalert2-react-content';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
+import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { NoAutorizado } from './NoAutorizado';
-
+import Loading from './Loading';
 const menuId = 12;
 export const PersonaListar = () => {
     const state = useSelector(state => state);
+    const [loading, setLoading] = useState(true)
     const [accesos, setAccesos] = useState([]);
     const [personas, setPersonas] = useState([]);
 
@@ -28,10 +29,12 @@ export const PersonaListar = () => {
             const misAccesos = accesos.filter(item => item.menuId === menuId);
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
     const GetPersonas = async () => {
         if (accesos.find(acceso => acceso.accesoId === 3)) {
+            setLoading(true);
             let response = await callApi(`persona?&estadoId=1;2`);
             if (response) {
                 limpiarEstiloTabla("#mytable");
@@ -39,6 +42,7 @@ export const PersonaListar = () => {
                 asignarEstiloTabla("#mytable");
             }
         }
+        setLoading(false);
     }
     const handleDelete = (id) => {
         const MySwal = withReactContent(Swal);
@@ -80,86 +84,92 @@ export const PersonaListar = () => {
                 <Col sm={12}>
                     <Card>
                         <Card.Body>
-                            <Row className="align-items-center m-l-0">
-                                <Col />
-                                <Col className="text-right">
-                                    {
-                                        accesos.find(acceso => acceso.accesoId === 1) &&
-                                        <Link variant="success" className="btn-sm btn-round has-ripple" to="/base/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
-                                    }
-                                </Col>
-                            </Row>
                             {
-                                accesos.find(acceso => acceso.accesoId === 3) ?
-                                    <Table striped hover responsive bordered id="mytable">
-                                        <thead>
-                                            <tr>
-                                                <th>Codigo</th>
-                                                <th>Nombre</th>
-                                                <th>Fecha de Nacimiento</th>
-                                                <th>Correo</th>
-                                                <th>Genero</th>
-                                                <th>Estado</th>
+                                loading === true ?
+                                    <Loading />
+                                    : <>
+                                        <Row className="align-items-center m-l-0">
+                                            <Col />
+                                            <Col className="text-right">
                                                 {
-                                                    accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
-                                                    <th></th>
+                                                    accesos.find(acceso => acceso.accesoId === 1) &&
+                                                    <Link variant="success" className="btn-sm btn-round has-ripple" to="/base/catalogo/personaupsert"><i className="feather icon-plus" /> Nueva Persona</Link>
                                                 }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                personas.map((item) => {
-                                                    const { personaId,
-                                                        nombre1,
-                                                        nombre2,
-                                                        nombre_otros,
-                                                        apellido1,
-                                                        apellido2,
-                                                        apellido_casada,
-                                                        email,
-                                                        fecha_nacimiento, Genero: { descripcion: genero }, Estado: { descripcion: estado } } = item;
-                                                    let nombreCompleto = nombre1;
-                                                    if (nombre2) {
-                                                        nombreCompleto += " " + nombre2;
-                                                    }
-                                                    if (nombre_otros) {
-                                                        nombreCompleto += " " + nombre_otros;
-                                                    }
-                                                    nombreCompleto += " " + apellido1;
-
-                                                    if (apellido2) {
-                                                        nombreCompleto += " " + apellido2;
-                                                    }
-                                                    if (apellido_casada) {
-                                                        nombreCompleto += " " + apellido_casada;
-                                                    }
-                                                    return (
-                                                        <tr key={personaId}>
-                                                            <td>{personaId}</td>
-                                                            <td>{nombreCompleto}</td>
-                                                            <td>{moment(fecha_nacimiento).format('DD/MM/YYYY')}</td>
-                                                            <td>{email}</td>
-                                                            <td>{genero}</td>
-                                                            <td>{estado}</td>
+                                            </Col>
+                                        </Row>
+                                        {
+                                            accesos.find(acceso => acceso.accesoId === 3) ?
+                                                <Table striped hover responsive bordered id="mytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Codigo</th>
+                                                            <th>Nombre</th>
+                                                            <th>Fecha de Nacimiento</th>
+                                                            <th>Correo</th>
+                                                            <th>Genero</th>
+                                                            <th>Estado</th>
                                                             {
                                                                 accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        accesos.find(acceso => acceso.accesoId === 2) &&
-                                                                        <Link className="btn-icon btn btn-info btn-sm" to={`/base/catalogo/personaupsert/${btoa(`idpersona=${item.personaId}`)}`}><i className="feather icon-edit" /></Link>
-                                                                    }
-                                                                    {
-                                                                        accesos.find(acceso => acceso.accesoId === 4) &&
-                                                                        <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(item.personaId) }}><i className="feather icon-trash-2" /></button>}
-                                                                </td>
+                                                                <th></th>
                                                             }
                                                         </tr>
-                                                    )
-                                                })
-                                            }
-                                        </tbody>
-                                    </Table>
-                                    : <NoAutorizado />
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            personas.map((item) => {
+                                                                const { personaId,
+                                                                    nombre1,
+                                                                    nombre2,
+                                                                    nombre_otros,
+                                                                    apellido1,
+                                                                    apellido2,
+                                                                    apellido_casada,
+                                                                    email,
+                                                                    fecha_nacimiento, Genero: { descripcion: genero }, Estado: { descripcion: estado } } = item;
+                                                                let nombreCompleto = nombre1;
+                                                                if (nombre2) {
+                                                                    nombreCompleto += " " + nombre2;
+                                                                }
+                                                                if (nombre_otros) {
+                                                                    nombreCompleto += " " + nombre_otros;
+                                                                }
+                                                                nombreCompleto += " " + apellido1;
+
+                                                                if (apellido2) {
+                                                                    nombreCompleto += " " + apellido2;
+                                                                }
+                                                                if (apellido_casada) {
+                                                                    nombreCompleto += " " + apellido_casada;
+                                                                }
+                                                                return (
+                                                                    <tr key={personaId}>
+                                                                        <td>{personaId}</td>
+                                                                        <td>{nombreCompleto}</td>
+                                                                        <td>{moment(fecha_nacimiento).format('DD/MM/YYYY')}</td>
+                                                                        <td>{email}</td>
+                                                                        <td>{genero}</td>
+                                                                        <td>{estado}</td>
+                                                                        {
+                                                                            accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
+                                                                            <td style={{ textAlign: "center" }}>
+                                                                                {
+                                                                                    accesos.find(acceso => acceso.accesoId === 2) &&
+                                                                                    <Link className="btn-icon btn btn-info btn-sm" to={`/base/catalogo/personaupsert/${btoa(`idpersona=${item.personaId}`)}`}><i className="feather icon-edit" /></Link>
+                                                                                }
+                                                                                {
+                                                                                    accesos.find(acceso => acceso.accesoId === 4) &&
+                                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(item.personaId) }}><i className="feather icon-trash-2" /></button>}
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tbody>
+                                                </Table>
+                                                : <NoAutorizado />
+                                        }
+                                    </>
                             }
                         </Card.Body>
                     </Card>

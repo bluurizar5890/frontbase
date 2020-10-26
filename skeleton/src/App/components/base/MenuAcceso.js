@@ -5,10 +5,12 @@ import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso } from '../../../helpers/Notificacion';
 import { NoAutorizado } from './NoAutorizado';
+import Loading from './Loading';
 const menuId = 19;
-export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso }) => {
+export const MenuAcceso = ({ menuId: idMenu, abrirModal, setAbrirModal, catAcceso }) => {
     const state = useSelector(state => state);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true)
     const [accesos, setAccesos] = useState([]);
     const [catAccesosAsignados, setCatAccesosAsignado] = useState([]);
 
@@ -18,6 +20,7 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
             const misAccesos = accesos.filter(item => item.menuId === menuId);
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
     const NuevoRegistro = async (data) => {
@@ -46,9 +49,10 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
     }
 
     const handleChangeChecbox = async (menu_accesoId, accesoId, estadoId) => {
+        setLoading(true);
         if (menu_accesoId === 0) {
             const data = {
-                menuId:idMenu,
+                menuId: idMenu,
                 accesoId,
                 estadoId: 1
             };
@@ -68,20 +72,23 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
             };
             await ActualizarRegistro(data);
         }
+        setLoading(false);
     }
     const GetAccesosAsignado = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            setLoading(true);
             let response = await callApi(`menuacceso?menuId=${id}&estadoId=1;2`);
             if (response) {
                 setCatAccesosAsignado(response);
             }
         }
+        setLoading(false);
     }
 
     useEffect(() => {
         GetAccesosByMenuId();
     }, []);
-    
+
     useEffect(() => {
         GetAccesosAsignado(idMenu);
     }, [idMenu, accesos]);
@@ -93,78 +100,84 @@ export const MenuAcceso = ({ menuId:idMenu, abrirModal, setAbrirModal, catAcceso
             </Modal.Header>
             <Modal.Body>
                 {
-                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
-                        <Table striped hover responsive bordered id="mytable">
-                            <thead>
-                                <tr>
-                                    <th>Codigo acceso</th>
-                                    <th>Acceso</th>
-                                    {
-                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2)) &&
-                                        <th>Estado</th>
-                                    }
-                                </tr>
-
-                            </thead>
-                            <tbody>
-                                {
-                                    catAcceso.map(({ accesoId, descripcion }) => {
-                                        const filaAcceso = catAccesosAsignados.find(item => item.accesoId === accesoId);
-
-                                        let asignado = false;
-                                        const { menu_accesoId = 0, estadoId = 0 } = !!filaAcceso && filaAcceso;
-                                        if (estadoId === 1) {
-                                            asignado = true;
-                                        }
-                                        return (
-                                            (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || asignado || menu_accesoId > 0) &&
-                                            <tr key={accesoId}>
-                                                <td>{accesoId}</td>
-                                                <td>{descripcion}</td>
+                    loading === true ?
+                        <Loading />
+                        : <>
+                            {
+                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                    <Table striped hover responsive bordered id="mytable">
+                                        <thead>
+                                            <tr>
+                                                <th>Codigo acceso</th>
+                                                <th>Acceso</th>
                                                 {
-                                                    (estadoId === 1 || estadoId === 2) ?
-                                                        <>{
-                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) ?
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <Form.Group>
-                                                                        <div className="switch switch-alternative d-inline m-r-10">
-                                                                            <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
-                                                                            <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
-                                                                        </div>
-                                                                        <Form.Label htmlFor={`accesoid_${accesoId}`}>{
-                                                                            asignado ? 'Activo' : 'Inactivo'
-                                                                        }</Form.Label>
-                                                                    </Form.Group>
-                                                                </td>
-                                                                :
-                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
-                                                                <td style={{ textAlign: "center" }}><label className="text-danger">No Autorizado</label></td>
-                                                        }
-                                                        </>
-                                                        :
-                                                        <>
-                                                            {
-                                                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <Form.Group>
-                                                                        <div className="switch switch-alternative d-inline m-r-10">
-                                                                            <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
-                                                                            <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
-                                                                        </div>
-                                                                        <Form.Label htmlFor={`accesoid_${accesoId}`}>Asignar acceso a menu</Form.Label>
-                                                                    </Form.Group>
-                                                                </td>
-                                                            }
-                                                        </>
+                                                    (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2)) &&
+                                                    <th>Estado</th>
                                                 }
                                             </tr>
-                                        )
-                                    })
-                                }
 
-                            </tbody>
-                        </Table>
-                        : <NoAutorizado />
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                catAcceso.map(({ accesoId, descripcion }) => {
+                                                    const filaAcceso = catAccesosAsignados.find(item => item.accesoId === accesoId);
+
+                                                    let asignado = false;
+                                                    const { menu_accesoId = 0, estadoId = 0 } = !!filaAcceso && filaAcceso;
+                                                    if (estadoId === 1) {
+                                                        asignado = true;
+                                                    }
+                                                    return (
+                                                        (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) || asignado || menu_accesoId > 0) &&
+                                                        <tr key={accesoId}>
+                                                            <td>{accesoId}</td>
+                                                            <td>{descripcion}</td>
+                                                            {
+                                                                (estadoId === 1 || estadoId === 2) ?
+                                                                    <>{
+                                                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) ?
+                                                                            <td style={{ textAlign: "center" }}>
+                                                                                <Form.Group>
+                                                                                    <div className="switch switch-alternative d-inline m-r-10">
+                                                                                        <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
+                                                                                        <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
+                                                                                    </div>
+                                                                                    <Form.Label htmlFor={`accesoid_${accesoId}`}>{
+                                                                                        asignado ? 'Activo' : 'Inactivo'
+                                                                                    }</Form.Label>
+                                                                                </Form.Group>
+                                                                            </td>
+                                                                            :
+                                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
+                                                                            <td style={{ textAlign: "center" }}><label className="text-danger">No Autorizado</label></td>
+                                                                    }
+                                                                    </>
+                                                                    :
+                                                                    <>
+                                                                        {
+                                                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
+                                                                            <td style={{ textAlign: "center" }}>
+                                                                                <Form.Group>
+                                                                                    <div className="switch switch-alternative d-inline m-r-10">
+                                                                                        <Form.Control type="checkbox" id={`accesoid_${accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(menu_accesoId, accesoId, estadoId); }} />
+                                                                                        <Form.Label htmlFor={`accesoid_${accesoId}`} className="cr" />
+                                                                                    </div>
+                                                                                    <Form.Label htmlFor={`accesoid_${accesoId}`}>Asignar acceso a menu</Form.Label>
+                                                                                </Form.Group>
+                                                                            </td>
+                                                                        }
+                                                                    </>
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+
+                                        </tbody>
+                                    </Table>
+                                    : <NoAutorizado />
+                            }
+                        </>
                 }
             </Modal.Body>
         </Modal>

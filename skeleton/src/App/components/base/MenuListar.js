@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import callApi from '../../../helpers/conectorApi';
-import Aux from '../../../hoc/_Aux';
+import { useDispatch, useSelector } from 'react-redux';
 import withReactContent from 'sweetalert2-react-content';
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MenuUpSert } from './MenuUpSert';
 import { MenuAcceso } from './MenuAcceso';
-import { limpiarEstiloTabla,asignarEstiloTabla } from '../../../helpers/estiloTabla';
-import { useDispatch, useSelector } from 'react-redux';
+import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { NoAutorizado } from './NoAutorizado';
 import { UpdateUserInfo } from '../../../actions/auth';
+import Loading from './Loading';
 const menuId = 21;
 const menuIdAcceso = 1;
 export const MenuListar = () => {
     const state = useSelector(state => state);
+    const [loading, setLoading] = useState(true)
     const dispatch = useDispatch();
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
@@ -40,6 +42,7 @@ export const MenuListar = () => {
             const misAccesos = accesos.filter(item => item.menuId === menuId || item.menuId === menuIdAcceso);
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
     const [dataInicial, setdataInicial] = useState(initData);
@@ -49,16 +52,18 @@ export const MenuListar = () => {
     }
     const GetCatMenu = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
-        let response = await callApi('menu?estadoId=1;2');
-        if(response){
-            limpiarEstiloTabla("#mytable");
-            setCatMenu(response);
-            asignarEstiloTabla("#mytable");
+            setLoading(true);
+            let response = await callApi('menu?estadoId=1;2');
+            if (response) {
+                limpiarEstiloTabla("#mytable");
+                setCatMenu(response);
+                asignarEstiloTabla("#mytable");
+            }
         }
-    }
+        setLoading(false);
     }
     const handleEditar = (id) => {
-        const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId,visible,classes,type } = catMenu.find(item => item.menuId === id);
+        const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId, visible, classes, type } = catMenu.find(item => item.menuId === id);
         setdataInicial({
             menuId,
             posicion,
@@ -115,17 +120,17 @@ export const MenuListar = () => {
     }
     const GetAccesos = async () => {
         if (accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId === 3)) {
-        let response = await callApi('acceso?estadoId=1');
-        if (response) {
-            setCatAcceso(response);
+            let response = await callApi('acceso?estadoId=1');
+            if (response) {
+                setCatAcceso(response);
+            }
         }
-    }
     }
 
     useEffect(() => {
         GetAccesosByMenuId();
     }, []);
-    
+
     useEffect(() => {
         GetCatMenu();
         GetAccesos();
@@ -139,83 +144,89 @@ export const MenuListar = () => {
                             <Card.Title as="h5">Menu</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <Row className="align-items-center m-l-0">
-                                <Col />
-                                <Col className="text-right">
-                                    {
-                                        accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Menu</Button>
-                                    }
-                                </Col>
-                            </Row>
                             {
-                                accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===3) ?
-                                <Table striped hover responsive bordered id="mytable">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Descripción</th>
-                                            <th>Posición</th>
-                                            <th>Href</th>
-                                            <th>Icono</th>
-                                            <th>Menu Padre</th>
-                                            <th>Estado</th>
-                                            {
-                                                accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId===3) && <th>Acciones</th>
-                                            }
-                                            {
-                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId===2) || (acceso.menuId === menuId && acceso.accesoId===4)) &&
-                                                <th></th>
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                loading === true ?
+                                    <Loading />
+                                    : <>
+                                        <Row className="align-items-center m-l-0">
+                                            <Col />
+                                            <Col className="text-right">
+                                                {
+                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 1) &&
+                                                    <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Menu</Button>
+                                                }
+                                            </Col>
+                                        </Row>
                                         {
-                                            catMenu.map(({ menuId:id, descripcion, posicion, href, icono, menu_padreId,MenuPadre, Estado: { descripcion: estado } }) => {
-                                                let {descripcion:descPadre=""}=!!MenuPadre && MenuPadre;
-                                                return (
-                                                    <tr key={id}>
-                                                        <td>{id}</td>
-                                                        <td>{descripcion}</td>
-                                                        <td>{posicion}</td>
-                                                        <td>{href}</td>
-                                                        <td>{icono}</td>
-                                                        <td>{descPadre}</td>
-                                                        <td>{estado}</td>
+                                            accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3) ?
+                                                <Table striped hover responsive bordered id="mytable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Código</th>
+                                                            <th>Descripción</th>
+                                                            <th>Posición</th>
+                                                            <th>Href</th>
+                                                            <th>Icono</th>
+                                                            <th>Menu Padre</th>
+                                                            <th>Estado</th>
+                                                            {
+                                                                accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId === 3) && <th>Acciones</th>
+                                                            }
+                                                            {
+                                                                accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                <th></th>
+                                                            }
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         {
-                                                            accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId===3) &&
-                                                            <td style={{ textAlign: "center" }}>
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(id) }}><i className="feather icon-zap" /></button>
-                                                            </td>
-                                                        }
-                                                        {
-                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId===2) || (acceso.menuId === menuId && acceso.accesoId===4)) &&
-                                                            <td style={{ textAlign: "center" }}>
+                                                            catMenu.map(({ menuId: id, descripcion, posicion, href, icono, menu_padreId, MenuPadre, Estado: { descripcion: estado } }) => {
+                                                                let { descripcion: descPadre = "" } = !!MenuPadre && MenuPadre;
+                                                                return (
+                                                                    <tr key={id}>
+                                                                        <td>{id}</td>
+                                                                        <td>{descripcion}</td>
+                                                                        <td>{posicion}</td>
+                                                                        <td>{href}</td>
+                                                                        <td>{icono}</td>
+                                                                        <td>{descPadre}</td>
+                                                                        <td>{estado}</td>
+                                                                        {
+                                                                            accesos.find(acceso => acceso.menuId === menuIdAcceso && acceso.accesoId === 3) &&
+                                                                            <td style={{ textAlign: "center" }}>
+                                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleAcceso(id) }}><i className="feather icon-zap" /></button>
+                                                                            </td>
+                                                                        }
+                                                                        {
+                                                                            accesos.find(acceso => (acceso.menuId === menuId && acceso.accesoId === 2) || (acceso.menuId === menuId && acceso.accesoId === 4)) &&
+                                                                            <td style={{ textAlign: "center" }}>
 
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===2) &&
-                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(id) }}><i className="feather icon-edit" /></button>
-                                                                }
-                                                                {
-                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId===4) &&
-                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(id) }}><i className="feather icon-trash-2" /></button>
-                                                                }
-                                                            </td>
+                                                                                {
+                                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 2) &&
+                                                                                    <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(id) }}><i className="feather icon-edit" /></button>
+                                                                                }
+                                                                                {
+                                                                                    accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 4) &&
+                                                                                    <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(id) }}><i className="feather icon-trash-2" /></button>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                )
+                                                            })
                                                         }
-                                                    </tr>
-                                                )
-                                            })
+                                                    </tbody>
+                                                </Table>
+                                                : <NoAutorizado />
                                         }
-                                    </tbody>
-                                </Table>
-                                :<NoAutorizado/>
+                                    </>
                             }
                             {
                                 abrirModal === true &&
                                 <MenuUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} GetCatMenu={GetCatMenu} catMenu={catMenu} dataInicial={dataInicial} />
                             }
                             {
-                                abrirModalacceso===true &&
+                                abrirModalacceso === true &&
                                 <MenuAcceso abrirModal={abrirModalacceso} setAbrirModal={setAbrirModalAcceso} catAcceso={catAcceso} menuId={dataInicial.menuId} />
                             }
                         </Card.Body>

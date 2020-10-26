@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import callApi from '../../../helpers/conectorApi';
-import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
+import { useSelector } from 'react-redux'; 
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { PaisUpSert } from './PaisUpSert';
-import { useSelector } from 'react-redux';
 import { NoAutorizado } from './NoAutorizado';
+import Loading from './Loading';
 const menuId = 8;
 export const PaisListar = () => {
     const state = useSelector(state => state);
+    const [loading, setLoading] = useState(true)
     const [accesos, setAccesos] = useState([]);
     const [abrirModal, setAbrirModal] = useState(false);
     const [paises, setPaises] = useState([]);
     const initData = {
         paisId: '',
         descripcion: '',
-        nacionalidad:'',
+        nacionalidad: '',
         estadoId: 1
     };
     const GetAccesosByMenuId = () => {
@@ -26,6 +28,7 @@ export const PaisListar = () => {
             const misAccesos = accesos.filter(item => item.menuId === menuId);
             setAccesos(misAccesos);
         }
+        setLoading(false);
     }
 
     const [dataInicial, setdataInicial] = useState(initData);
@@ -33,14 +36,16 @@ export const PaisListar = () => {
         setAbrirModal(true);
         setdataInicial(initData);
     }
-    
+
     const GetPaises = async () => {
         if (accesos.find(acceso => acceso.accesoId === 3)) {
-        let response = await callApi(`pais?estadoId=1;2`);
-        if(response){
-            setPaises(response);
+            setLoading(true);
+            let response = await callApi(`pais?estadoId=1;2`);
+            if (response) {
+                setPaises(response);
+            }
         }
-        }
+        setLoading(false);
     }
     const handleEditar = (id) => {
         const { paisId, descripcion, nacionalidad, estadoId } = paises.find(item => item.paisId === id);
@@ -91,57 +96,63 @@ export const PaisListar = () => {
                             <Card.Title as="h5">Pais</Card.Title>
                         </Card.Header>
                         <Card.Body>
-                            <Row className="align-items-center m-l-0">
-                                <Col />
-                                <Col className="text-right">
-                                    {
-                                        accesos.find(acceso =>  acceso.accesoId=== 1) &&
-                                        <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Pais</Button>
-                                    }
-                                </Col>
-                            </Row>
                             {
-                                accesos.find(acceso =>  acceso.accesoId===3) ?
-                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Nacionalidad</th>
-                                            <th>Estado</th>
-                                            {
-                                                accesos.find(acceso =>  acceso.accesoId===2 ||  acceso.accesoId=== 4) &&
-                                                <th></th>
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                loading === true ?
+                                    <Loading />
+                                    : <>
+                                        <Row className="align-items-center m-l-0">
+                                            <Col />
+                                            <Col className="text-right">
+                                                {
+                                                    accesos.find(acceso => acceso.accesoId === 1) &&
+                                                    <Button variant="success" className="btn-sm btn-round has-ripple" onClick={handleOpenModal}><i className="feather icon-plus" /> Agregar Pais</Button>
+                                                }
+                                            </Col>
+                                        </Row>
                                         {
-                                            paises.map(({ paisId, descripcion, nacionalidad, Estado:{descripcion:estado}  }) => (
-                                                <tr key={paisId}>
-                                                    <td>{paisId}</td>
-                                                    <td>{descripcion}</td>
-                                                    <td>{nacionalidad}</td>
-                                                    <td>{estado}</td>
-                                                    {
-                                                        accesos.find(acceso =>  acceso.accesoId===2 ||  acceso.accesoId=== 4) &&
-                                                        <td style={{ textAlign: "center"}}>
+                                            accesos.find(acceso => acceso.accesoId === 3) ?
+                                                <Table striped hover responsive bordered id="table_dentificaciones_persona">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Código</th>
+                                                            <th>Nombre</th>
+                                                            <th>Nacionalidad</th>
+                                                            <th>Estado</th>
                                                             {
-                                                                accesos.find(acceso =>  acceso.accesoId===2) &&
-                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(paisId) }}><i className="feather icon-edit" /></button>
+                                                                accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
+                                                                <th></th>
                                                             }
-                                                            {
-                                                                accesos.find(acceso =>  acceso.accesoId=== 4) &&
-                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(paisId) }}><i className="feather icon-trash-2" /></button>
-                                                            }
-                                                        </td>
-                                                    }
-                                                </tr>
-                                            ))
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            paises.map(({ paisId, descripcion, nacionalidad, Estado: { descripcion: estado } }) => (
+                                                                <tr key={paisId}>
+                                                                    <td>{paisId}</td>
+                                                                    <td>{descripcion}</td>
+                                                                    <td>{nacionalidad}</td>
+                                                                    <td>{estado}</td>
+                                                                    {
+                                                                        accesos.find(acceso => acceso.accesoId === 2 || acceso.accesoId === 4) &&
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                accesos.find(acceso => acceso.accesoId === 2) &&
+                                                                                <button className="btn-icon btn btn-info btn-sm" onClick={() => { handleEditar(paisId) }}><i className="feather icon-edit" /></button>
+                                                                            }
+                                                                            {
+                                                                                accesos.find(acceso => acceso.accesoId === 4) &&
+                                                                                <button className="btn-icon btn btn-danger btn-sm" onClick={() => { handleDelete(paisId) }}><i className="feather icon-trash-2" /></button>
+                                                                            }
+                                                                        </td>
+                                                                    }
+                                                                </tr>
+                                                            ))
+                                                        }
+                                                    </tbody>
+                                                </Table>
+                                                : <NoAutorizado />
                                         }
-                                    </tbody>
-                                </Table>
-                                :<NoAutorizado/>
+                                    </>
                             }
                             {
                                 abrirModal === true &&

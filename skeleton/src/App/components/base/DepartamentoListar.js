@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import callApi from '../../../helpers/conectorApi';
-import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
+import { useSelector } from 'react-redux';
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { DepartamentoUpSert } from './DepartamentoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
-import { useSelector } from 'react-redux';
 import { NoAutorizado } from './NoAutorizado';
 import Loading from './Loading';
 const menuId = 9;

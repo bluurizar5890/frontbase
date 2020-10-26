@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
-import callApi from '../../../helpers/conectorApi';
-import Aux from '../../../hoc/_Aux';
 import withReactContent from 'sweetalert2-react-content';
+import Aux from '../../../hoc/_Aux';
+import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { AccesoUpSert } from './AccesoUpSert';
-import { useDispatch, useSelector } from 'react-redux';
 import { NoAutorizado } from './NoAutorizado';
 import { UpdateUserInfo } from '../../../actions/auth';
 import Loading from './Loading';

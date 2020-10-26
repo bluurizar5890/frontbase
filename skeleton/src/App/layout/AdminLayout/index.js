@@ -13,8 +13,6 @@ import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
 import { loginBackend } from '../../../actions/auth';
-import { NotFound } from '../../components/base/NotFound';
-
 //import '../../../app.scss';
 
 class AdminLayout extends Component {
@@ -43,7 +41,6 @@ class AdminLayout extends Component {
     }
 
     render() {
-        console.log(this.props.location.pathname);
         document.addEventListener('fullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('webkitfullscreenchange', this.fullScreenExitHandler);
         document.addEventListener('mozfullscreenchange', this.fullScreenExitHandler);
@@ -68,34 +65,38 @@ class AdminLayout extends Component {
         }
         return (
             <Aux>
-                <Fullscreen enabled={this.props.isFullScreen}>
-                    <Navigation />
-                    <NavBar />
-                    <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
-                        <div className={mainClass.join(' ')}>
-                            <div className="pcoded-content">
-                                <div className="pcoded-inner-content">
-                                    <Breadcrumb menu={this.props.menu || []} />
-                                    <div className="main-body">
-                                        <div className="page-wrapper">
-                                            <Suspense fallback={<Loader />}>
-                                                {
-                                                    (this.props.logged === true && !this.props.forzar_cambio_password) ?
-                                                        <Switch>
-                                                            {menu}
-                                                        </Switch>
-                                                        : (this.props.logged === true && this.props.forzar_cambio_password === true) &&
-                                                        <Redirect from="/" to="/admin/change-password" />
-                                                }
-                                            </Suspense>
+                {
+                    this.props.logged === true &&
+                    <Fullscreen enabled={this.props.isFullScreen}>
+                        <Navigation />
+                        <NavBar />
+                        <div className="pcoded-main-container" onClick={() => this.mobileOutClickHandler}>
+                            <div className={mainClass.join(' ')}>
+                                <div className="pcoded-content">
+                                    <div className="pcoded-inner-content">
+                                        <Breadcrumb menu={this.props.menu || []} />
+                                        <div className="main-body">
+                                            <div className="page-wrapper">
+                                                <Suspense fallback={<Loader />}>
+                                                    {
+                                                        (this.props.logged === true && !this.props.forzar_cambio_password) ?
+                                                            <Switch>
+                                                                {menu}
+                                                            </Switch>
+                                                            : (this.props.logged === true && this.props.forzar_cambio_password === true) &&
+                                                            <Redirect from="/" to="/admin/change-password" />
+
+                                                    }
+                                                </Suspense>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <Configuration />
-                </Fullscreen>
+                        <Configuration />
+                    </Fullscreen>
+                }
             </Aux>
         );
     }
