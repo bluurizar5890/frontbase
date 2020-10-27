@@ -34,15 +34,15 @@ export const PersonaListar = () => {
 
     const GetPersonas = async () => {
         if (accesos.find(acceso => acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi(`persona?&estadoId=1;2`);
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setPersonas(response);
-                asignarEstiloTabla("#mytable");
             }
         }
         setLoading(false);
+        asignarEstiloTabla("#mytable");
     }
     const handleDelete = (id) => {
         const MySwal = withReactContent(Swal);

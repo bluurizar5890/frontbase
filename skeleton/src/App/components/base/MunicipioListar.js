@@ -10,6 +10,7 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { MunicipioUpSert } from './MunicipioUpSert';
 import { NoAutorizado } from './NoAutorizado';
 import Loading from './Loading';
+import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
 const menuId = 10;
 const menuIdDepartamento = 9;
 const menuIdPais = 8;
@@ -73,14 +74,16 @@ export const MunicipioListar = () => {
     const GetMunicipios = async (id) => {
         if (id > 0) {
             if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+                limpiarEstiloTabla("#mytable");
                 setLoading(true);
                 let response = await callApi(`municipio?departamentoId=${id}&estadoId=1;2`);
                 if (response) {
                     setMunicipios(response);
                 }
             }
+            setLoading(false);
+            asignarEstiloTabla("#mytable", 25);
         }
-        setLoading(false);
     }
 
     const handleChangePais = ({ target: { value } }) => {

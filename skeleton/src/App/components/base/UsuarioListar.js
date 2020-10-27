@@ -11,6 +11,7 @@ import { UsuarioUpSert } from './UsuarioUpSert';
 import { UsuarioRol } from './UsuarioRol';
 import { NoAutorizado } from './NoAutorizado';
 import Loading from './Loading';
+import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
 const menuId = 17;
 const menuIdRol = 11;
 const menuIdPersona = 12;
@@ -50,6 +51,7 @@ export const UsuarioListar = () => {
     }
     const GetUsuarios = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi('usuario?estadoId=1;2');
             if (response) {
@@ -57,6 +59,7 @@ export const UsuarioListar = () => {
             }
         }
         setLoading(false);
+        asignarEstiloTabla("#mytable");
     }
     const GetPersonas = async () => {
         if (accesos.find(acceso => acceso.menuId === menuIdPersona && acceso.accesoId === 3)) {

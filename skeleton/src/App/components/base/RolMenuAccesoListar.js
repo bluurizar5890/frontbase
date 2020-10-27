@@ -57,15 +57,15 @@ export const RolMenuAccesoListar = ({ idrol }) => {
     }
     const GetRolMenuAcceso = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi(`rolmenuacceso?rolId=${id}&estadoId=1;2`);
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setRolMenuAcceso(response);
-                asignarEstiloTabla("#mytable");
             }
         }
         setLoading(false);
+        asignarEstiloTabla("#mytable");
     }
     const GetInfoRol = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3)) {

@@ -52,15 +52,15 @@ export const MenuListar = () => {
     }
     const GetCatMenu = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi('menu?estadoId=1;2');
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setCatMenu(response);
-                asignarEstiloTabla("#mytable");
             }
         }
         setLoading(false);
+        asignarEstiloTabla("#mytable");
     }
     const handleEditar = (id) => {
         const { menuId, posicion, descripcion, href, icono, menu_padreId, estadoId, visible, classes, type } = catMenu.find(item => item.menuId === id);

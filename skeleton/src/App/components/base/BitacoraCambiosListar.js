@@ -97,16 +97,16 @@ export const BitacoraCambiosListar = () => {
     const Cambios = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
             setLoading(true);
+            limpiarEstiloTabla("#mytable");
             let response = await callApi('bitacora/cambios', {
                 method: 'POST',
                 body: JSON.stringify(values)
             });
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setCambios(response);
-                asignarEstiloTabla("#mytable", 25);
             }
             setLoading(false);
+            asignarEstiloTabla("#mytable", 25);
         }
     }
 

@@ -5,6 +5,9 @@ export const alert_exitoso = (mensaje) => {
         text: mensaje,
         hide: true,
         icon: true,
+        delay: 1000,
+        animation: 'fade',
+        mouseReset: true,
         modules: {
             Buttons: {
                 closer: true,
@@ -23,6 +26,9 @@ export const alert_error = (mensaje) => {
         text: mensaje,
         hide: true,
         icon: true,
+        delay: 1000,
+        animation: 'fade',
+        mouseReset: true,
         modules: {
             Buttons: {
                 closer: true,
@@ -41,6 +47,9 @@ export const alert_info = (mensaje) => {
         text: mensaje,
         hide: true,
         icon: true,
+        delay: 1000,
+        animation: 'fade',
+        mouseReset: true,
         modules: {
             Buttons: {
                 closer: true,
@@ -59,6 +68,9 @@ export const alert_warning = (mensaje) => {
         text: mensaje,
         hide: true,
         icon: true,
+        delay: 1000,
+        animation: 'fade',
+        mouseReset: true,
         modules: {
             Buttons: {
                 closer: true,

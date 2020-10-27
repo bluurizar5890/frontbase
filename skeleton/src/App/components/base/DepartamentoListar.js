@@ -52,14 +52,14 @@ export const DepartamentoListar = () => {
     }
     const GetDepartamentos = async () => {
         if (accesos.find(acceso => acceso.menuId === menuId && acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi('departamento?estadoId=1;2');
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setDepartamentos(response);
-                asignarEstiloTabla("#mytable");
             }
             setLoading(false);
+            asignarEstiloTabla("#mytable");
         }
     }
     const handleEditar = (id) => {

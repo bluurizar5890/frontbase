@@ -9,6 +9,7 @@ import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { EstadoCivilUpSert } from './EstadoCivilUpSert';
 import { NoAutorizado } from './NoAutorizado';
 import Loading from './Loading';
+import { asignarEstiloTabla, limpiarEstiloTabla } from '../../../helpers/estiloTabla';
 const menuId = 4;
 export const EstadoCivilListar = () => {
     const state = useSelector(state => state);
@@ -37,12 +38,14 @@ export const EstadoCivilListar = () => {
     }
     const GetCatEstadoCivil = async () => {
         if (accesos.find(acceso => acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi('estadocivil?estadoId=1;2');
             if (response) {
                 setCatEstadoCivil(response);
             }
             setLoading(false);
+            asignarEstiloTabla("#mytable");
         }
     }
     const handleEditar = (id) => {

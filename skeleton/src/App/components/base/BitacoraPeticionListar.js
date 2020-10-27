@@ -73,17 +73,17 @@ export const BitacoraPeticionListar = () => {
 
     const Peticiones = async () => {
         if (accesos.find(acceso => acceso.menuId === menuIdUsuario && acceso.accesoId === 3)) {
+            limpiarEstiloTabla("#mytable");
             setLoading(true);
             let response = await callApi('bitacora/peticiones', {
                 method: 'POST',
                 body: JSON.stringify(values)
             });
             if (response) {
-                limpiarEstiloTabla("#mytable");
                 setPeticiones(response);
-                asignarEstiloTabla("#mytable", 25);
             }
             setLoading(false);
+            asignarEstiloTabla("#mytable", 25);
         }
     }
 
