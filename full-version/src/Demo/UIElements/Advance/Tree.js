@@ -2,6 +2,8 @@ import React from 'react';
 import {Row, Col, Card} from 'react-bootstrap';
 import AnimatedTree from 'react-animated-tree'
 import TreeView from 'deni-react-treeview';
+import DeniReactTreeView from 'deni-react-treeview'
+
 import treeData from './tree.json';
 import Aux from "../../../hoc/_Aux";
 
@@ -46,7 +48,11 @@ class AdvanceTree extends React.Component {
                                 <Card.Title as="h5">With Checkbox</Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <TreeView className="customizable-tree" items={treeData} theme="orange" showCheckbox={ true } showRoot={ true } />
+                                {/* <TreeView className="customizable-tree" items={treeData} theme="orange" showCheckbox={ true } showRoot={ true } /> */}
+                                <DeniReactTreeView
+      url="https://raw.githubusercontent.com/denimar/deni-react-treeview/develop/src/assets/data/countries.json"
+      theme="metro"
+    />
                             </Card.Body>
                         </Card>
                     </Col>
