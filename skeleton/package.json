@@ -102,7 +102,9 @@
     "styled-components": "^4.3.2",
     "sweetalert2": "^8.13.0",
     "sweetalert2-react-content": "^1.1.0",
-    "validator": "^11.1.0"
+    "validator": "^11.1.0",
+    "@material-ui/lab": "latest",
+    "@material-ui/core": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

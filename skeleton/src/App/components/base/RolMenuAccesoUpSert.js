@@ -1,22 +1,27 @@
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Modal } from 'react-bootstrap';
+import { Button,Col, Form, Modal } from 'react-bootstrap';
 import { ValidationForm, SelectGroup } from 'react-bootstrap4-form-validation';
-import { useDispatch, useSelector } from 'react-redux';
 import { UpdateUserInfo } from '../../../actions/auth';
 import callApi from '../../../helpers/conectorApi';
 import { alert_exitoso, alert_warning } from '../../../helpers/Notificacion';
 import { useForm } from '../../hooks/useForm';
 import Loading from './Loading';
+import { useDispatch,useSelector } from 'react-redux';
+import { Table } from 'react-bootstrap';
+import { Controls } from 'reactour';
 const menuIdMenuAcceso = 19;
-export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, catMenu, GetRolMenuAcceso, rolMenuAcceso }) => {
-    const dispatch = useDispatch();
+export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, catMenu, handleUpdate }) => {
+    
     const state = useSelector(state => state);
     const [loading, setLoading] = useState(false)
+    const [existeCambio, setExisteCambio] = useState(false)
     const [accesos, setAccesos] = useState([]);
-    const [values, handleOnChange] = useForm(dataInicial);
     const [menuId, setMenuid] = useState(dataInicial.menuId);
     const [menuAcceso, setMenuAcceso] = useState([]);
-
+    const [listAsignados, setListAsignados] = useState([]);
+    const [menuEdit, setMenuEdit] = useState(null);
     const GetAccesosByMenuId = () => {
         if (state?.accesos) {
             const { accesos } = state;
@@ -25,84 +30,111 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
         }
     }
 
-    const NuevoRegistro = async () => {
+    const hadleSetValueList=()=>{
+        let item=catMenu.find(i=>Number(i.menuId)===Number(menuId));
+        setMenuEdit(item);
+    }
+    const NuevoRegistro = async (data) => {
+        setLoading(true);
         let response = await callApi('rolmenuacceso', {
             method: 'POST',
-            body: JSON.stringify(values)
+            body: JSON.stringify(data)
         });
 
         if (response) {
             alert_exitoso("Permiso registrado exitosamente");
-            dispatch(UpdateUserInfo());
-            GetRolMenuAcceso(dataInicial.rolId);
-            setAbrirModal(false);
+            GetMenuAcceso(menuId);
+            setExisteCambio(true);
         }
+        setLoading(false);
     }
-    const ActualizarRegistro = async () => {
+    const ActualizarRegistro = async (data) => {
+        setLoading(true);
         let response = await callApi('rolmenuacceso', {
             method: 'PUT',
-            body: JSON.stringify(values)
+            body: JSON.stringify(data)
         });
 
         if (response) {
             alert_exitoso(response);
-            dispatch(UpdateUserInfo());
-            GetRolMenuAcceso(dataInicial.rolId);
-        }
-        setAbrirModal(false);
-    }
-    const handleOnSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        if (dataInicial.rol_menu_accesoId > 0) {
-            await ActualizarRegistro();
-        } else {
-            await NuevoRegistro();
+            GetMenuAcceso(menuId);
+            GetPermisosAsignados();
+            setExisteCambio(true);
         }
         setLoading(false);
     }
-    const handleErrorSubmit = (e, formData, errorInputs) => {
-        alert_warning("Por favor complete toda la información solicitada por el formulario");
-    };
-
-    const handleMenuSeleccionado = ({ target: { value } }) => {
-        setMenuid(value);
+    const handleOnChangeMenu = (event, nuevoValor) => {
+        if(nuevoValor){
+        let { menuId = 0 } = nuevoValor;
+        setMenuEdit(nuevoValor);
+        setMenuid(menuId);
+        }
     }
-
     const GetMenuAcceso = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 3)) {
             setLoading(true);
-            let response = await callApi(`menuacceso?menuId=${id}&estadoId=1`);
-            let auxMenuAcceso = [];
-            if (response) {
-                response.map(({ menu_accesoId, Acceso: { descripcion } }) => {
-                    const existe = rolMenuAcceso.find(i => i.menu_accesoId === menu_accesoId && (i.estadoId === 1 || i.estadoId === 2) && i.menu_accesoId !== dataInicial.menu_accesoId);
-                    if (!existe) {
-                        let aux = {
-                            menu_accesoId,
-                            descripcion
-                        }
-                        auxMenuAcceso.push(aux);
-                    }
-                });
-                setMenuAcceso(auxMenuAcceso);
+            if (id > 0) {
+                let response = await callApi(`menuacceso?menuId=${id}&estadoId=1`);
+                if (response) {
+                    setMenuAcceso(response);
+                    GetPermisosAsignados();
+                }
             }
-        } else {
-            setMenuAcceso([{ menu_accesoId: '', descripcion: 'No esta autorizado' }]);
         }
         setLoading(false);
     }
+
+    const GetPermisosAsignados = async () => {
+        if (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 3)) {
+            setLoading(true);
+            if (menuId > 0) {
+                let response = await callApi(`rolmenuacceso?menuId=${menuId}`);
+                if (response) {
+                    setListAsignados(response);
+                }
+            }
+        }
+        setLoading(false);
+    }
+
+
+    const handleChangeChecbox = async (rol_menu_accesoId, menu_accesoId, asignado) => {
+
+        if (rol_menu_accesoId > 0) {
+            let estadoId = 1;
+            if (asignado) {
+                estadoId = 2;
+            }
+            let data = {
+                rol_menu_accesoId,
+                menu_accesoId,
+                estadoId
+            }
+            ActualizarRegistro(data);
+        } else {
+            let data = {
+                rolId: dataInicial.rolId,
+                menu_accesoId
+            }
+            NuevoRegistro(data);
+        }
+    }
+
+    useEffect(() => {
+        GetPermisosAsignados();
+    }, []);
 
     useEffect(() => {
         GetAccesosByMenuId();
     }, []);
     useEffect(() => {
         GetMenuAcceso(menuId);
-    }, [menuId, accesos])
+        hadleSetValueList();
+    }, [menuId, accesos]);
 
-    const errorMessage = "Campo obligatorio";
+    
     return (
-        <Modal show={abrirModal} onHide={() => setAbrirModal(false)}>
+        <Modal show={abrirModal} onHide={() => handleUpdate(existeCambio)} size="lg">
             {
                 loading === true ?
                     <Loading />
@@ -111,69 +143,81 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, setAbrirModal, ca
                             <Modal.Title as="h5">{dataInicial.rol_menu_accesoId > 0 ? 'Actualizar Permiso' : 'Nuevo Permiso'}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ValidationForm onSubmit={handleOnSubmit} onErrorSubmit={handleErrorSubmit}>
-                                <Form.Row>
-                                    <Form.Group as={Col} md="12">
-                                        <Form.Label htmlFor="menuId">Menu</Form.Label>
-                                        <SelectGroup
-                                            name="menuId"
-                                            id="menuId"
-                                            value={menuId}
-                                            required
-                                            errorMessage={errorMessage}
-                                            onChange={handleMenuSeleccionado}>
-                                            <option value="">Seleccione un menu</option>
+
+                            <Autocomplete
+                                value={menuEdit || null}
+                                id="menuId"
+                                name="menuId"
+                                options={catMenu || []}
+                                getOptionLabel={(option) => option.descripcion}
+                                style={{ width: 600 }}
+                                size="small"
+                                onChange={handleOnChangeMenu}
+                                renderInput={(params) => <TextField {...params} label="Nombre Menu" />}
+                            />
+
+                            <br></br>
+                            <br></br>
+                            <h5>Accesos disponibles</h5>
+                            <hr />
+                            {
+                                menuAcceso.length > 0 &&
+                                    <Table striped hover responsive bordered id="mytable">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>Acceso</th>
+                                                {
+                                                    (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 1) || accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 2)) &&
+                                                    <th>Estado</th>
+                                                }
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
                                             {
-                                                catMenu.map(({ menuId, descripcion }) => (
-                                                    <option value={menuId} key={menuId}>{descripcion}</option>
-                                                ))
+                                                menuAcceso.map(({ menu_accesoId, Acceso }) => {
+                                                    let existe = listAsignados.find(i => Number(i.menu_accesoId) === Number(menu_accesoId));
+                                                    let rol_menu_accesoId = 0;
+                                                    let estadoId = 0;
+                                                    if (existe) {
+                                                        rol_menu_accesoId = existe.rol_menu_accesoId;
+                                                        estadoId = existe.estadoId;
+                                                    }
+                                                    let asignado = false;
+                                                    if (estadoId === 1) {
+                                                        asignado = true;
+                                                    }
+                                                    return (
+                                                        <tr key={menu_accesoId}>
+                                                            <td>{menu_accesoId}</td>
+                                                            <td>{Acceso.descripcion}</td>
+                                                            {
+                                                                accesos.find(i => i.accesoId === 1 || i.accesoId === 2) ?
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Form.Group>
+                                                                            <div className="switch switch-alternative d-inline m-r-10">
+                                                                                <Form.Control type="checkbox" id={`menu_accesoId_${menu_accesoId}`} checked={asignado} onChange={() => { handleChangeChecbox(rol_menu_accesoId, menu_accesoId, asignado); }} />
+                                                                                <Form.Label htmlFor={`menu_accesoId_${menu_accesoId}`} className="cr" />
+                                                                            </div>
+                                                                            <Form.Label htmlFor={`menu_accesoId_${menu_accesoId}`}>{
+                                                                                asignado ? 'Activo' : 'Inactivo'
+                                                                            }</Form.Label>
+                                                                        </Form.Group>
+                                                                    </td> : <td style={{ textAlign: "center" }}><label className="text-danger">No Autorizado</label></td>
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
                                             }
-                                        </SelectGroup>
-                                    </Form.Group>
-                                    <Form.Group as={Col} md="12">
-                                        <Form.Label htmlFor="menu_accesoId">Acceso</Form.Label>
-                                        <SelectGroup
-                                            name="menu_accesoId"
-                                            id="menu_accesoId"
-                                            value={values.menu_accesoId}
-                                            required
-                                            errorMessage={errorMessage}
-                                            onChange={handleOnChange}>
-                                            <option value="">Seleccione un permiso</option>
-                                            {
-                                                menuAcceso.map(({ menu_accesoId, descripcion }) => (
-                                                    <option value={menu_accesoId} key={menu_accesoId}>{descripcion}</option>
-                                                ))
-                                            }
-                                        </SelectGroup>
-                                    </Form.Group>
-                                    {
-                                        dataInicial.rol_menu_accesoId > 0 &&
-                                        <Form.Group as={Col} md="12">
-                                            <Form.Label htmlFor="estadoId">Estado</Form.Label>
-                                            <SelectGroup
-                                                name="estadoId"
-                                                id="estadoId"
-                                                value={values.estadoId}
-                                                required
-                                                errorMessage={errorMessage}
-                                                onChange={handleOnChange}>
-                                                <option value="">Seleccione un estado</option>
-                                                <option value="1">Activo</option>
-                                                <option value="2">Inactivo</option>
-                                            </SelectGroup>
-                                        </Form.Group>
-                                    }
-                                    <div className="col-sm-3"></div>
-                                    <div className="col-sm-3">
-                                        <button type="button" onClick={() => { setAbrirModal(false) }} className="btn btn-warning"> Cancelar</button>
-                                    </div>
-                                    <div className="col-sm-3">
-                                        <button type="submit" className="btn btn-success"> {dataInicial.rol_menu_accesoId > 0 ? 'Actualizar' : 'Registrar'}</button>
-                                    </div>
-                                </Form.Row>
-                            </ValidationForm>
+                                        </tbody>
+                                    </Table>
+                            }
                         </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="warning" onClick={() => { handleUpdate(existeCambio) }}>Salir</Button>
+                        </Modal.Footer>
+
                     </>
             }
         </Modal>

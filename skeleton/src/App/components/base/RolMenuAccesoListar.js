@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, Card, Button, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import withReactContent from 'sweetalert2-react-content';
 import callApi from '../../../helpers/conectorApi';
 import Aux from '../../../hoc/_Aux';
@@ -10,10 +10,12 @@ import { RolMenuAccesoUpSert } from './RolMenuAccesoUpSert';
 import { limpiarEstiloTabla, asignarEstiloTabla } from '../../../helpers/estiloTabla';
 import { NoAutorizado } from './NoAutorizado';
 import Loading from './Loading';
+import { UpdateUserInfo } from '../../../actions/auth';
 const menuId = 20;
 const menuIdMenu = 21;
 const menuIdRol = 11;
 export const RolMenuAccesoListar = ({ idrol }) => {
+    const dispatch = useDispatch();
     const state = useSelector(state => state);
     const [accesos, setAccesos] = useState([]);
     const [loading, setLoading] = useState(true)
@@ -66,6 +68,13 @@ export const RolMenuAccesoListar = ({ idrol }) => {
         }
         setLoading(false);
         asignarEstiloTabla("#mytable");
+    }
+    const handleUpdate=(existeCambio)=>{
+        setAbrirModal(false);
+        if(existeCambio===true){
+            GetRolMenuAcceso(dataInicial.rolId);
+            dispatch(UpdateUserInfo());
+        }
     }
     const GetInfoRol = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdRol && acceso.accesoId === 3)) {
@@ -199,7 +208,13 @@ export const RolMenuAccesoListar = ({ idrol }) => {
                                                 }
                                                 {
                                                     abrirModal === true &&
-                                                    <RolMenuAccesoUpSert abrirModal={abrirModal} setAbrirModal={setAbrirModal} catMenu={catMenu} dataInicial={dataInicial} GetRolMenuAcceso={GetRolMenuAcceso} rolMenuAcceso={rolMenuAcceso} />
+                                                    <RolMenuAccesoUpSert 
+                                                        abrirModal={abrirModal} 
+                                                        setAbrirModal={setAbrirModal} 
+                                                        catMenu={catMenu} 
+                                                        dataInicial={dataInicial} 
+                                                        handleUpdate={handleUpdate} 
+                                                         />
                                                 }
                                             </Card.Body>
                                         </Card>
