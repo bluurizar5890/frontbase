@@ -73,7 +73,7 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, catMenu, handleUp
     const GetMenuAcceso = async (id) => {
         if (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 3)) {
             setLoading(true);
-            if (id > 0) {
+            if (id != 0) {
                 let response = await callApi(`menuacceso?menuId=${id}&estadoId=1`);
                 if (response) {
                     setMenuAcceso(response);
@@ -87,7 +87,7 @@ export const RolMenuAccesoUpSert = ({ dataInicial, abrirModal, catMenu, handleUp
     const GetPermisosAsignados = async () => {
         if (accesos.find(acceso => acceso.menuId === menuIdMenuAcceso && acceso.accesoId === 3)) {
             setLoading(true);
-            if (menuId > 0) {
+            if (menuId != 0) {
                 let response = await callApi(`rolmenuacceso?menuId=${menuId}`);
                 if (response) {
                     setListAsignados(response);
