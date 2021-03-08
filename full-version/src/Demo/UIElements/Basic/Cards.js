@@ -164,7 +164,7 @@ class Cards extends React.Component {
                     <Col md={6} xl={4}>
                         <h5>Image Overlays</h5>
                         <hr/>
-                        <Card className="bg-dark text-white">
+                        <Card className="text-white">
                             <Card.Img variant="top" src={imgSlide7} alt="CardImageOverlays" />
                             <Card.ImgOverlay>
                                 <Card.Title as="h5" className="text-white">Card title</Card.Title>
